@@ -101,7 +101,7 @@
           id: "a2",
           name: "Chrome Pigment",
           category: "Eyes",
-          price: 3000,
+          price: 3500,
           image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414851/Glitter_1_txkblx.png",
           description: "Experience liquid-metal luxury. Formulated for a dynamic, futuristic mirror-like shine that shifts with every angle of light."
         },
@@ -141,7 +141,7 @@
           id: "e2",
           name: "Single Blender+Puff",
           category: "Artistry",
-          price: 2000,
+          price: 2500,
           image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414854/Sponge_1_vjh19n.png",
           description: "The perfect pro combo. The plush blender offers fluid, dewy applications, while the soft puff presses powder seamlessly."
         },
@@ -276,9 +276,70 @@
         );
       }
 
-      function ProductDetail({ product, onBack, onAddToCart }) {
-        const [selectedShade, setSelectedShade] = useState(product.shades ? product.shades[0] : null);
-        const [quantity, setQuantity] = useState(1);
+      function ProductDetail({ product, onBack, onAddToCart, onDirectWhatsAppCheckout }) {
+        // Track allocations per selected shade: { [shadeHex]: quantity }
+        const [shadeQuantities, setShadeQuantities] = useState({});
+        // Base quantity variable for items that don't carry shade variants
+        const [baseQuantity, setBaseQuantity] = useState(1);
+
+        // Compute localized structural quantities
+        const totalItemsCount = product.shades 
+          ? Object.values(shadeQuantities).reduce((acc, qty) => acc + qty, 0)
+          : baseQuantity;
+
+        const totalProductPrice = product.price * totalItemsCount;
+
+        const handleShadeToggle = (shade) => {
+          setShadeQuantities(prev => {
+            const next = { ...prev };
+            if (next[shade]) {
+              delete next[shade];
+            } else {
+              next[shade] = 1;
+            }
+            return next;
+          });
+        };
+
+        const handleShadeQuantityChange = (shade, change) => {
+          setShadeQuantities(prev => {
+            const next = { ...prev };
+            if (!next[shade]) return prev;
+            const updatedQty = next[shade] + change;
+            if (updatedQty <= 0) {
+              delete next[shade];
+            } else {
+              next[shade] = updatedQty;
+            }
+            return next;
+          });
+        };
+
+        const executeAddToCart = () => {
+          if (product.shades) {
+            const activeSelections = Object.entries(shadeQuantities);
+            if (activeSelections.length === 0) {
+              alert("Please select at least one shade variant first.");
+              return;
+            }
+            activeSelections.forEach(([shade, qty]) => {
+              onAddToCart(product, qty, shade);
+            });
+            // Reset configurations following transaction insertion
+            setShadeQuantities({});
+          } else {
+            onAddToCart(product, baseQuantity, null);
+            setBaseQuantity(1);
+          }
+        };
+
+        const executeDirectWhatsApp = () => {
+          if (product.shades && Object.keys(shadeQuantities).length === 0) {
+            alert("Please select at least one shade variant first.");
+            return;
+          }
+          onDirectWhatsAppCheckout(product, baseQuantity, shadeQuantities);
+        };
 
         return (
           <section className="py-8 px-6 max-w-5xl mx-auto bg-white border border-neutral-200 my-6 rounded-sm">
@@ -299,28 +360,75 @@
                 </div>
 
                 {product.shades && (
-                  <div className="space-y-3">
-                    <h3 className="text-[10px] uppercase tracking-widest font-bold text-neutral-400">Shade: <strong className="text-black">{SHADE_NAMES[selectedShade] || selectedShade}</strong></h3>
+                  <div className="space-y-4">
+                    <h3 className="text-[10px] uppercase tracking-widest font-bold text-neutral-400">
+                      Select Shades <span className="text-neutral-500 normal-case">(Tap multiple to select)</span>
+                    </h3>
                     <div className="flex flex-wrap gap-2">
-                      {product.shades.map((shade) => (
-                        <button key={shade} onClick={() => setSelectedShade(shade)} className={`w-8 h-8 rounded-full border transition-all ${selectedShade === shade ? "ring-2 ring-black scale-105" : "border-neutral-300"}`} style={{ backgroundColor: shade }} />
-                      ))}
+                      {product.shades.map((shade) => {
+                        const isSelected = !!shadeQuantities[shade];
+                        return (
+                          <button 
+                            key={shade} 
+                            onClick={() => handleShadeToggle(shade)} 
+                            className={`w-8 h-8 rounded-full border relative transition-all ${isSelected ? "ring-2 ring-black scale-105" : "border-neutral-300 opacity-75 hover:opacity-100"}`} 
+                            style={{ backgroundColor: shade }}
+                            title={SHADE_NAMES[shade]}
+                          >
+                            {isSelected && (
+                              <span className="absolute inset-0 flex items-center justify-center bg-black/20 text-white font-bold text-[10px] rounded-full">
+                                ✓
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Dynamic Allocation Controllers per Selected Variant Row */}
+                    {Object.keys(shadeQuantities).length > 0 && (
+                      <div className="border-t border-neutral-100 pt-3 mt-2 space-y-2">
+                        <h4 className="text-[9px] uppercase tracking-wider font-bold text-neutral-400">Selected Quantities:</h4>
+                        {Object.entries(shadeQuantities).map(([shade, qty]) => (
+                          <div key={shade} className="flex items-center justify-between bg-neutral-50 p-2 rounded-sm border border-neutral-100">
+                            <div className="flex items-center space-x-2">
+                              <span className="w-3 h-3 rounded-full border border-neutral-300" style={{ backgroundColor: shade }} />
+                              <span className="text-xs font-medium text-black">{SHADE_NAMES[shade] || shade}</span>
+                            </div>
+                            <div className="flex items-center border border-neutral-300 bg-white">
+                              <button onClick={() => handleShadeQuantityChange(shade, -1)} className="px-2 py-0.5 font-bold text-neutral-500 hover:text-black text-xs">-</button>
+                              <span className="w-8 text-center text-xs font-bold text-black">{qty}</span>
+                              <button onClick={() => handleShadeQuantityChange(shade, 1)} className="px-2 py-0.5 font-bold text-neutral-500 hover:text-black text-xs">+</button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {!product.shades && (
+                  <div className="space-y-2">
+                    <h3 className="text-[10px] uppercase tracking-widest font-bold text-neutral-400">Quantity</h3>
+                    <div className="flex items-center w-28 border border-neutral-300 bg-white">
+                      <button onClick={() => baseQuantity > 1 && setBaseQuantity(baseQuantity - 1)} className="px-3 py-1 font-bold text-neutral-500 hover:text-black">-</button>
+                      <span className="flex-1 text-center text-xs font-bold text-black">{baseQuantity}</span>
+                      <button onClick={() => setBaseQuantity(baseQuantity + 1)} className="px-3 py-1 font-bold text-neutral-500 hover:text-black">+</button>
                     </div>
                   </div>
                 )}
 
-                <div className="space-y-2">
-                  <h3 className="text-[10px] uppercase tracking-widest font-bold text-neutral-400">Quantity</h3>
-                  <div className="flex items-center w-28 border border-neutral-300 bg-white">
-                    <button onClick={() => quantity > 1 && setQuantity(quantity - 1)} className="px-3 py-1 font-bold text-neutral-500 hover:text-black">-</button>
-                    <span className="flex-1 text-center text-xs font-bold text-black">{quantity}</span>
-                    <button onClick={() => setQuantity(quantity + 1)} className="px-3 py-1 font-bold text-neutral-500 hover:text-black">+</button>
-                  </div>
+                <div className="space-y-2 border-t border-neutral-100 pt-4">
+                  <button onClick={executeAddToCart} className="w-full bg-black text-white text-[10px] font-bold uppercase tracking-widest py-4 hover:bg-neutral-800 transition-colors shadow-md flex items-center justify-center space-x-2">
+                    <i data-lucide="shopping-bag" className="w-3.5 h-3.5"></i>
+                    <span>Add To Shopping Cart &bull; ₦{totalProductPrice.toLocaleString()}</span>
+                  </button>
+                  
+                  <button onClick={executeDirectWhatsApp} className="w-full bg-[#25D366] text-white text-[10px] font-bold uppercase tracking-widest py-4 hover:bg-[#20ba56] transition-colors flex items-center justify-center space-x-2 shadow-sm">
+                    <i data-lucide="message-square" className="w-3.5 h-3.5"></i>
+                    <span>Order via WhatsApp Now</span>
+                  </button>
                 </div>
-
-                <button onClick={() => onAddToCart(product, quantity, selectedShade)} className="w-full bg-black text-white text-[10px] font-bold uppercase tracking-widest py-4 hover:bg-neutral-800 shadow-md">
-                  Add To Shopping Cart &bull; ₦{(product.price * quantity).toLocaleString()}
-                </button>
               </div>
             </div>
           </section>
@@ -525,6 +633,26 @@
           window.open(`https://wa.me/2348035399521?text=${message}`, "_blank");
         };
 
+        const handleDirectWhatsAppCheckout = (product, fallbackQty, shadeQuantities) => {
+          let message = `🛍️ JAYDRIZ COSMETICS - DIRECT PRODUCT ORDER%0A%0A`;
+          let totalCalculatedPrice = 0;
+
+          if (product.shades) {
+            Object.entries(shadeQuantities).forEach(([shade, qty], index) => {
+              const itemTotal = product.price * qty;
+              totalCalculatedPrice += itemTotal;
+              const nameOfShade = SHADE_NAMES[shade] || shade;
+              message += `${index + 1}. *${product.name}* (${nameOfShade})%0A   Qty: ${qty} x ₦${product.price.toLocaleString()} = ₦${itemTotal.toLocaleString()}%0A%0A`;
+            });
+          } else {
+            totalCalculatedPrice = product.price * fallbackQty;
+            message += `1. *${product.name}*%0A   Qty: ${fallbackQty} x ₦${product.price.toLocaleString()} = ₦${totalCalculatedPrice.toLocaleString()}%0A%0A`;
+          }
+
+          message += `*Total Price:* ₦${totalCalculatedPrice.toLocaleString()}%0A%0AKindly check availability and process this order layout.`;
+          window.open(`https://wa.me/2348035399521?text=${message}`, "_blank");
+        };
+
         const navigateTo = (page) => {
           setCurrentPage(page);
           setSelectedProduct(null);
@@ -647,7 +775,12 @@
 
               {/* CORE APP ROUTING WORKFLOW */}
               {selectedProduct ? (
-                <ProductDetail product={selectedProduct} onBack={() => setSelectedProduct(null)} onAddToCart={handleAddToCart} />
+                <ProductDetail 
+                  product={selectedProduct} 
+                  onBack={() => setSelectedProduct(null)} 
+                  onAddToCart={handleAddToCart} 
+                  onDirectWhatsAppCheckout={handleDirectWhatsAppCheckout}
+                />
               ) : (
                 <>
                   {currentPage === "home" && (
