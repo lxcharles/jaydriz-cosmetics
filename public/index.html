@@ -1,25 +1,1688 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="https://res.cloudinary.com/dehvk3bre/image/upload/v1780414377/20260409_010010_u4nssj.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="theme-color" content="#FAF7F5" />
-    <meta
-      name="description"
-      content="JAYDRIZ COSMETICS - Affordable Luxury. Pro-Level Beauty Experience engineered for ultimate perfection."
-    />
-    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dehvk3bre/image/upload/v1780414377/20260409_010010_u4nssj.png" />
-    
-    <title>JAYDRIZ COSMETICS | Affordable Luxury</title>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JAYDRIZ COSMETICS - Affordable Luxury</title>
+  
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <script src="https://unpkg.com/motion@11.11.17/dist/motion.js"></script>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script src="https://unpkg.com/lucide@0.435.0"></script>
 
-    <link rel="preconnect" href="https://res.cloudinary.com" />
-    <link rel="preconnect" href="https://images.unsplash.com" />
-  </head>
-  <body class="bg-[#FAF7F5] antialiased">
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    
-    <div id="root"></div>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Playfair Display', 'serif'],
+          },
+          screens: {
+            'xs': '400px',
+          }
+        }
+      }
+    }
+  </script>
 
-  </body>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&display=swap');
+    
+    /* Precision custom utilities */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
+    }
+    .animate-slide-in {
+      animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+  </style>
+</head>
+<body class="bg-[#FAF7F5] text-black mix-blend-normal">
+
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+    
+    // Deconstruct global window layers safely for CDN contexts
+    const motion = window.Motion.motion;
+    const AnimatePresence = window.Motion.AnimatePresence;
+
+    // Direct translation of individual icons from the lucide web bundle
+    const ShoppingBag = (props) => <i data-lucide="shopping-bag" class={props.className} style={{width: props.size, height: props.size}}></i>;
+    const X = (props) => <i data-lucide="x" class={props.className} style={{width: props.size, height: props.size}}></i>;
+    const MessageSquare = (props) => <i data-lucide="message-square" class={props.className} style={{width: props.size, height: props.size}}></i>;
+    const ArrowUp = (props) => <i data-lucide="arrow-up" class={props.className} style={{width: props.size, height: props.size}}></i>;
+    const ArrowLeft = (props) => <i data-lucide="arrow-left" class={props.className} style={{width: props.size, height: props.size}}></i>;
+    const Star = (props) => <i data-lucide="star" class={props.className} style={{width: props.size, height: props.size, fill: props.className?.includes('fill-amber-400') ? 'currentColor' : 'none'}}></i>;
+    const Sparkles = (props) => <i data-lucide="sparkles" class={props.className} style={{width: props.size, height: props.size}}></i>;
+    const Instagram = (props) => <i data-lucide="instagram" class={props.className} style={{width: props.size, height: props.size}}></i>;
+    const ChevronLeft = (props) => <i data-lucide="chevron-left" class={props.className} style={{width: props.size, height: props.size}}></i>;
+    const ChevronRight = (props) => <i data-lucide="chevron-right" class={props.className} style={{width: props.size, height: props.size}}></i>;
+    const Menu = (props) => <i data-lucide="menu" class={props.className} style={{width: props.size, height: props.size}}></i>;
+    const MapPin = (props) => <i data-lucide="map-pin" class={props.className} style={{width: props.size, height: props.size}}></i>;
+    const Mail = (props) => <i data-lucide="mail" class={props.className} style={{width: props.size, height: props.size}}></i>;
+    const Phone = (props) => <i data-lucide="phone" class={props.className} style={{width: props.size, height: props.size}}></i>;
+    const Clock = (props) => <i data-lucide="clock" class={props.className} style={{width: props.size, height: props.size}}></i>;
+    const Search = (props) => <i data-lucide="search" class={props.className} style={{width: props.size, height: props.size}}></i>;
+
+    // Hook to call lucide renderer on adjustments
+    function useLucideRefresh(dependency) {
+      useEffect(() => {
+        if (window.lucide) {
+          window.lucide.createIcons();
+        }
+      }, [dependency]);
+    }
+
+    // ==========================================
+    // 1. PRODUCT DATA INTERFACES & STATIC ARRAY
+    // ==========================================
+    const productsList = [
+      {
+        id: "f1",
+        name: "Foundation",
+        category: "Face",
+        price: 7500,
+        image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414858/Foundation_1_jefqeq.png",
+        description: "Unlock a flawless, second-skin finish with a formula designed for high-performance wear. Offers custom buildable coverage that seamlessly erases imperfections while maintaining a natural, breathable glow.",
+        shades: ["#FEE1C3", "#FEBD85", "#FFC291", "#EC9759", "#C57D57", "#B1705C", "#C07756", "#77473B", "#5F3E37", "#3E2E2E"]
+      },
+      {
+        id: "f2",
+        name: "Concealer",
+        category: "Face",
+        price: 4500,
+        image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414852/Concealer_1_h7ftxw.png",
+        description: "Expertly hide what you want and highlight what you love. This creamy, high-coverage formula melts into the skin to brighten dark circles and vanish blemishes with a crease-resistant, natural finish.",
+        shades: ["#FEE1C3", "#FEBD85", "#FFC291", "#EC9759", "#C57D57", "#B1705C", "#C07756", "#77473B", "#5F3E37", "#3E2E2E"]
+      },
+      {
+        id: "f3",
+        name: "Compact Powder",
+        category: "Face",
+        price: 7500,
+        image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414855/Compact_1_kbrllw.png",
+        description: "The ultimate secret to a shine-free, velvet-smooth complexion. Sets your base perfectly, blurring pores and controlling oil without looking heavy.",
+        shades: ["#FEE1C3", "#FEBD85", "#FFC291", "#EC9759", "#C57D57", "#B1705C", "#C07756", "#77473B", "#5F3E37", "#3E2E2E"]
+      },
+      {
+        id: "f4",
+        name: "Powder Palette 12-in-1",
+        category: "Face",
+        price: 14000,
+        image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414858/Powder_A1_dxvgp3.png",
+        description: "The definitive professional toolkit. Featuring 12 expertly curated powder shades, this palette provides versatility for highlighting, contouring, and setting across a vast spectrum."
+      },
+      {
+        id: "f5",
+        name: "Powder Palette 9-in-1",
+        category: "Face",
+        price: 11500,
+        image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414855/Powder_B_aaubvp.png",
+        description: "A sophisticated, streamlined collection of essential shades. Formulated for precision and blendability to create a sculpted finish."
+      },
+      {
+        id: "a1",
+        name: "Pigment",
+        category: "Eyes",
+        price: 2500,
+        image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780422839/file_000000000d8471f5a60a806d29b341fc_pql4ml.png",
+        description: "Turn up the intensity with ultra-concentrated loose pigment. Delivers high-impact, multidimensional shimmer that commands attention."
+      },
+      {
+        id: "a2",
+        name: "Chrome Pigment",
+        category: "Eyes",
+        price: 3000,
+        image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414851/Glitter_1_txkblx.png",
+        description: "Experience liquid-metal luxury. Formulated for a dynamic, futuristic mirror-like shine that shifts with every angle of light."
+      },
+      {
+        id: "a3",
+        name: "Glitters",
+        category: "Eyes",
+        price: 1500,
+        image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780424057/file_0000000016b471f583376336d93de28f_jbxqol.png",
+        description: "Add a touch of pure magic to your application. Multi-reflective premium flakes providing dazzling, stellar dimension."
+      },
+      {
+        id: "a4",
+        name: "Glitters Glue",
+        category: "Eyes",
+        price: 2000,
+        image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780422835/file_00000000df2c71f58ef98fa2e27dc0c4_eviumc.png",
+        description: "The lightweight, invisible bond ensuring fine particles stay exactly where you apply them. Waterproof formula without stiff residue."
+      },
+      {
+        id: "a5",
+        name: "Pigment/Glitter Primer",
+        category: "Eyes",
+        price: 4500,
+        image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414854/Primer_1_inyqaw.png",
+        description: "The ideal tacky, smoothing canvas that grips makeup tightly, ensuring extreme structural longevity and shade vibrance."
+      },
+      {
+        id: "e1",
+        name: "Beauty Blender 2in1",
+        category: "Artistry",
+        price: 1500,
+        image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780424058/file_0000000060e871f5bc36060818abe5dc_wryxgo.png",
+        description: "Achieve an airbrushed, custom editorial finish. High-density latex-free sponge optimized for both broad strokes and focused contours."
+      },
+      {
+        id: "e2",
+        name: "Single Blender+Puff",
+        category: "Artistry",
+        price: 2000,
+        image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414854/Sponge_1_vjh19n.png",
+        description: "The perfect pro combo. The plush blender offers fluid, dewy applications, while the soft puff presses powder seamlessly."
+      },
+      {
+        id: "e3",
+        name: "Skin Prep Brush",
+        category: "Artistry",
+        price: 3000,
+        image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414856/Brush_1_s8qoql.png",
+        description: "Engineered with ultra-soft synthetic bristles to feather skincare, primer, and creams into a silky pristine canvas."
+      }
+    ];
+
+    // ==========================================
+    // 2. CHILD LAYOUT COMPONENTS
+    // ==========================================
+    const SHADE_NAMES = {
+      "#FEE1C3": "Blonde",
+      "#FEBD85": "Snowy",
+      "#FFC291": "Sunshine",
+      "#EC9759": "Clove",
+      "#C57D57": "Spice",
+      "#B1705C": "Amber",
+      "#C07756": "Chocolate",
+      "#77473B": "Java",
+      "#5F3E37": "Expresso",
+      "#3E2E2E": "Mahogany",
+    };
+
+    function GlobalLoader() {
+      return (
+        <div className="fixed inset-0 bg-white/98 backdrop-blur-md z-[9999] flex flex-col items-center justify-center">
+          <div className="relative flex flex-col items-center justify-center">
+            <div className="relative w-32 h-32 flex items-center justify-center mb-6 animate-pulse duration-1000">
+              <img
+                src="https://res.cloudinary.com/dehvk3bre/image/upload/v1780414377/20260409_010010_u4nssj.png"
+                alt="JAYDRIZ Logo"
+                className="w-28 h-28 object-contain"
+                id="loader-logo"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+            <p className="font-display text-[10px] text-neutral-800 font-bold tracking-[0.4em] uppercase animate-pulse">
+              Luxury Artistry Loading...
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    const HERO_SLIDES = [
+      {
+        image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780415231/20260331_085939_0000_npvhz9.png",
+        title: "JAYDRIZ\nCOSMETICS",
+        subtitle: "Affordable Luxury",
+        isMain: true
+      },
+      {
+        image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414851/Face_octrtg.png",
+        title: "FLAWLESS FACE",
+        subtitle: "All-day coverage, seamless foundations, and breathable powders engineered for ultimate perfection.",
+        isMain: false
+      },
+      {
+        image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414852/Acce_qsf8tn.png",
+        title: "PRO ARTISTRY",
+        subtitle: "High-performance formulas and precise cosmetic tools designed for pure artistic expression.",
+        isMain: false
+      },
+      {
+        image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414852/Eyes_iizg4c.png",
+        title: "CAPTIVATING EYES",
+        subtitle: "High-shimmer glitters, ultra-concentrated loose pigments, and lock-in primers designed for long-wear brilliance.",
+        isMain: false
+      }
+    ];
+
+    function HeroSection({ onShopNowClick }) {
+      const [currentSlide, setCurrentSlide] = useState(0);
+      useLucideRefresh(currentSlide);
+
+      useEffect(() => {
+        const interval = setInterval(() => {
+          setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+        }, 6000);
+        return () => clearInterval(interval);
+      }, [currentSlide]);
+
+      const handlePrev = () => {
+        setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length);
+      };
+
+      const handleNext = () => {
+        setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+      };
+
+      const slide = HERO_SLIDES[currentSlide];
+
+      return (
+        <section className="relative h-[90vh] flex items-center justify-center overflow-hidden bg-black text-white">
+          <div className="absolute inset-0 z-0">
+            <AnimatePresence mode="popLayout">
+              <motion.div
+                key={currentSlide}
+                initial={{ opacity: 0, scale: 1.05 }}
+                animate={{ opacity: 0.7, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                className="absolute inset-0 w-full h-full"
+              >
+                <img
+                  src={slide.image}
+                  className="w-full h-full object-cover object-center"
+                  alt={`Jaydriz Cosmetics Slider - ${slide.title}`}
+                  referrerPolicy="no-referrer"
+                />
+              </motion.div>
+            </AnimatePresence>
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/30 z-[1]"></div>
+          </div>
+
+          <button
+            onClick={handlePrev}
+            className="absolute left-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full border border-white/20 bg-black/20 hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center cursor-pointer opacity-40 hover:opacity-100 hidden md:flex backdrop-blur-xs"
+            aria-label="Previous Slide"
+          >
+            <ChevronLeft size={24} />
+          </button>
+
+          <button
+            onClick={handleNext}
+            className="absolute right-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full border border-white/20 bg-black/20 hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center cursor-pointer opacity-40 hover:opacity-100 hidden md:flex backdrop-blur-xs"
+            aria-label="Next Slide"
+          >
+            <ChevronRight size={24} />
+          </button>
+
+          <div className="relative z-10 text-center max-w-4xl px-6 flex flex-col items-center">
+            <motion.div
+              key={`content-${currentSlide}`}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="flex flex-col items-center"
+            >
+              <span className="text-xs uppercase tracking-[0.4em] text-amber-500 font-bold mb-4 block">
+                Welcome to Jaydriz
+              </span>
+              
+              <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-bold tracking-[0.2em] uppercase leading-tight mb-6 text-white drop-shadow-md whitespace-pre-line">
+                {slide.title}
+              </h1>
+
+              <p className="font-serif italic text-base sm:text-xl text-amber-100/90 max-w-xl sm:max-w-2xl tracking-wide mb-10 font-light leading-relaxed">
+                {slide.subtitle}
+              </p>
+
+              <button
+                onClick={onShopNowClick}
+                className="inline-block bg-white text-black font-display text-[10px] tracking-[0.3em] font-bold py-5 px-12 border border-white hover:bg-transparent hover:text-white transition-all duration-300 shadow-xl rounded-sm group uppercase cursor-pointer"
+              >
+                Shop Now
+                <span className="inline-block transform translate-x-1 group-hover:translate-x-2 transition-transform duration-300 ml-2">→</span>
+              </button>
+            </motion.div>
+          </div>
+
+          <div className="absolute bottom-10 left-12 hidden lg:flex flex-col items-start space-y-2 opacity-50 z-10">
+            <span className="text-[9px] tracking-widest uppercase">Lagos, NG</span>
+            <span className="w-12 h-[1px] bg-white"></span>
+          </div>
+
+          <div className="absolute bottom-10 right-12 flex items-center gap-3 z-20">
+            {HERO_SLIDES.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentSlide(idx)}
+                className="group py-3 focus:outline-none cursor-pointer"
+                aria-label={`Go to slide ${idx + 1}`}
+              >
+                <div className="relative h-[2px] overflow-hidden bg-white/20 transition-all duration-500 rounded-full">
+                  <div 
+                    className={`h-full bg-white transition-all duration-500 ${
+                      currentSlide === idx ? "w-10 sm:w-14" : "w-4 group-hover:bg-white/60"
+                    }`} 
+                  />
+                </div>
+              </button>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    const INSTAGRAM_POSTS = [
+      {
+        id: "ig-1",
+        handle: "@beauty_by_chioma",
+        image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&auto=format&fit=crop&q=80",
+        likes: "2,423",
+        caption: "Flawless pigments that blend perfectly 💄"
+      },
+      {
+        id: "ig-2",
+        handle: "@glam_with_funmi",
+        image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&auto=format&fit=crop&q=80",
+        likes: "1,894",
+        caption: "The ultimate long-wear formula! #JaydrizCosmetics"
+      },
+      {
+        id: "ig-3",
+        handle: "@lola_studios",
+        image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600&auto=format&fit=crop&q=80",
+        likes: "3,110",
+        caption: "Shining bright today with custom lip formulas ✨"
+      },
+      {
+        id: "ig-4",
+        handle: "@pro_makeup_ng",
+        image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=600&auto=format&fit=crop&q=80",
+        likes: "4,602",
+        caption: "Absolute bridal perfection using JAYDRIZ Compact Powder."
+      },
+      {
+        id: "ig-5",
+        handle: "@bellanaija_beauty",
+        image: "https://images.unsplash.com/photo-1515688594390-b649af70d282?w=600&auto=format&fit=crop&q=80",
+        likes: "5,823",
+        caption: "Spotted: JAYDRIZ backstage elegance on the runway."
+      },
+      {
+        id: "ig-6",
+        handle: "@temi_glam",
+        image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600&auto=format&fit=crop&q=80",
+        likes: "1,248",
+        caption: "Never leaving the house without these pigments!"
+      }
+    ];
+
+    function ShopComponent({ products, onSelectProduct, searchQuery, onClearSearch }) {
+      const [activeCategory, setActiveCategory] = useState("All");
+      const categories = ["All", "Face", "Eyes", "Artistry"];
+      const carouselRef = useRef(null);
+      useLucideRefresh(activeCategory);
+
+      const scrollLeft = () => {
+        if (carouselRef.current) {
+          carouselRef.current.scrollBy({ left: -340, behavior: "smooth" });
+        }
+      };
+
+      const scrollRight = () => {
+        if (carouselRef.current) {
+          carouselRef.current.scrollBy({ left: 340, behavior: "smooth" });
+        }
+      };
+
+      const filtered = products.filter((p) => {
+        const matchesCategory = activeCategory === "All" || p.category === activeCategory;
+        const matchesQuery = !searchQuery || 
+          p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+          p.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          p.description.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesCategory && matchesQuery;
+      });
+
+      return (
+        <section className="bg-[#FAF7F5] py-24 px-6 md:px-12 lg:px-24">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="text-xs uppercase tracking-[0.3em] text-[#806B5F] font-bold">The Collection</span>
+            <h2 className="font-display text-3xl sm:text-4xl text-black font-bold tracking-[0.15em] uppercase mt-2 mb-4">
+              SHOP PRODUCTS
+            </h2>
+            <div className="w-16 h-[2px] bg-[#806B5F]/30 mx-auto"></div>
+          </div>
+
+          {searchQuery && (
+            <div className="text-center mb-12 bg-white rounded-sm p-4 max-w-md mx-auto flex items-center justify-between border border-neutral-200/50 shadow-xs">
+              <span className="text-xs text-neutral-600 font-medium">
+                Results for <strong className="text-black italic">"{searchQuery}"</strong> ({filtered.length} found)
+              </span>
+              <button
+                onClick={onClearSearch}
+                className="text-[10px] tracking-wider uppercase font-extrabold text-[#806B5F] hover:text-black focus:outline-none bg-neutral-50 hover:bg-neutral-100 px-3 py-1.5 rounded-xs transition-colors"
+              >
+                Clear Search
+              </button>
+            </div>
+          )}
+
+          <div className="flex justify-center space-x-2 sm:space-x-4 mb-16 overflow-x-auto no-scrollbar py-2">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-8 py-3.5 text-[9px] sm:text-[10px] tracking-[0.25em] font-bold uppercase transition-all duration-300 rounded-xs ${
+                  activeCategory === cat
+                    ? "bg-black text-white shadow-md"
+                    : "bg-white text-gray-500 hover:text-black border border-gray-100"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {filtered.length === 0 && (
+              <div className="col-span-full py-16 text-center space-y-4">
+                <p className="text-sm text-neutral-500 font-light">No matching JAYDRIZ creations found.</p>
+                <button 
+                  onClick={onClearSearch}
+                  className="inline-block bg-black text-white text-[10px] tracking-widest font-bold uppercase py-3.5 px-8 rounded-sm hover:bg-[#806B5F] transition-colors shadow-sm"
+                >
+                  Show All Products
+                </button>
+              </div>
+            )}
+            {filtered.map((prod, idx) => (
+              <motion.div
+                key={prod.id}
+                onClick={() => onSelectProduct(prod)}
+                className="group cursor-pointer bg-white overflow-hidden flex flex-col justify-between border border-neutral-100 rounded-sm hover:shadow-xl transition-shadow duration-300"
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-12% 0px -12% 0px" }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: (idx % 4) * 0.05 }}
+              >
+                <div className="relative aspect-[4/5] bg-neutral-200 overflow-hidden">
+                  <img
+                    src={prod.image}
+                    alt={prod.name}
+                    loading="lazy"
+                    className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-x-4 bottom-4 flex justify-center opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 z-10">
+                    <button className="w-full bg-black text-white text-[9px] font-bold uppercase tracking-widest py-3 hover:bg-neutral-800 transition-colors shadow-lg">
+                      Quick View
+                    </button>
+                  </div>
+                </div>
+
+                <div className="p-5 flex flex-col flex-grow justify-between">
+                  <div>
+                    <span className="text-[9px] uppercase tracking-widest text-[#806B5F] font-bold font-display">
+                      {prod.category}
+                    </span>
+                    <h3 className="text-xs sm:text-sm text-black font-semibold uppercase tracking-wider mt-1 truncate">
+                      {prod.name}
+                    </h3>
+                  </div>
+                  <div className="flex items-center justify-between mt-4 border-t border-gray-50 pt-3">
+                    <span className="text-xs sm:text-sm font-semibold tracking-wide text-[#806B5F]">
+                      ₦{prod.price.toLocaleString("en-NG")}
+                    </span>
+                    {prod.shades && prod.shades.length > 0 && (
+                      <span className="text-[9px] uppercase tracking-widest text-gray-400 font-bold bg-neutral-50 px-2 py-0.5 border border-neutral-100 rounded-xs">
+                        {prod.shades.length} Shades
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-28 border-t border-[#806B5F]/10 pt-20">
+            <div className="text-center max-w-3xl mx-auto mb-12">
+              <span className="text-xs uppercase tracking-[0.3em] text-[#806B5F] font-bold">Follow Our Journey</span>
+              <h2 className="font-display text-2xl sm:text-3xl text-black font-bold tracking-[0.15em] uppercase mt-2 mb-4">
+                AS SEEN ON INSTAGRAM
+              </h2>
+              <div className="w-16 h-[2px] bg-[#806B5F]/30 mx-auto mb-5"></div>
+              <p className="text-xs text-neutral-500 max-w-md mx-auto leading-relaxed">
+                Witness how the elite beauty community styles JAYDRIZ. Tag us on socials for a chance to be featured!
+              </p>
+            </div>
+
+            <div className="relative group/carousel max-w-6xl mx-auto px-4">
+              <button
+                onClick={scrollLeft}
+                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 bg-white border border-neutral-200/50 rounded-full flex items-center justify-center text-black shadow-md hover:bg-neutral-50 transition-all duration-300 opacity-0 group-hover/carousel:opacity-100 cursor-pointer hidden md:flex"
+                aria-label="Scroll Left"
+              >
+                <ChevronLeft size={20} />
+              </button>
+
+              <button
+                onClick={scrollRight}
+                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 bg-white border border-neutral-200/50 rounded-full flex items-center justify-center text-black shadow-md hover:bg-neutral-50 transition-all duration-300 opacity-0 group-hover/carousel:opacity-100 cursor-pointer hidden md:flex"
+                aria-label="Scroll Right"
+              >
+                <ChevronRight size={20} />
+              </button>
+
+              <div
+                ref={carouselRef}
+                className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pb-6"
+              >
+                {INSTAGRAM_POSTS.map((post) => (
+                  <div
+                    key={post.id}
+                    className="min-w-[280px] sm:min-w-[320px] max-w-[320px] snap-start bg-white border border-neutral-100/80 rounded-sm overflow-hidden group/post shadow-2xs hover:shadow-lg transition-all duration-500"
+                  >
+                    <div className="relative aspect-square overflow-hidden bg-neutral-100">
+                      <img
+                        src={post.image}
+                        alt={`Instagram upload by ${post.handle}`}
+                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover/post:scale-105"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/post:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4 text-white">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[11px] font-bold tracking-wider font-mono bg-black/30 backdrop-blur-xs px-2.5 py-1 rounded-full">
+                            {post.handle}
+                          </span>
+                          <Instagram size={16} />
+                        </div>
+                        <div>
+                          <p className="text-[11px] line-clamp-2 leading-relaxed mb-1 font-sans text-left">
+                            {post.caption}
+                          </p>
+                          <p className="text-[9px] text-white/80 font-mono tracking-wider uppercase text-left">
+                            ♥ {post.likes} Likes
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-3.5 bg-white flex items-center justify-between border-t border-neutral-50">
+                      <span className="text-[10px] font-bold text-neutral-800 tracking-wide font-mono">
+                        {post.handle}
+                      </span>
+                      <a
+                        href="https://www.instagram.com/jaydrizcosmetics?igsh=eXJheHh0dGJmYnhr"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[10px] text-[#806B5F] hover:text-black font-semibold tracking-wide flex items-center gap-1 transition-colors"
+                      >
+                        <span>View Post</span>
+                        <Instagram size={10} />
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="text-center mt-12">
+              <a
+                href="https://www.instagram.com/jaydrizcosmetics?igsh=eXJheHh0dGJmYnhr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2.5 bg-black hover:bg-[#806B5F] text-white font-display text-[10px] sm:text-xs tracking-[0.25em] font-bold py-4.5 px-10 rounded-sm shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-300 uppercase group z-10"
+              >
+                <Instagram size={14} className="group-hover:scale-110 transition-transform duration-300" />
+                <span>Follow Our Creations</span>
+              </a>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function ProductDetail({ product, onBack, onAddToCart }) {
+      const [selectedShades, setSelectedShades] = useState(
+        product.shades && product.shades.length > 0 ? [product.shades[0]] : []
+      );
+      const [quantity, setQuantity] = useState(1);
+      const [hoveredRating, setHoveredRating] = useState(null);
+      const businessNumber = "2348035399521";
+
+      const [reviews, setReviews] = useState(() => {
+        const saved = localStorage.getItem(`reviews_prod_${product.id}`);
+        if (saved) {
+          try { return JSON.parse(saved); } catch (e) {}
+        }
+        return [
+          { id: "r1", name: "Chiamaka O.", rating: 4, comment: "Absolutely in love with this! The quality is premium and matches my undertone flawlessly. Perfect for everyday wear.", date: "2 days ago" },
+          { id: "r2", name: "Temitope A.", rating: 4, comment: "This is a game changer. Super lightweight, long-lasting, and remarkably affordable for such professional-grade quality.", date: "1 week ago" },
+          { id: "r3", name: "Fatima Y.", rating: 4, comment: "Smooth application and excellent pigment payoff. The blendability is pure luxury.", date: "2 weeks ago" }
+        ];
+      });
+
+      const [ratingInput, setRatingInput] = useState(4); 
+      const [nameInput, setNameInput] = useState("");
+      const [commentInput, setCommentInput] = useState("");
+      const [formSubmitted, setFormSubmitted] = useState(false);
+
+      useLucideRefresh(product.id + '-' + reviews.length + '-' + formSubmitted + '-' + hoveredRating);
+
+      useEffect(() => {
+        const saved = localStorage.getItem(`reviews_prod_${product.id}`);
+        if (saved) {
+          try { setReviews(JSON.parse(saved)); return; } catch (e) {}
+        }
+        setReviews([
+          { id: "r1", name: "Chiamaka O.", rating: 4, comment: "Absolutely in love with this! The quality is premium and matches my undertone flawlessly. Perfect for everyday wear.", date: "2 days ago" },
+          { id: "r2", name: "Temitope A.", rating: 4, comment: "This is a game changer. Super lightweight, long-lasting, and remarkably affordable for such professional-grade quality.", date: "1 week ago" },
+          { id: "r3", name: "Fatima Y.", rating: 4, comment: "Smooth application and excellent pigment payoff. The blendability is pure luxury.", date: "2 weeks ago" }
+        ]);
+      }, [product.id]);
+
+      const handleToggleShade = (shade) => {
+        setSelectedShades((prev) => {
+          if (prev.includes(shade)) {
+            if (prev.length <= 1) return prev;
+            return prev.filter((s) => s !== shade);
+          } else {
+            return [...prev, shade];
+          }
+        });
+      };
+
+      const handleOrderViaWhatsApp = () => {
+        const formattedPrice = `₦${(product.price * quantity).toLocaleString("en-NG")}`;
+        const shadesText = selectedShades.length > 0
+          ? `\n*Selected Shades:* ${selectedShades.map((s) => SHADE_NAMES[s] || s).join(", ")}`
+          : "";
+        
+        const message = `🛍️ JAYDRIZ COSMETICS ORDER%0A%0A*Product:* ${product.name}${shadesText}%0A*Quantity:* ${quantity}%0A*Total Order Price:* ${formattedPrice}%0A%0AKindly process my order, provide me with your bank details, and share payment confirmation. Thank you!`;
+        const waUrl = `https://wa.me/${businessNumber}?text=${message}`;
+        window.open(waUrl, "_blank");
+      };
+
+      const handleMinus = () => { if (quantity > 1) setQuantity(quantity - 1); };
+      const handlePlus = () => { setQuantity(quantity + 1); };
+
+      const handleAddReview = (e) => {
+        e.preventDefault();
+        if (!nameInput.trim() || !commentInput.trim()) return;
+
+        const newReview = {
+          id: `r_user_${Date.now()}`,
+          name: nameInput.trim(),
+          rating: ratingInput,
+          comment: commentInput.trim(),
+          date: "Just now"
+        };
+
+        const updatedReviews = [newReview, ...reviews];
+        setReviews(updatedReviews);
+        localStorage.setItem(`reviews_prod_${product.id}`, JSON.stringify(updatedReviews));
+
+        setNameInput("");
+        setCommentInput("");
+        setRatingInput(4);
+        setFormSubmitted(true);
+        setTimeout(() => setFormSubmitted(false), 4500);
+      };
+
+      const totalReviews = reviews.length;
+      const averageRating = totalReviews > 0
+        ? parseFloat((reviews.reduce((acc, r) => acc + r.rating, 0) / totalReviews).toFixed(1))
+        : 4.0;
+
+      const starCounts = [0, 0, 0, 0, 0, 0];
+      reviews.forEach((r) => {
+        if (r.rating >= 1 && r.rating <= 5) { starCounts[r.rating]++; }
+      });
+
+      const renderStars = (ratingNum, interactive = false, onSelect) => {
+        return (
+          <div className="flex items-center space-x-1">
+            {[1, 2, 3, 4, 5].map((star) => {
+              const fill = star <= (hoveredRating ?? ratingNum);
+              return (
+                <button
+                  type="button"
+                  key={star}
+                  disabled={!interactive}
+                  onClick={() => onSelect && onSelect(star)}
+                  onMouseEnter={() => interactive && setHoveredRating(star)}
+                  onMouseLeave={() => interactive && setHoveredRating(null)}
+                  className={`transition-transform duration-150 focus:outline-none ${
+                    interactive ? "hover:scale-125 cursor-pointer p-0.5" : ""
+                  }`}
+                >
+                  <Star
+                    size={interactive ? 24 : 14}
+                    className={`${
+                      fill
+                        ? "fill-amber-400 text-amber-400"
+                        : "text-neutral-200 fill-neutral-50"
+                    }`}
+                  />
+                </button>
+              );
+            })}
+          </div>
+        );
+      };
+
+      return (
+        <section className="bg-white py-16 px-6 md:px-12 lg:px-24">
+          <button
+            onClick={onBack}
+            className="inline-flex items-center space-x-2 text-[10px] font-bold uppercase tracking-[0.25em] text-gray-400 hover:text-black transition-colors mb-12"
+          >
+            <ArrowLeft size={12} />
+            <span>← Back to Shop</span>
+          </button>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start max-w-6xl mx-auto">
+            <div className="aspect-[4/5] bg-neutral-100 border border-neutral-100 overflow-hidden relative rounded-sm">
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-full h-full object-cover object-center"
+              />
+              <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-xs text-black border border-neutral-100 text-[8px] tracking-widest uppercase py-1 px-3 shadow-xs">
+                Authentic Brand
+              </div>
+            </div>
+
+            <div className="flex flex-col space-y-8">
+              <div>
+                <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#806B5F]">
+                  {product.category}
+                </span>
+                <h1 className="font-display text-2xl sm:text-3xl text-black font-extrabold tracking-widest uppercase mt-2 mb-4">
+                  {product.name}
+                </h1>
+                <div className="flex items-center gap-2 mb-3">
+                  {renderStars(Math.round(averageRating))}
+                  <span className="text-xs font-semibold text-neutral-600">({reviews.length} reviews)</span>
+                </div>
+                <span className="text-xl font-bold tracking-wide text-[#806B5F]">
+                  ₦{product.price.toLocaleString("en-NG")}
+                </span>
+              </div>
+
+              <div className="h-[1px] bg-neutral-100 w-full"></div>
+
+              <div className="space-y-4">
+                <h3 className="text-[10px] uppercase tracking-widest font-bold text-gray-400">
+                  Product Overview
+                </h3>
+                <p className="text-xs sm:text-sm text-gray-500 leading-relaxed max-w-lg">
+                  {product.description}
+                </p>
+              </div>
+
+              {product.shades && product.shades.length > 0 && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-[10px] uppercase tracking-widest font-bold text-gray-400">
+                      Select Accent Shades (Multi-select)
+                    </h3>
+                    <span className="text-[9px] uppercase tracking-widest bg-amber-50 text-[#806B5F] font-bold px-2.5 py-1 rounded-sm">
+                      {selectedShades.length} Selected
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-3 py-1">
+                    {product.shades.map((shade) => {
+                      const isSelected = selectedShades.includes(shade);
+                      return (
+                        <button
+                          key={shade}
+                          onClick={() => handleToggleShade(shade)}
+                          className={`w-10 h-10 rounded-full border transition-all duration-300 relative focus:outline-none flex items-center justify-center ${
+                            isSelected
+                              ? "border-[#806B5F] scale-110 shadow-lg ring-2 ring-[#806B5F]"
+                              : "border-gray-250 hover:scale-105 hover:border-black"
+                          }`}
+                          style={{ backgroundColor: shade }}
+                          title={SHADE_NAMES[shade] || shade}
+                        >
+                          {isSelected && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/15 rounded-full">
+                              <span className="w-2.5 h-2.5 bg-white rounded-full shadow-md"></span>
+                            </div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div className="bg-neutral-50 p-3.5 rounded-sm border border-neutral-100 flex flex-wrap gap-2 items-center">
+                    <span className="text-[9px] text-gray-400 uppercase tracking-wider font-semibold">Chosen Shades:</span>
+                    {selectedShades.map((shade) => (
+                      <span
+                        key={shade}
+                        className="inline-flex items-center space-x-1.5 bg-white border border-neutral-200/80 px-2.5 py-1 text-[9px] font-bold tracking-wide rounded-full text-gray-800 shadow-3xs"
+                      >
+                        <span className="w-2.5 h-2.5 rounded-full border border-gray-100 shrink-0" style={{ backgroundColor: shade }}></span>
+                        <span>{SHADE_NAMES[shade] || shade}</span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-4">
+                <h3 className="text-[10px] uppercase tracking-widest font-bold text-gray-400">
+                  Configure Quantity
+                </h3>
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center border border-neutral-200">
+                    <button onClick={handleMinus} className="px-4 py-2 hover:bg-neutral-50 transition-colors text-xs font-bold">-</button>
+                    <span className="px-6 py-2 text-xs font-bold font-mono">{quantity}</span>
+                    <button onClick={handlePlus} className="px-4 py-2 hover:bg-neutral-50 transition-colors text-xs font-bold">+</button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                <button
+                  onClick={handleOrderViaWhatsApp}
+                  className="flex-1 bg-emerald-800 hover:bg-emerald-950 text-white font-display text-[10px] tracking-[0.25em] font-bold py-5 px-10 flex items-center justify-center space-x-3 transition-colors duration-300 rounded-sm shadow-md"
+                >
+                  <ShoppingBag size={14} className="animate-bounce" />
+                  <span>Order via WhatsApp</span>
+                </button>
+
+                <button
+                  onClick={() => onAddToCart(product, selectedShades, quantity)}
+                  className="py-5 px-8 text-black border border-black hover:bg-black hover:text-white transition-all duration-300 text-[10px] tracking-[0.25em] font-bold uppercase rounded-sm"
+                >
+                  Add to Bag
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full h-[1px] bg-neutral-150 max-w-6xl mx-auto my-20"></div>
+
+          <div className="max-w-6xl mx-auto space-y-16">
+            <div className="text-center md:text-left space-y-2">
+              <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#806B5F]">Authentic Voices</span>
+              <h2 className="font-display text-2xl text-black font-extrabold tracking-widest uppercase">Customer Reviews & Social Proof</h2>
+              <div className="w-16 h-[2px] bg-[#806B5F]/40 mx-auto md:mx-0"></div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+              <div className="lg:col-span-4 bg-[#FAF7F5] border border-neutral-200/50 p-6 sm:p-8 rounded-sm space-y-6">
+                <div className="text-center py-2 space-y-3">
+                  <p className="text-6xl font-extrabold font-sans text-neutral-900 leading-none tracking-tight">{averageRating}</p>
+                  <div className="flex justify-center py-1">{renderStars(Math.round(averageRating))}</div>
+                  <p className="text-[10px] uppercase tracking-widest text-[#806B5F] font-extrabold">Based on {totalReviews} {totalReviews === 1 ? 'Review' : 'Reviews'}</p>
+                </div>
+                <div className="h-[1px] bg-neutral-200"></div>
+                <div className="space-y-3">
+                  {[5, 4, 3, 2, 1].map((starsIndex) => {
+                    const count = starCounts[starsIndex];
+                    const percentage = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
+                    return (
+                      <div key={starsIndex} className="flex items-center text-xs text-neutral-600 gap-3">
+                        <span className="font-semibold text-[11px] text-gray-500 w-12 shrink-0">{starsIndex} Star</span>
+                        <div className="flex-grow h-2 bg-neutral-200/60 rounded-full overflow-hidden">
+                          <div className="h-full bg-amber-400 transition-all duration-500 rounded-full" style={{ width: `${percentage}%` }}></div>
+                        </div>
+                        <span className="w-12 text-right font-mono text-[10px] text-gray-400 font-semibold shrink-0">{count} ({Math.round(percentage)}%)</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="lg:col-span-8 space-y-12">
+                <form onSubmit={handleAddReview} className="bg-white border border-neutral-200/60 p-6 md:p-8 rounded-sm space-y-6">
+                  <h3 className="font-display text-xs font-extrabold tracking-[0.2em] uppercase text-black">Share Your JAYDRIZ Experience</h3>
+                  <div className="space-y-2">
+                    <label className="block text-[9px] uppercase tracking-widest font-extrabold text-gray-400">Select Rating * (Default: 4 Stars)</label>
+                    <div className="flex items-center gap-2 py-1">
+                      {renderStars(ratingInput, true, (r) => setRatingInput(r))}
+                      <span className="text-[10px] font-bold text-[#806B5F] uppercase tracking-widest pl-2">{ratingInput} out of 5 stars</span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="block text-[9px] uppercase tracking-widest font-extrabold text-gray-400">Your Name *</label>
+                      <input
+                        type="text" required placeholder="e.g. Chiamaka, Temi, Fatima" value={nameInput}
+                        onChange={(e) => setNameInput(e.target.value)}
+                        className="w-full bg-[#FAF7F5] border border-neutral-200/70 p-3 text-xs rounded-sm focus:outline-none focus:border-[#806B5F] transition-colors"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="block text-[9px] uppercase tracking-widest font-extrabold text-gray-400">Verified Purchase Status</label>
+                      <div className="flex items-center h-11 px-3 bg-[#FAF7F5] border border-neutral-200/50 rounded-sm">
+                        <span className="text-[9px] uppercase tracking-widest font-extrabold text-emerald-800 bg-emerald-50 border border-emerald-150 px-2.5 py-1 rounded-sm">✓ Verified Buyer Account</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="block text-[9px] uppercase tracking-widest font-extrabold text-gray-400">Detailed Review Comment *</label>
+                    <textarea
+                      required rows={4} placeholder="Share details about the texture, blendability, custom shade matches, and high-performance staying power..." value={commentInput}
+                      onChange={(e) => setCommentInput(e.target.value)}
+                      className="w-full bg-[#FAF7F5] border border-neutral-200/70 p-3 text-xs rounded-sm focus:outline-none focus:border-[#806B5F] transition-colors resize-none"
+                    ></textarea>
+                  </div>
+
+                  {formSubmitted && (
+                    <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs p-4 rounded-sm animate-fade-in flex items-center gap-2">
+                      <span>✓</span>
+                      <span>Thank you! Your verified user review feedback was successfully published as social proof.</span>
+                    </div>
+                  )}
+
+                  <button type="submit" className="w-full sm:w-auto bg-black hover:bg-[#806B5F] text-white py-4 px-10 text-[9px] tracking-[0.25em] font-display font-bold uppercase transition-colors duration-300 rounded-sm shadow-md">Submit Feedback</button>
+                </form>
+
+                <div className="space-y-6">
+                  <h3 className="font-display text-xs font-extrabold tracking-[0.2em] uppercase text-black border-b border-neutral-100 pb-3">Verified Client Reviews ({reviews.length})</h3>
+                  <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 no-scrollbar">
+                    {reviews.map((rev) => (
+                      <div key={rev.id} className="bg-white border border-neutral-100 p-5 rounded-sm space-y-3.5 shadow-2xs hover:shadow-xs transition-shadow duration-300 text-left">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-neutral-50 pb-2">
+                          <div className="flex items-center gap-2.5">
+                            <span className="font-display text-xs font-extrabold text-neutral-800 uppercase tracking-wider">{rev.name}</span>
+                            <span className="text-[8px] uppercase tracking-widest text-emerald-800 font-extrabold bg-emerald-50 px-2 py-0.5 rounded-sm border border-emerald-150">Certified Buyer</span>
+                          </div>
+                          <span className="text-[10px] text-gray-400 font-semibold font-sans">{rev.date}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">{renderStars(rev.rating)}<span className="text-[10px] font-bold text-gray-400 font-mono pt-0.5">{rev.rating}.0 / 5.0</span></div>
+                        <p className="text-neutral-500 text-xs leading-relaxed font-light font-sans pre-line">{rev.comment}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function AboutJaydriz() {
+      return (
+        <div className="bg-[#FAF7F5] py-16 sm:py-24 font-sans text-black">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <span className="text-xs uppercase tracking-[0.3em] text-[#806B5F] font-bold">About Our House</span>
+              <h1 className="font-display text-3xl sm:text-4xl md:text-5xl text-black font-extrabold tracking-[0.1em] uppercase mt-4 mb-6 leading-tight">
+                JAYDRIZ COSMETICS:<br />WHERE LUXURY MEETS AFFORDABILITY
+              </h1>
+              <div className="w-24 h-[1px] bg-[#806B5F]/40 mx-auto"></div>
+            </div>
+
+            <div className="relative aspect-[21/9] w-full bg-neutral-900 overflow-hidden mb-20 rounded-sm shadow-xl">
+              <img
+                src="https://res.cloudinary.com/dehvk3bre/image/upload/v1780415231/20260331_085939_0000_npvhz9.png"
+                alt="Jaydriz Elite Cosmetics Campaign"
+                className="w-full h-full object-cover object-center opacity-80"
+                referrerPolicy="no-referrer"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/60"></div>
+              <div className="absolute inset-0 flex items-center justify-center text-center p-6">
+                <p className="font-display text-xs sm:text-sm tracking-[0.4em] text-white uppercase font-bold drop-shadow-lg bg-black/35 backdrop-blur-xs px-6 py-3 border border-white/10">
+                  Pro-Level Beauty Experience
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mb-24">
+              <div className="lg:col-span-5 space-y-4">
+                <span className="text-xs uppercase tracking-[0.25em] text-[#806B5F] font-bold block">01 / The Vision</span>
+                <h2 className="font-display text-2xl text-black font-bold tracking-wider uppercase">Brand Overview</h2>
+                <div className="w-12 h-[2px] bg-[#806B5F]/30"></div>
+              </div>
+              <div className="lg:col-span-7">
+                <p className="text-sm sm:text-base text-neutral-600 leading-relaxed font-light">
+                  Jaydriz Cosmetics is a trailblazing beauty brand designed for the modern makeup enthusiast who refuses to compromise on quality or cost. Merging high-performance formulas with trend-driven innovation, the brand delivers an inclusive, pro-level beauty experience that empowers self-expression for every skin tone and type.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 items-center mb-28 bg-white border border-neutral-100 rounded-sm p-6 sm:p-12 shadow-sm">
+              <div className="space-y-6">
+                <span className="text-xs uppercase tracking-[0.25em] text-[#806B5F] font-bold block">02 / Disruptive Craft</span>
+                <h2 className="font-display text-2xl sm:text-3xl text-black font-bold tracking-wider uppercase">The Core Philosophy</h2>
+                <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed font-light">At the heart of Jaydriz Cosmetics is a disruptive promise: luxury meets affordability.</p>
+                <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed font-light">Historically, consumers had to choose between prestige department store prices or sacrificing quality for drugstore budget-friendliness. Jaydriz Cosmetics obliterates that divide. By sourcing premium, skin-loving ingredients and utilizing cutting-edge manufacturing, the brand delivers the weightless textures, rich pigment payoffs, and all-day staying power characteristic of high-end luxury beauty—all at a price point that remains accessible.</p>
+              </div>
+              <div className="aspect-[4/5] bg-neutral-100 overflow-hidden rounded-sm relative shadow-md">
+                <img
+                  src="https://res.cloudinary.com/dehvk3bre/image/upload/v1780414851/Face_octrtg.png"
+                  alt="Flawless Artistry Model"
+                  className="w-full h-full object-cover object-center"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            </div>
+
+            <div className="mb-28">
+              <div className="text-center max-w-lg mx-auto mb-16">
+                <span className="text-xs uppercase tracking-[0.25em] text-[#806B5F] font-bold">03 / Curated Focus</span>
+                <h2 className="font-display text-2xl sm:text-3xl text-black font-bold tracking-wider uppercase mt-2 mb-4">Portfolio Highlights</h2>
+                <div className="w-12 h-[2px] bg-[#806B5F]/30 mx-auto"></div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="bg-white border border-neutral-100 p-6 flex flex-col justify-between rounded-sm shadow-2xs hover:shadow-lg transition-all duration-300">
+                  <div className="space-y-4">
+                    <div className="aspect-[5/4] bg-neutral-50 overflow-hidden mb-4 rounded-xs">
+                      <img src="https://res.cloudinary.com/dehvk3bre/image/upload/v1780414858/Foundation_1_jefqeq.png" alt="Complexion perfection bottles" className="w-full h-full object-cover object-center" referrerPolicy="no-referrer" />
+                    </div>
+                    <h3 className="font-display text-xs font-bold tracking-wider uppercase text-[#806B5F] pt-2">Complexion Perfection</h3>
+                    <p className="text-[11px] text-neutral-500 leading-relaxed font-light">From breathable, second-skin foundations available in an expansive, meticulously calibrated shade range to blurring, ultra-refined setting powders that eliminate flashback, the complexion line is engineered for a camera-ready, real-life finish.</p>
+                  </div>
+                </div>
+
+                <div className="bg-white border border-neutral-100 p-6 flex flex-col justify-between rounded-sm shadow-2xs hover:shadow-lg transition-all duration-300">
+                  <div className="space-y-4">
+                    <div className="aspect-[5/4] bg-neutral-50 overflow-hidden mb-4 rounded-xs">
+                      <img src="https://res.cloudinary.com/dehvk3bre/image/upload/v1780414852/Acce_qsf8tn.png" alt="Pro artistry brush and accessories sample" className="w-full h-full object-cover object-center" referrerPolicy="no-referrer" />
+                    </div>
+                    <h3 className="font-display text-xs font-bold tracking-wider uppercase text-[#806B5F] pt-2">Trend-Driven Innovation</h3>
+                    <p className="text-[11px] text-neutral-500 leading-relaxed font-light">Constantly pivoting with the pulse of global beauty trends, Jaydriz Cosmetics offers everything from viral, high-octane liquid highlighters to butter-soft eyeshadow palettes that deliver maximum payoff with minimal effort.</p>
+                  </div>
+                </div>
+
+                <div className="bg-white border border-neutral-100 p-6 flex flex-col justify-between rounded-sm shadow-2xs hover:shadow-lg transition-all duration-300">
+                  <div className="space-y-4">
+                    <div className="aspect-[5/4] bg-neutral-50 overflow-hidden mb-4 rounded-xs">
+                      <img src="https://res.cloudinary.com/dehvk3bre/image/upload/v1780414852/Eyes_iizg4c.png" alt="Captivating eyes display" className="w-full h-full object-cover object-center" referrerPolicy="no-referrer" />
+                    </div>
+                    <h3 className="font-display text-xs font-bold tracking-wider uppercase text-[#806B5F] pt-2">Inclusivity & Empowerment</h3>
+                    <p className="text-[11px] text-neutral-500 leading-relaxed font-light">Every product is crafted with diverse undertones in mind, ensuring that beauty is never exclusive, but a universal tool for confidence and self-celebration.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-black text-white py-16 px-8 sm:px-16 text-center rounded-sm relative overflow-hidden shadow-xl">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-serif text-[180px] text-white/5 pointer-events-none select-none">“</div>
+              <div className="relative z-10 max-w-2xl mx-auto space-y-6">
+                <span className="text-[10px] uppercase tracking-[0.4em] text-amber-500 font-bold block mb-2">The Jaydriz Manifesto</span>
+                <p className="font-serif italic text-base sm:text-xl text-amber-100/95 leading-relaxed font-light">"We believe that luxury shouldn't be a luxury. True beauty is inclusive, empowering, and accessible to all. With Jaydriz Cosmetics, you don't just wear makeup—you command your canvas without compromise."</p>
+                <div className="w-12 h-[1px] bg-amber-500/50 mx-auto mt-4 font-sans"></div>
+                <p className="font-display text-[9px] tracking-widest text-[#806B5F]/80 uppercase">Jaydriz Team, Lagos Nigeria</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function ContactJaydriz() {
+      const [name, setName] = useState("");
+      const [email, setEmail] = useState("");
+      const [subject, setSubject] = useState("");
+      const [message, setMessage] = useState("");
+      const [submitted, setSubmitted] = useState(false);
+
+      useLucideRefresh(submitted);
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!name || !email || !message) return;
+
+        const mailtoUrl = `mailto:jaydrizcosmetics@gmail.com?subject=${encodeURIComponent(
+          subject || "Inquiry from Jaydriz Web Platform"
+        )}&body=${encodeURIComponent(
+          `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`
+        )}`;
+        
+        window.open(mailtoUrl, "_blank");
+        setSubmitted(true);
+        
+        setName("");
+        setEmail("");
+        setSubject("");
+        setMessage("");
+        
+        setTimeout(() => { setSubmitted(false); }, 5000);
+      };
+
+      return (
+        <div className="bg-[#FAF7F5] py-16 sm:py-24 font-sans text-black">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <span className="text-xs uppercase tracking-[0.3em] text-[#806B5F] font-bold">Get In Touch</span>
+              <h1 className="font-display text-3xl sm:text-4xl text-black font-extrabold tracking-widest uppercase mt-4 mb-4">CONTACT US</h1>
+              <div className="w-16 h-[2px] bg-[#806B5F]/30 mx-auto"></div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start max-w-6xl mx-auto mb-20">
+              <div className="lg:col-span-5 space-y-8 bg-black text-white p-8 sm:p-12 rounded-sm shadow-xl">
+                <div>
+                  <h3 className="font-display text-[10px] tracking-widest text-[#806B5F] font-bold uppercase mb-4">VISIT OUR SHOWROOM</h3>
+                  <div className="flex items-start space-x-3 text-xs text-neutral-300">
+                    <MapPin size={18} className="text-amber-500 shrink-0 mt-0.5" />
+                    <p className="leading-relaxed">Shop B012, Rivers Plaza II,<br />Lagos Trade Fair Plaza,<br />Off Lagos - Badagry Expressway,<br />Lagos, Nigeria.</p>
+                  </div>
+                </div>
+                <div className="h-[1px] bg-neutral-900"></div>
+                <div>
+                  <h3 className="font-display text-[10px] tracking-widest text-[#806B5F] font-bold uppercase mb-4">DIRECT CONTACT</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-3 text-xs text-neutral-300">
+                      <Phone size={16} className="text-amber-500 shrink-0" />
+                      <a href="https://wa.me/2348035399521" target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 underline font-mono">+234 803 539 9521</a>
+                    </div>
+                    <div className="flex items-center space-x-3 text-xs text-neutral-300">
+                      <Mail size={16} className="text-amber-500 shrink-0" />
+                      <a href="mailto:jaydrizcosmetics@gmail.com" className="hover:text-amber-400 underline">jaydrizcosmetics@gmail.com</a>
+                    </div>
+                  </div>
+                </div>
+                <div className="h-[1px] bg-neutral-900"></div>
+                <div>
+                  <h3 className="font-display text-[10px] tracking-widest text-[#806B5F] font-bold uppercase mb-4">SOCIAL MEDIA</h3>
+                  <div className="flex items-center space-x-3 text-xs text-neutral-300">
+                    <Instagram size={16} className="text-amber-500 shrink-0" />
+                    <a href="https://www.instagram.com/jaydrizcosmetics?igsh=eXJheHh0dGJmYnhr" target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 underline">@jaydrizcosmetics</a>
+                  </div>
+                </div>
+                <div className="h-[1px] bg-neutral-900"></div>
+                <div>
+                  <h3 className="font-display text-[10px] tracking-widest text-[#806B5F] font-bold uppercase mb-4">BUSINESS HOURS</h3>
+                  <div className="flex items-start space-x-3 text-xs text-neutral-300">
+                    <Clock size={16} className="text-amber-500 shrink-0 mt-0.5" />
+                    <div>
+                      <p>Monday - Saturday</p>
+                      <p className="text-neutral-400 font-mono">9:00 AM - 6:00 PM</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <form onSubmit={handleSubmit} className="lg:col-span-7 bg-white border border-neutral-100 p-8 sm:p-12 rounded-sm shadow-sm space-y-6">
+                <h3 className="font-display text-sm tracking-wider font-extrabold uppercase text-black">Send a Message</h3>
+                <p className="text-xs text-neutral-450 leading-relaxed">Have an inquiry about wholesale distributions, custom orders, or delivery support? Write us a message and we'll assist you immediately.</p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] uppercase tracking-widest font-bold text-gray-400">Your Name *</label>
+                    <input type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter your name" className="w-full bg-neutral-50 border border-neutral-200 p-3 text-xs rounded-sm focus:outline-none focus:border-[#806B5F] transition-colors" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] uppercase tracking-widest font-bold text-gray-400">Email Address *</label>
+                    <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter your email" className="w-full bg-neutral-50 border border-neutral-200 p-3 text-xs rounded-sm focus:outline-none focus:border-[#806B5F] transition-colors" />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[9px] uppercase tracking-widest font-bold text-gray-400">Inquiry Subject</label>
+                  <input type="text" value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="What is this regarding?" className="w-full bg-neutral-50 border border-neutral-200 p-3 text-xs rounded-sm focus:outline-none focus:border-[#806B5F] transition-colors" />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[9px] uppercase tracking-widest font-bold text-gray-400">Message / Inquiry *</label>
+                  <textarea required rows={5} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Type your message details here..." className="w-full bg-neutral-50 border border-neutral-200 p-3 text-xs rounded-sm focus:outline-none focus:border-[#806B5F] transition-colors resize-none"></textarea>
+                </div>
+
+                {submitted && (
+                  <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs p-4 rounded-sm">
+                    ✓ Opening system mail composer to deliver to <strong>jaydrizcosmetics@gmail.com</strong>...
+                  </div>
+                )}
+
+                <button type="submit" className="w-full bg-black hover:bg-[#806B5F] text-white py-4 text-[10px] tracking-[0.25em] font-display font-bold uppercase transition-colors duration-300 rounded-sm shadow-md">Send Message</button>
+              </form>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="font-display text-xs tracking-[0.3em] font-extrabold uppercase text-[#806B5F] text-center mb-6">FIND US ON THE MAP</h3>
+              <div className="w-full h-[400px] bg-white border border-neutral-200 rounded-sm overflow-hidden shadow-md relative">
+                <iframe title="Jaydriz Cosmetics Location Map" src="https://maps.google.com/maps?q=Rivers%20Plaza%20II,%20Lagos%20Trade%20Fair%20Plaza,%20Lagos,%25Nigeria&t=&z=14&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style={{ border: 0 }} allowFullScreen={true} loading="lazy" referrerPolicy="no-referrer"></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================================
+    // 3. MAIN WRAPPER (APP COMPONENT)
+    // ==========================================
+    function App() {
+      const [currentView, setCurrentView] = useState("home");
+      const [selectedProduct, setSelectedProduct] = useState(null);
+      const [cart, setCart] = useState([]);
+      const [isCartOpen, setIsCartOpen] = useState(false);
+      const [isLoading, setIsLoading] = useState(true);
+      const [showScrollTop, setShowScrollTop] = useState(false);
+      const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+      const [headerSearchValue, setHeaderSearchValue] = useState("");
+      const [searchQuery, setSearchQuery] = useState("");
+
+      // Trigger structural Lucide icons setup when core routing transitions occur
+      useLucideRefresh(currentView + '-' + isCartOpen + '-' + isMobileMenuOpen + '-' + cart.length + '-' + headerSearchValue);
+
+      const matchingSearchProducts = productsList.filter((p) => {
+        const val = headerSearchValue.trim().toLowerCase();
+        if (!val) return false;
+        return (
+          p.name.toLowerCase().includes(val) ||
+          p.category.toLowerCase().includes(val) ||
+          p.description.toLowerCase().includes(val)
+        );
+      });
+
+      const handleSearchSubmit = (val) => {
+        const queryToSubmit = val !== undefined ? val : headerSearchValue;
+        setSearchQuery(queryToSubmit.trim());
+        setHeaderSearchValue("");
+        setCurrentView("shop");
+        setSelectedProduct(null);
+        setIsMobileMenuOpen(false);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      };
+
+      useEffect(() => {
+        const timer = setTimeout(() => { setIsLoading(false); }, 1200);
+
+        const handleScroll = () => {
+          if (window.scrollY > 400) { setShowScrollTop(true); } 
+          else { setShowScrollTop(false); }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => {
+          clearTimeout(timer);
+          window.removeEventListener("scroll", handleScroll);
+        };
+      }, []);
+
+      const handleSelectProduct = (prod) => {
+        setSelectedProduct(prod);
+        setCurrentView("detail");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      };
+
+      const handleAddToCart = (product, selectedShades, quantity) => {
+        setCart((prevCart) => {
+          const existingIdx = prevCart.findIndex((item) => {
+            if (item.product.id !== product.id) return false;
+            if (item.selectedShades.length !== selectedShades.length) return false;
+            return item.selectedShades.every((s) => selectedShades.includes(s));
+          });
+
+          if (existingIdx > -1) {
+            const updated = [...prevCart];
+            updated[existingIdx].quantity += quantity;
+            return updated;
+          } else {
+            return [...prevCart, { product, selectedShades, quantity }];
+          }
+        });
+        setIsCartOpen(true);
+      };
+
+      const handleUpdateCartQty = (idx, isPlus) => {
+        setCart((prevCart) => {
+          const updated = [...prevCart];
+          if (isPlus) { updated[idx].quantity += 1; } 
+          else {
+            if (updated[idx].quantity > 1) { updated[idx].quantity -= 1; } 
+            else { updated.splice(idx, 1); }
+          }
+          return updated;
+        });
+      };
+
+      const calculateSubtotal = () => {
+        return cart.reduce((acc, curr) => acc + curr.product.price * curr.quantity, 0);
+      };
+
+      const handleCheckoutCartViaWhatsApp = () => {
+        if (cart.length === 0) return;
+
+        let itemsString = "";
+        cart.forEach((item, index) => {
+          const shadesDetail = item.selectedShades && item.selectedShades.length > 0
+            ? ` (Shades: ${item.selectedShades.map((s) => SHADE_NAMES[s] || s).join(", ")})`
+            : "";
+          itemsString += `${index + 1}. *${item.product.name}*${shadesDetail}%0A   _Qty: ${item.quantity}_ x ₦${item.product.price.toLocaleString("en-NG")}%0A%0A`;
+        });
+
+        const totalStr = `₦${calculateSubtotal().toLocaleString("en-NG")}`;
+        const message = `🛍️ JAYDRIZ COSMETICS - MASTER ORDER%0A%0A*Items Selected:*%0A${itemsString}*Total Bag Value:* ${totalStr}%0A%0AKindly confirm availability, share bank details, and coordinate swift courier dispatch. Thanks!`;
+        
+        window.open(`https://wa.me/2348035399521?text=${message}`, "_blank");
+      };
+
+      return (
+        <div className="min-h-screen bg-[#FAF7F5] text-black font-sans selection:bg-[#806B5F]/20 flex flex-col justify-between">
+          {isLoading && <GlobalLoader />}
+
+          <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 py-5 px-6 md:px-12 flex items-center justify-between font-sans">
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="md:hidden text-black hover:text-[#806B5F] focus:outline-none p-1 flex items-center justify-center"
+                aria-label="Toggle mobile menu"
+                id="mobile-menu-toggle-btn"
+              >
+                {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              </button>
+
+              <button
+                onClick={() => {
+                  setCurrentView("home");
+                  setSelectedProduct(null);
+                  setIsMobileMenuOpen(false);
+                }}
+                className="font-display font-black text-lg tracking-[0.25em] text-black focus:outline-none uppercase"
+              >
+                JAYDRIZ
+              </button>
+            </div>
+
+            <nav className="hidden md:flex items-center space-x-12">
+              <button onClick={() => { setCurrentView("home"); setSelectedProduct(null); }} className={`font-display text-[10px] tracking-[0.25em] font-bold uppercase transition-colors hover:text-[#806B5F] ${currentView === "home" ? "text-[#806B5F]" : "text-gray-400"}`}>Home</button>
+              <button onClick={() => { setCurrentView("shop"); setSelectedProduct(null); }} className={`font-display text-[10px] tracking-[0.25em] font-bold uppercase transition-colors hover:text-[#806B5F] ${currentView === "shop" ? "text-[#806B5F]" : "text-gray-400"}`}>Shop</button>
+              <button onClick={() => { setCurrentView("about"); setSelectedProduct(null); }} className={`font-display text-[10px] tracking-[0.25em] font-bold uppercase transition-colors hover:text-[#806B5F] ${currentView === "about" ? "text-[#806B5F]" : "text-gray-400"}`}>About JAYDRIZ</button>
+              <button onClick={() => { setCurrentView("contact"); setSelectedProduct(null); }} className={`font-display text-[10px] tracking-[0.25em] font-bold uppercase transition-colors hover:text-[#806B5F] ${currentView === "contact" ? "text-[#806B5F]" : "text-gray-400"}`}>Contact us</button>
+            </nav>
+
+            <div className="flex items-center space-x-3 sm:space-x-6 font-sans">
+              <div className="relative">
+                <div className="flex items-center bg-neutral-100 hover:bg-neutral-200/60 border border-neutral-200/30 rounded-sm px-2.5 sm:px-3 py-1.5 transition-colors duration-250 w-28 xs:w-36 sm:w-48 md:w-56 lg:w-64">
+                  <Search size={14} className="text-neutral-450 mr-2 shrink-0 flex items-center justify-center" />
+                  <input
+                    type="text" placeholder="Search..." value={headerSearchValue}
+                    onChange={(e) => setHeaderSearchValue(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter") { handleSearchSubmit(); } }}
+                    className="bg-transparent text-[11px] sm:text-xs text-black placeholder-neutral-400 focus:outline-none w-full py-0"
+                  />
+                  {headerSearchValue && (
+                    <button onClick={() => setHeaderSearchValue("")} className="text-[10px] text-neutral-450 hover:text-black ml-1.5 shrink-0 focus:outline-none" aria-label="Clear raw search query">✕</button>
+                  )}
+                </div>
+
+                <AnimatePresence>
+                  {headerSearchValue.trim() !== "" && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
+                      className="absolute right-0 top-full mt-2 w-72 sm:w-80 bg-white border border-neutral-200/70 shadow-2xl rounded-sm p-4 z-50 max-h-[380px] overflow-y-auto"
+                    >
+                      <p className="text-[9px] uppercase tracking-widest text-[#806B5F] font-bold border-b border-neutral-100 pb-2 mb-2 text-left">Matching Products ({matchingSearchProducts.length})</p>
+                      {matchingSearchProducts.length > 0 ? (
+                        <div className="space-y-2">
+                          {matchingSearchProducts.slice(0, 5).map((p) => (
+                            <div
+                              key={p.id}
+                              onClick={() => { setSelectedProduct(p); setCurrentView("detail"); setHeaderSearchValue(""); }}
+                              className="flex items-center gap-3 p-1.5 hover:bg-neutral-50 rounded-xs cursor-pointer transition-colors"
+                            >
+                              <img src={p.image} alt={p.name} className="w-10 h-12 object-cover rounded-xs bg-neutral-100 shrink-0" referrerPolicy="no-referrer" />
+                              <div className="flex-grow text-left">
+                                <p className="text-xs text-neutral-800 font-semibold truncate leading-tight uppercase">{p.name}</p>
+                                <p className="text-[10px] text-neutral-450 uppercase tracking-wider">{p.category}</p>
+                              </div>
+                              <span className="text-xs font-semibold text-[#806B5F] shrink-0">₦{p.price.toLocaleString("en-NG")}</span>
+                            </div>
+                          ))}
+                          {matchingSearchProducts.length > 5 && (
+                            <div className="text-center pt-2 border-t border-gray-100">
+                              <button onClick={() => { handleSearchSubmit(); }} className="text-[10px] text-[#806B5F] hover:text-black font-bold tracking-widest uppercase py-1">View All Results</button>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <p className="text-xs text-neutral-400 italic py-4 text-center">No products match search.</p>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              <button
+                onClick={() => setIsCartOpen(true)}
+                className="relative flex items-center justify-center p-2 text-black hover:text-[#806B5F] transition-colors focus:outline-none"
+                id="open-cart-drawer-btn"
+              >
+                <ShoppingBag size={20} />
+                {cart.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-black text-white font-mono font-bold text-[8px] h-4 w-4 rounded-full flex items-center justify-center animate-pulse">
+                    {cart.reduce((a, b) => a + b.quantity, 0)}
+                  </span>
+                )}
+              </button>
+            </div>
+          </header>
+
+          <AnimatePresence>
+            {isMobileMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs md:hidden"
+              >
+                <motion.div
+                  initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }}
+                  transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                  onClick={(e) => e.stopPropagation()}
+                  className="w-4/5 max-w-[300px] h-full bg-white p-6 shadow-2xl flex flex-col justify-between"
+                >
+                  <div className="space-y-8">
+                    <div className="flex items-center justify-between border-b border-neutral-100 pb-4">
+                      <span className="font-display font-black text-xs tracking-widest text-black">JAYDRIZ MENU</span>
+                      <button onClick={() => setIsMobileMenuOpen(false)} className="text-neutral-500 hover:text-black focus:outline-none p-1 flex items-center justify-center"><X size={18} /></button>
+                    </div>
+
+                    <div className="relative">
+                      <div className="flex items-center bg-neutral-50 border border-neutral-200/60 rounded-sm px-3 py-2">
+                        <Search size={16} className="text-neutral-400 mr-2 shrink-0 flex items-center justify-center" />
+                        <input
+                          type="text" placeholder="Search creations..." value={headerSearchValue}
+                          onChange={(e) => setHeaderSearchValue(e.target.value)}
+                          onKeyDown={(e) => { if (e.key === "Enter") { handleSearchSubmit(); } }}
+                          className="bg-transparent text-xs text-black placeholder-neutral-450 focus:outline-none w-full"
+                        />
+                        {headerSearchValue && (
+                          <button onClick={() => setHeaderSearchValue("")} className="text-xs text-neutral-500 hover:text-black ml-2 shrink-0" aria-label="Clear mobile search query">✕</button>
+                        )}
+                      </div>
+                    </div>
+
+                    <nav className="flex flex-col space-y-6">
+                      <button onClick={() => { setCurrentView("home"); setSelectedProduct(null); setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} className={`font-display text-[10px] tracking-widest font-bold uppercase text-left transition-colors hover:text-[#806B5F] ${currentView === "home" ? "text-black pl-2 border-l-2 border-black" : "text-gray-400"}`}>Home</button>
+                      <button onClick={() => { setCurrentView("shop"); setSelectedProduct(null); setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} className={`font-display text-[10px] tracking-widest font-bold uppercase text-left transition-colors hover:text-[#806B5F] ${currentView === "shop" ? "text-black pl-2 border-l-2 border-black" : "text-gray-400"}`}>Shop</button>
+                      <button onClick={() => { setCurrentView("about"); setSelectedProduct(null); setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} className={`font-display text-[10px] tracking-widest font-bold uppercase text-left transition-colors hover:text-[#806B5F] ${currentView === "about" ? "text-black pl-2 border-l-2 border-black" : "text-gray-400"}`}>About JAYDRIZ</button>
+                      <button onClick={() => { setCurrentView("contact"); setSelectedProduct(null); setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} className={`font-display text-[10px] tracking-widest font-bold uppercase text-left transition-colors hover:text-[#806B5F] ${currentView === "contact" ? "text-black pl-2 border-l-2 border-black" : "text-gray-400"}`}>Contact us</button>
+                    </nav>
+                  </div>
+
+                  <div className="border-t border-neutral-100 pt-6 space-y-4">
+                    <span className="text-[8px] uppercase tracking-widest text-[#806B5F] font-bold block">Exclusive luxury</span>
+                    <p className="text-[10px] text-neutral-500 leading-relaxed font-light">Join us in redefining professional beauty and radiant artistry without compromise.</p>
+                    <div className="flex items-center space-x-3 text-neutral-500 text-xs">
+                      <Instagram size={14} />
+                      <a href="https://www.instagram.com/jaydrizcosmetics?igsh=eXJheHh0dGJmYnhr" target="_blank" rel="noopener noreferrer" className="underline hover:text-black">@jaydrizcosmetics</a>
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <main className="flex-grow">
+            {currentView === "home" && (
+              <div>
+                <HeroSection onShopNowClick={() => { setCurrentView("shop"); window.scrollTo({ top: 0, behavior: "smooth" }); }} />
+                <ShopComponent products={productsList} onSelectProduct={handleSelectProduct} searchQuery={searchQuery} onClearSearch={() => setSearchQuery("")} />
+              </div>
+            )}
+
+            {currentView === "shop" && (
+              <ShopComponent products={productsList} onSelectProduct={handleSelectProduct} searchQuery={searchQuery} onClearSearch={() => setSearchQuery("")} />
+            )}
+
+            {currentView === "about" && <AboutJaydriz />}
+            {currentView === "contact" && <ContactJaydriz />}
+
+            {currentView === "detail" && selectedProduct && (
+              <ProductDetail product={selectedProduct} onBack={() => { setCurrentView("shop"); setSelectedProduct(null); }} onAddToCart={handleAddToCart} />
+            )}
+          </main>
+
+          {isCartOpen && (
+            <div className="fixed inset-0 z-[100] flex justify-end">
+              <div onClick={() => setIsCartOpen(false)} className="absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity duration-300"></div>
+              <div className="relative w-full max-w-md h-full bg-white shadow-2xl flex flex-col justify-between z-10 animate-slide-in">
+                <div className="p-6 border-b border-neutral-100 flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <ShoppingBag size={18} className="text-[#806B5F]" />
+                    <h2 className="font-display text-xs tracking-[0.2em] font-extrabold uppercase text-black">My Shopping Bag</h2>
+                  </div>
+                  <button onClick={() => setIsCartOpen(false)} className="p-1 hover:bg-neutral-100 rounded-full transition-colors text-gray-500 hover:text-black flex items-center justify-center"><X size={18} /></button>
+                </div>
+
+                <div className="flex-grow overflow-y-auto p-6 space-y-6">
+                  {cart.length === 0 ? (
+                    <div className="h-full flex flex-col items-center justify-center text-center space-y-4 font-sans">
+                      <div className="w-12 h-12 rounded-full bg-neutral-50 flex items-center justify-center text-gray-300"><ShoppingBag size={20} /></div>
+                      <div>
+                        <h3 className="font-display text-[10px] tracking-widest font-bold uppercase text-black">Your bag is empty</h3>
+                        <p className="text-[11px] text-gray-400 mt-1 max-w-xs">Curate beauty items from our premium cosmetics collections to fill your checkout bag.</p>
+                      </div>
+                    </div>
+                  ) : (
+                    cart.map((item, idx) => (
+                      <div key={`${item.product.id}-${item.selectedShades.join(",")}`} className="flex space-x-4 border-b border-neutral-50 pb-6 font-sans">
+                        <div className="w-20 h-24 bg-neutral-100 overflow-hidden shrink-0 border border-neutral-100 rounded-xs">
+                          <img src={item.product.image} alt={item.product.name} className="w-full h-full object-cover" />
+                        </div>
+                        <div className="flex-grow flex flex-col justify-between">
+                          <div>
+                            <div className="flex justify-between">
+                              <h4 className="text-xs uppercase font-extrabold text-black font-display tracking-wider">{item.product.name}</h4>
+                            </div>
+                            {item.selectedShades && item.selectedShades.length > 0 && (
+                              <div className="mt-2 space-y-1">
+                                <span className="text-[8px] text-gray-400 uppercase tracking-widest block">Shades:</span>
+                                <div className="flex flex-wrap gap-1">
+                                  {item.selectedShades.map((shade) => (
+                                    <div key={shade} className="inline-flex items-center space-x-1.5 bg-neutral-50 border border-neutral-150 px-2 py-0.5 rounded-sm" title={SHADE_NAMES[shade] || shade}>
+                                      <span className="w-2 h-2 rounded-full border border-neutral-200" style={{ backgroundColor: shade }}></span>
+                                      <span className="text-[8.5px] font-bold font-mono text-gray-650">{(SHADE_NAMES[shade] || shade).split(" (")[0]}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center border border-neutral-200 rounded-xs scale-90 origin-left">
+                              <button onClick={() => handleUpdateCartQty(idx, false)} className="px-2.5 py-1 text-[10px] hover:bg-neutral-50">-</button>
+                              <span className="px-3.5 py-1 text-[9px] font-bold font-mono">{item.quantity}</span>
+                              <button onClick={() => handleUpdateCartQty(idx, true)} className="px-2.5 py-1 text-[10px] hover:bg-neutral-50">+</button>
+                            </div>
+                            <span className="text-xs font-semibold text-neutral-800">₦{(item.product.price * item.quantity).toLocaleString("en-NG")}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                {cart.length > 0 && (
+                  <div className="p-6 border-t border-neutral-100 bg-[#FAF7F5] space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="font-display text-[10px] tracking-wider uppercase text-neutral-500">Est. Subtotal</span>
+                      <span className="text-base font-bold text-black font-mono">₦{calculateSubtotal().toLocaleString("en-NG")}</span>
+                    </div>
+                    <button onClick={handleCheckoutCartViaWhatsApp} className="w-full bg-[#1b4332]/95 hover:bg-[#1b4332] text-white py-4 text-[10px] tracking-[0.25em] font-display font-bold uppercase transition-colors duration-300 rounded-sm flex items-center justify-center space-x-2 shadow-md">
+                      <ShoppingBag size={12} className="animate-pulse" />
+                      <span>Order Bag via WhatsApp</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          <a
+            href="https://wa.me/2348035399521?text=Hello%20JAYDRIZ%20COSMETICS,%20I'm%20writing%20to%20inquire%20about%20your%20professional%20beauty%20line%20and%20makeup%20products."
+            target="_blank" rel="noopener noreferrer"
+            className="fixed bottom-6 right-6 z-50 bg-[#25d366]/90 hover:bg-[#25d366] text-white p-4 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center"
+            aria-label="Contact JAYDRIZ on WhatsApp"
+          >
+            <MessageSquare size={24} />
+          </a>
+
+          <footer className="bg-black text-white pt-16 pb-12 border-t border-neutral-900 mt-auto font-sans">
+            <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12">
+              <div className="space-y-4">
+                <h2 className="font-display text-lg font-black tracking-[0.3em] text-white">JAYDRIZ COSMETICS</h2>
+                <p className="text-[11px] text-white leading-relaxed max-w-sm">Jaydriz Cosmetics is a trailblazing beauty brand designed for the modern makeup enthusiast who refuses to compromise on quality or cost. Merging high-performance formulas with trend-driven innovation, the brand delivers an inclusive, pro-level beauty experience that empowers self-expression for every skin tone and type.</p>
+              </div>
+              <div className="space-y-4">
+                <h3 className="font-display text-[10px] tracking-[0.3em] font-bold uppercase text-amber-500">Support & Inquiries</h3>
+                <p className="text-[11px] text-white leading-relaxed">
+                  WhatsApp Support:{" "}
+                  <a href="https://wa.me/2348035399521" target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 text-white font-bold underline font-mono">+234 803 539 9521</a>
+                  <br />
+                  <span className="text-white font-bold">Address:</span> Shop B012, Rivers Plaza II, Lagos Trade Fair Plaza, Off Lagos - Badagry Expressway, Lagos, Nigeria.
+                  <br />
+                  <span className="text-white font-bold">Hours:</span> Mon - Sat, 9 AM - 6 PM
+                </p>
+              </div>
+            </div>
+            <div className="max-w-6xl mx-auto px-6 border-t border-neutral-900 mt-12 pt-6 text-center">
+              <p className="text-[9px] tracking-widest text-white uppercase">© 2026 JAYDRIZ COSMETICS. All Luxury Rights Reserved.</p>
+            </div>
+          </footer>
+
+          {showScrollTop && (
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              className="fixed bottom-24 right-8 z-[49] bg-white text-black p-2 rounded-full shadow-md border border-neutral-100 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center"
+              aria-label="Scroll to top"
+            >
+              <ArrowUp size={16} />
+            </button>
+          )}
+        </div>
+      );
+    }
+
+    // Render the synchronized platform node
+    const container = document.getElementById('root');
+    const root = ReactDOM.createRoot(container);
+    root.render(<App />);
+  </script>
+</body>
 </html>
