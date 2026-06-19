@@ -10,23 +10,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght=0,400;0,700;1,400&display=swap" rel="stylesheet">
     
-    <!-- Restored to locked, fully compatible production CDNs -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js" crossorigin></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js" crossorigin></script>
+    <!-- Ultra-stable, cross-origin safe React 17.0.2 Core Stack -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.development.js" crossorigin></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.development.js" crossorigin></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.12/babel.min.js" crossorigin></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.469.0/umd/lucide.min.js"></script>
-    
-    <script>
-      // Safe config integration for the script layer
-      window.tailwind = window.tailwind || { config: {} };
-    </script>
     
     <style>
       .no-scrollbar::-webkit-scrollbar { display: none; }
       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-      
-      /* Explicit font fallbacks to preserve typography without v4 dependency */
       body { font-family: 'Montserrat', sans-serif; }
       .font-serif { font-family: 'Playfair Display', serif; }
     </style>
@@ -169,7 +161,20 @@
         }
       ];
 
-      // 2. CHILD LAYOUT INTERFACES
+      // 2. INLINE PURE SVG ICONS FOR BALANCED LOAD SECURITY
+      const Icons = {
+        Menu: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>,
+        X: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>,
+        ShoppingBag: () => <svg className="w-4 h-4 inline-block" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>,
+        ShoppingCart: () => <svg className="w-4 h-4 inline-block" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>,
+        MessageSquare: () => <svg className="w-4 h-4 inline-block" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>,
+        Trash2: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-16v1M4 7h16"></path></svg>,
+        ArrowRight: () => <svg className="w-3.5 h-3.5 inline-block" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>,
+        ExternalLink: () => <svg className="w-3.5 h-3.5 inline-block" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>,
+        PackageOpen: () => <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" strokeWidth="1" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+      };
+
+      // 3. MAIN COMPONENT VIEWS
       function HeroSection({ onShopNowClick }) {
         const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -190,13 +195,13 @@
             </div>
             <div className="relative z-10 text-center max-w-4xl px-6 flex flex-col items-center">
               <span className="text-[10px] uppercase tracking-widest text-yellow-500 font-bold mb-3 block">Premium Artistry</span>
-              <h1 className="font-serif text-4xl sm:text-5xl uppercase mb-4 text-white font-bold leading-tight whitespace-pre-line" style={{ tracking: '0.15em' }}>
+              <h1 className="font-serif text-4xl sm:text-5xl uppercase mb-4 text-white font-bold leading-tight whitespace-pre-line" style={{ letterSpacing: '0.15em' }}>
                 {slide.title}
               </h1>
               <p className="text-xs sm:text-sm text-neutral-200 max-w-xl tracking-wide mb-8">
                 {slide.subtitle}
               </p>
-              <button onClick={onShopNowClick} className="bg-white text-black text-[10px] font-bold py-4 px-10 hover:bg-neutral-100 transition-all uppercase shadow-md" style={{ tracking: '0.3em' }}>
+              <button onClick={onShopNowClick} className="bg-white text-black text-[10px] font-bold py-4 px-10 hover:bg-neutral-100 transition-all uppercase shadow-md" style={{ letterSpacing: '0.3em' }}>
                 Shop The Lineup {"→"}
               </button>
             </div>
@@ -204,7 +209,7 @@
         );
       }
 
-      function Shop({ onSelectProduct, searchQuery, onClearSearch }) {
+      function Shop({ onSelectProduct, searchQuery }) {
         const [activeCategory, setActiveCategory] = useState("All");
 
         const filtered = PRODUCTS.filter((p) => {
@@ -216,13 +221,13 @@
         return (
           <section className="py-12 px-6 max-w-7xl mx-auto">
             <div className="text-center mb-10">
-              <span className="text-xs uppercase font-bold text-[#806B5F]" style={{ tracking: '0.3em' }}>EXPLORE</span>
-              <h2 className="text-2xl font-bold uppercase mt-1 text-black" style={{ tracking: '0.1em' }}>OUR LINEUP</h2>
+              <span className="text-xs uppercase font-bold text-[#806B5F]" style={{ letterSpacing: '0.3em' }}>EXPLORE</span>
+              <h2 className="text-2xl font-bold uppercase mt-1 text-black" style={{ letterSpacing: '0.1em' }}>OUR LINEUP</h2>
             </div>
 
             <div className="flex justify-center space-x-2 mb-8 overflow-x-auto no-scrollbar py-2">
               {["All", "Face", "Eyes", "Artistry"].map((cat) => (
-                <button key={cat} onClick={() => setActiveCategory(cat)} className={`px-5 py-2 text-[10px] font-bold uppercase transition-all ${activeCategory === cat ? "bg-black text-white" : "bg-white text-neutral-500 border border-neutral-200"}`} style={{ tracking: '0.1em' }}>
+                <button key={cat} onClick={() => setActiveCategory(cat)} className={`px-5 py-2 text-[10px] font-bold uppercase transition-all ${activeCategory === cat ? "bg-black text-white" : "bg-white text-neutral-500 border border-neutral-200"}`} style={{ letterSpacing: '0.1em' }}>
                   {cat}
                 </button>
               ))}
@@ -236,8 +241,8 @@
                   </div>
                   <div className="p-4 flex flex-col flex-grow justify-between border-t border-neutral-50">
                     <div>
-                      <span className="text-[9px] uppercase font-bold text-[#806B5F]" style={{ tracking: '0.1em' }}>{prod.category}</span>
-                      <h3 className="text-xs sm:text-sm text-black font-semibold uppercase mt-0.5 truncate" style={{ tracking: '0.05em' }}>{prod.name}</h3>
+                      <span className="text-[9px] uppercase font-bold text-[#806B5F]" style={{ letterSpacing: '0.1em' }}>{prod.category}</span>
+                      <h3 className="text-xs sm:text-sm text-black font-semibold uppercase mt-0.5 truncate" style={{ letterSpacing: '0.05em' }}>{prod.name}</h3>
                     </div>
                     <div className="flex items-center justify-between mt-3 pt-2">
                       <span className="text-xs sm:text-sm font-bold text-[#806B5F]">₦{prod.price.toLocaleString()}</span>
@@ -255,8 +260,8 @@
         return (
           <section className="py-16 bg-white border-t border-b border-neutral-100">
             <div className="max-w-7xl mx-auto px-6 text-center">
-              <span className="text-xs uppercase text-[#806B5F] font-bold block mb-1" style={{ tracking: '0.3em' }}>Join The Glamour</span>
-              <h2 className="text-xl sm:text-2xl font-serif uppercase text-black font-bold mb-2" style={{ tracking: '0.1em' }}>Connect On Instagram</h2>
+              <span className="text-xs uppercase text-[#806B5F] font-bold block mb-1" style={{ letterSpacing: '0.3em' }}>Join The Glamour</span>
+              <h2 className="text-xl sm:text-2xl font-serif uppercase text-black font-bold mb-2" style={{ letterSpacing: '0.1em' }}>Connect On Instagram</h2>
               <a 
                 href="https://www.instagram.com/jaydrizcosmetics?igsh=eXJheHh0dGJmYnhr" 
                 target="_blank" 
@@ -264,7 +269,7 @@
                 className="text-xs tracking-wider text-neutral-500 hover:text-black font-semibold uppercase inline-flex items-center space-x-1.5 transition-colors"
               >
                 <span>@jaydrizcosmetics</span>
-                <i data-lucide="external-link" className="w-3.5 h-3.5"></i>
+                <Icons.ExternalLink />
               </a>
             </div>
           </section>
@@ -334,25 +339,25 @@
 
         return (
           <section className="py-8 px-6 max-w-5xl mx-auto bg-white border border-neutral-200 my-6 rounded-sm">
-            <button onClick={onBack} className="text-[10px] font-bold uppercase text-neutral-400 hover:text-black mb-6 block" style={{ tracking: '0.2em' }}>{"←"} Back to Shop</button>
+            <button onClick={onBack} className="text-[10px] font-bold uppercase text-neutral-400 hover:text-black mb-6 block" style={{ letterSpacing: '0.2em' }}>{"←"} Back to Shop</button>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
               <div className="aspect-[4/5] bg-neutral-50 border border-neutral-100 rounded-sm overflow-hidden">
                 <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
               </div>
               <div className="flex flex-col space-y-6">
                 <div>
-                  <span className="text-[10px] uppercase font-bold text-[#806B5F]" style={{ tracking: '0.2em' }}>{product.category}</span>
-                  <h1 className="text-2xl font-bold uppercase text-black mt-1 mb-2" style={{ tracking: '0.1em' }}>{product.name}</h1>
+                  <span className="text-[10px] uppercase font-bold text-[#806B5F]" style={{ letterSpacing: '0.2em' }}>{product.category}</span>
+                  <h1 className="text-2xl font-bold uppercase text-black mt-1 mb-2" style={{ letterSpacing: '0.1em' }}>{product.name}</h1>
                   <span className="text-xl font-bold text-[#806B5F]">₦{product.price.toLocaleString()}</span>
                 </div>
                 <div className="border-t border-neutral-100 pt-4">
-                  <h3 className="text-[10px] uppercase font-bold text-neutral-400 mb-2" style={{ tracking: '0.2em' }}>Description</h3>
+                  <h3 className="text-[10px] uppercase font-bold text-neutral-400 mb-2" style={{ letterSpacing: '0.2em' }}>Description</h3>
                   <p className="text-xs text-neutral-600 leading-relaxed">{product.description}</p>
                 </div>
 
                 {product.shades && (
                   <div className="space-y-4">
-                    <h3 className="text-[10px] uppercase font-bold text-neutral-400" style={{ tracking: '0.2em' }}>
+                    <h3 className="text-[10px] uppercase font-bold text-neutral-400" style={{ letterSpacing: '0.2em' }}>
                       Select Shades <span className="text-neutral-500 normal-case">(Tap multiple to select)</span>
                     </h3>
                     <div className="flex flex-wrap gap-2">
@@ -378,7 +383,7 @@
 
                     {Object.keys(shadeQuantities).length > 0 && (
                       <div className="border-t border-neutral-100 pt-3 mt-2 space-y-2">
-                        <h4 className="text-[9px] uppercase font-bold text-neutral-400" style={{ tracking: '0.1em' }}>Selected Quantities:</h4>
+                        <h4 className="text-[9px] uppercase font-bold text-neutral-400" style={{ letterSpacing: '0.1em' }}>Selected Quantities:</h4>
                         {Object.entries(shadeQuantities).map(([shade, qty]) => (
                           <div key={shade} className="flex items-center justify-between bg-neutral-50 p-2 rounded-sm border border-neutral-100">
                             <div className="flex items-center space-x-2">
@@ -399,7 +404,7 @@
 
                 {!product.shades && (
                   <div className="space-y-2">
-                    <h3 className="text-[10px] uppercase font-bold text-neutral-400" style={{ tracking: '0.2em' }}>Quantity</h3>
+                    <h3 className="text-[10px] uppercase font-bold text-neutral-400" style={{ letterSpacing: '0.2em' }}>Quantity</h3>
                     <div className="flex items-center w-28 border border-neutral-300 bg-white">
                       <button onClick={() => baseQuantity > 1 && setBaseQuantity(baseQuantity - 1)} className="px-3 py-1 font-bold text-neutral-500 hover:text-black">-</button>
                       <span className="flex-1 text-center text-xs font-bold text-black">{baseQuantity}</span>
@@ -409,13 +414,13 @@
                 )}
 
                 <div className="space-y-2 border-t border-neutral-100 pt-4">
-                  <button onClick={executeAddToCart} className="w-full bg-black text-white text-[10px] font-bold uppercase py-4 hover:bg-neutral-800 transition-colors shadow-md flex items-center justify-center space-x-2" style={{ tracking: '0.2em' }}>
-                    <i data-lucide="shopping-bag" className="w-3.5 h-3.5"></i>
+                  <button onClick={executeAddToCart} className="w-full bg-black text-white text-[10px] font-bold uppercase py-4 hover:bg-neutral-800 transition-colors shadow-md flex items-center justify-center space-x-2" style={{ letterSpacing: '0.2em' }}>
+                    <Icons.ShoppingBag />
                     <span>Add To Shopping Cart • ₦{totalProductPrice.toLocaleString()}</span>
                   </button>
                   
-                  <button onClick={executeDirectWhatsApp} className="w-full bg-green-500 text-white text-[10px] font-bold uppercase py-4 hover:bg-green-600 transition-colors flex items-center justify-center space-x-2 shadow-sm" style={{ tracking: '0.2em' }}>
-                    <i data-lucide="message-square" className="w-3.5 h-3.5"></i>
+                  <button onClick={executeDirectWhatsApp} className="w-full bg-green-500 text-white text-[10px] font-bold uppercase py-4 hover:bg-green-600 transition-colors flex items-center justify-center space-x-2 shadow-sm" style={{ letterSpacing: '0.2em' }}>
+                    <Icons.MessageSquare />
                     <span>Order via WhatsApp Now</span>
                   </button>
                 </div>
@@ -427,15 +432,15 @@
 
       function AboutPage() {
         return (
-          <section className="animate-fade-in">
+          <section>
             <div className="relative h-[45vh] sm:h-[55vh] flex items-center justify-center overflow-hidden bg-black text-white">
               <div className="absolute inset-0 z-0 opacity-60">
                 <img src="https://res.cloudinary.com/dehvk3bre/image/upload/v1780415231/20260331_085939_0000_npvhz9.png" className="w-full h-full object-cover object-center" alt="Jaydriz Story Backdrop" />
                 <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-[#FAF7F5]"></div>
               </div>
               <div className="relative z-10 text-center max-w-3xl px-6">
-                <span className="text-[10px] uppercase text-yellow-500 font-bold mb-3 block" style={{ tracking: '0.4em' }}>The Legacy</span>
-                <h1 className="font-serif text-3xl sm:text-5xl font-extrabold uppercase mb-4" style={{ tracking: '0.2em' }}>Our Story</h1>
+                <span className="text-[10px] uppercase text-yellow-500 font-bold mb-3 block" style={{ letterSpacing: '0.4em' }}>The Legacy</span>
+                <h1 className="font-serif text-3xl sm:text-5xl font-extrabold uppercase mb-4" style={{ letterSpacing: '0.2em' }}>Our Story</h1>
                 <div className="w-12 h-[1px] bg-white/50 mx-auto"></div>
               </div>
             </div>
@@ -443,7 +448,7 @@
             <div className="max-w-5xl mx-auto px-6 py-16 space-y-20 text-left">
               <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center">
                 <div className="md:col-span-7 space-y-4">
-                  <span className="text-[10px] uppercase text-[#806B5F] font-bold block" style={{ tracking: '0.25em' }}>About The Brand</span>
+                  <span className="text-[10px] uppercase text-[#806B5F] font-bold block" style={{ letterSpacing: '0.25em' }}>About The Brand</span>
                   <h2 className="font-serif text-2xl sm:text-3xl text-black font-bold tracking-wide">Jaydriz Cosmetics: Where Luxury Meets Affordability</h2>
                   <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed font-light">
                     Jaydriz Cosmetics is a trailblazing beauty brand designed for the modern makeup enthusiast who refuses to compromise on quality or cost. Merging high-performance formulas with trend-driven innovation, the brand delivers an inclusive, pro-level beauty experience that empowers self-expression for every skin tone and type.
@@ -456,7 +461,7 @@
 
               <div className="bg-white border border-neutral-200 p-8 sm:p-12 rounded-sm grid grid-cols-1 lg:grid-cols-12 gap-8 items-center shadow-sm">
                 <div className="lg:col-span-12 space-y-4">
-                  <span className="text-[10px] uppercase text-[#806B5F] font-bold block text-center lg:text-left" style={{ tracking: '0.25em' }}>Our Mission Statement</span>
+                  <span className="text-[10px] uppercase text-[#806B5F] font-bold block text-center lg:text-left" style={{ letterSpacing: '0.25em' }}>Our Mission Statement</span>
                   <h2 className="font-serif text-2xl text-black font-bold tracking-wide text-center lg:text-left">The Core Philosophy</h2>
                   <p className="text-xs sm:text-sm text-neutral-700 leading-relaxed font-light">
                     At the heart of Jaydriz Cosmetics is a disruptive promise: <strong className="text-black font-bold">luxury meets affordability.</strong>
@@ -469,7 +474,7 @@
 
               <div className="space-y-8">
                 <div className="text-center md:text-left">
-                  <span className="text-[10px] uppercase text-[#806B5F] font-bold block" style={{ tracking: '0.25em' }}>Curated Creations</span>
+                  <span className="text-[10px] uppercase text-[#806B5F] font-bold block" style={{ letterSpacing: '0.25em' }}>Curated Creations</span>
                   <h2 className="font-serif text-2xl sm:text-3xl text-black font-bold tracking-wide mt-1">Product Portfolio Highlights</h2>
                 </div>
                 
@@ -477,7 +482,7 @@
                   <div className="bg-white border border-neutral-100 p-6 flex flex-col justify-between space-y-4 rounded-sm shadow-sm">
                     <div className="space-y-2">
                       <div className="w-6 h-6 rounded-full bg-[#FAF7F5] flex items-center justify-center text-[10px] font-bold font-serif text-[#806B5F]">1</div>
-                      <h4 className="text-xs font-bold uppercase text-black" style={{ tracking: '0.1em' }}>Complexion Perfection</h4>
+                      <h4 className="text-xs font-bold uppercase text-black" style={{ letterSpacing: '0.1em' }}>Complexion Perfection</h4>
                       <p className="text-xs text-neutral-500 leading-relaxed font-light">
                         From breathable, second-skin foundations available in an expansive, meticulously calibrated shade range to blurring, ultra-refined setting powders that eliminate flashback, the complexion line is engineered for a camera-ready, real-life finish.
                       </p>
@@ -487,7 +492,7 @@
                   <div className="bg-white border border-neutral-100 p-6 flex flex-col justify-between space-y-4 rounded-sm shadow-sm">
                     <div className="space-y-2">
                       <div className="w-6 h-6 rounded-full bg-[#FAF7F5] flex items-center justify-center text-[10px] font-bold font-serif text-[#806B5F]">2</div>
-                      <h4 className="text-xs font-bold uppercase text-black" style={{ tracking: '0.1em' }}>Trend-Driven Innovation</h4>
+                      <h4 className="text-xs font-bold uppercase text-black" style={{ letterSpacing: '0.1em' }}>Trend-Driven Innovation</h4>
                       <p className="text-xs text-neutral-500 leading-relaxed font-light">
                         Constantly pivoting with the pulse of global beauty trends, Jaydriz Cosmetics offers everything from viral, high-octane liquid highlighters to butter-soft eyeshadow palettes that deliver maximum payoff with minimal effort.
                       </p>
@@ -497,7 +502,7 @@
                   <div className="bg-white border border-neutral-100 p-6 flex flex-col justify-between space-y-4 rounded-sm shadow-sm">
                     <div className="space-y-2">
                       <div className="w-6 h-6 rounded-full bg-[#FAF7F5] flex items-center justify-center text-[10px] font-bold font-serif text-[#806B5F]">3</div>
-                      <h4 className="text-xs font-bold uppercase text-black" style={{ tracking: '0.1em' }}>Inclusivity & Empowerment</h4>
+                      <h4 className="text-xs font-bold uppercase text-black" style={{ letterSpacing: '0.1em' }}>Inclusivity & Empowerment</h4>
                       <p className="text-xs text-neutral-500 leading-relaxed font-light">
                         Every product is crafted with diverse undertones in mind, ensuring that beauty is never exclusive, but a universal tool for confidence and self-celebration.
                       </p>
@@ -511,7 +516,7 @@
                   <img src="https://res.cloudinary.com/dehvk3bre/image/upload/v1780415231/20260331_085939_0000_npvhz9.png" className="w-full h-full object-cover" alt="Manifesto Base" />
                 </div>
                 <div className="relative z-10 max-w-2xl mx-auto space-y-4">
-                  <span className="text-[9px] uppercase text-yellow-500 font-extrabold block" style={{ tracking: '0.4em' }}>The Jaydriz Manifesto</span>
+                  <span className="text-[9px] uppercase text-yellow-500 font-extrabold block" style={{ letterSpacing: '0.4em' }}>The Jaydriz Manifesto</span>
                   <p className="font-serif italic text-sm sm:text-lg text-neutral-100 leading-relaxed font-light">
                     "We believe that luxury shouldn't be a luxury. True beauty is inclusive, empowering, and accessible to all. With Jaydriz Cosmetics, you don't just wear makeup—you command your canvas without compromise."
                   </p>
@@ -531,17 +536,17 @@
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch text-left">
               <div className="lg:col-span-5 bg-white p-8 border border-neutral-200 rounded-sm shadow-sm flex flex-col justify-between">
                 <div>
-                  <h3 className="text-xs uppercase font-bold text-[#806B5F] mb-2" style={{ tracking: '0.2em' }}>Main Headquarters</h3>
+                  <h3 className="text-xs uppercase font-bold text-[#806B5F] mb-2" style={{ letterSpacing: '0.2em' }}>Main Headquarters</h3>
                   <p className="text-xs text-neutral-800 leading-relaxed mb-6">
                     Shop B012, Rivers Plaza II,<br />
                     Lagos Trade Fair Plaza,<br />
                     Off Lagos - Badagry Expressway,<br />
                     Lagos, Nigeria.
                   </p>
-                  <h3 className="text-xs uppercase font-bold text-[#806B5F] mb-1" style={{ tracking: '0.2em' }}>Direct Support</h3>
+                  <h3 className="text-xs uppercase font-bold text-[#806B5F] mb-1" style={{ letterSpacing: '0.2em' }}>Direct Support</h3>
                   <p className="text-xs text-neutral-800 mb-6">WhatsApp: <span className="font-bold text-black">+234 803 539 9521</span></p>
                 </div>
-                <a href="https://wa.me/2348035399521" target="_blank" className="block text-center w-full bg-black text-white font-bold text-[10px] py-3.5 uppercase hover:bg-neutral-800 transition-colors" style={{ tracking: '0.2em' }}>Chat Directly</a>
+                <a href="https://wa.me/2348035399521" target="_blank" className="block text-center w-full bg-black text-white font-bold text-[10px] py-3.5 uppercase hover:bg-neutral-800 transition-colors" style={{ letterSpacing: '0.2em' }}>Chat Directly</a>
               </div>
 
               <div className="lg:col-span-7 bg-white p-2 border border-neutral-200 rounded-sm shadow-sm min-h-[350px] relative overflow-hidden">
@@ -570,14 +575,9 @@
         useEffect(() => {
           const timer = setTimeout(() => {
             setLoading(false);
-            setTimeout(() => { if (window.lucide) window.lucide.createIcons(); }, 50);
-          }, 800);
+          }, 6000);
           return () => clearTimeout(timer);
         }, []);
-
-        useEffect(() => {
-          if (window.lucide) window.lucide.createIcons();
-        }, [currentPage, selectedProduct, isCartOpen, isMenuOpen, cart]);
 
         const handleAddToCart = (product, qty, shade) => {
           setCart((prev) => {
@@ -639,8 +639,9 @@
         if (loading) {
           return (
             <div className="fixed inset-0 bg-white z-[9999] flex flex-col items-center justify-center">
-              <img src="https://res.cloudinary.com/dehvk3bre/image/upload/v1780414377/20260409_010010_u4nssj.png" className="w-24 h-24 object-contain mb-4 animate-pulse" alt="Logo" />
-              <p className="text-[9px] text-neutral-600 font-bold uppercase" style={{ tracking: '0.4em' }}>Luxury Artistry Loading...</p>
+              <img src="https://res.cloudinary.com/dehvk3bre/image/upload/v1780414377/20260409_010010_u4nssj.png" className="w-24 h-24 object-contain mb-4" alt="Logo" />
+              <p className="text-[9px] text-neutral-600 font-bold uppercase" style={{ letterSpacing: '0.4em' }}>Luxury Artistry Loading...</p>
+              <button onClick={() => setLoading(false)} className="mt-6 text-[10px] border border-neutral-300 px-4 py-1.5 uppercase font-bold text-neutral-500 hover:text-black">Skip Intro</button>
             </div>
           );
         }
@@ -651,16 +652,16 @@
               <header className="sticky top-0 bg-[#FAF7F5] bg-opacity-90 border-b border-neutral-200 z-40 px-6 py-4 flex justify-between items-center" style={{ backdropFilter: 'blur(8px)' }}>
                 <div className="flex items-center space-x-2">
                   <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-1 rounded-sm text-black hover:bg-neutral-200">
-                    <i data-lucide="menu" className="w-5 h-5"></i>
+                    <Icons.Menu />
                   </button>
-                  <span onClick={() => navigateTo("home")} className="font-serif text-lg font-extrabold cursor-pointer ml-1 text-black" style={{ tracking: '0.2em' }}>JAYDRIZ</span>
+                  <span onClick={() => navigateTo("home")} className="font-serif text-lg font-extrabold cursor-pointer ml-1 text-black" style={{ letterSpacing: '0.2em' }}>JAYDRIZ</span>
                 </div>
 
                 <div className="flex items-center space-x-4">
                   <input type="text" placeholder="Search product..." value={searchQuery} onChange={(e) => { setSearchQuery(e.target.value); if(currentPage !== 'home') setCurrentPage('home'); }} className="border border-neutral-300 text-black rounded-sm text-xs px-3 py-1.5 bg-white focus:outline-none max-w-[120px] sm:max-w-[160px]" />
                   
                   <button onClick={() => setIsCartOpen(true)} className="relative p-1 text-black flex items-center">
-                    <i data-lucide="shopping-bag" className="w-5 h-5"></i>
+                    <Icons.ShoppingCart />
                     {totalItemsCount > 0 && (
                       <span className="absolute -top-1 -right-1 bg-black text-white font-bold text-[8px] w-4 h-4 rounded-full flex items-center justify-center shadow-sm">
                         {totalItemsCount}
@@ -675,17 +676,17 @@
                   <div className="w-64 bg-[#FAF7F5] h-full p-6 flex flex-col justify-between shadow-2xl text-black" onClick={(e) => e.stopPropagation()}>
                     <div>
                       <div className="flex justify-between items-center mb-8 pb-4 border-b border-neutral-200">
-                        <span className="font-serif font-bold" style={{ tracking: '0.2em' }}>NAVIGATION</span>
-                        <button onClick={() => setIsMenuOpen(false)}><i data-lucide="x" className="w-5 h-5"></i></button>
+                        <span className="font-serif font-bold" style={{ letterSpacing: '0.2em' }}>NAVIGATION</span>
+                        <button onClick={() => setIsMenuOpen(false)}><Icons.X /></button>
                       </div>
                       <div className="flex flex-col space-y-4">
-                        <button onClick={() => navigateTo("home")} className={`text-left text-xs uppercase font-bold py-2 ${currentPage === "home" && !selectedProduct ? "text-[#806B5F]" : "text-black"}`} style={{ tracking: '0.1em' }}>Home</button>
-                        <button onClick={() => navigateTo("home")} className="text-left text-xs uppercase font-bold py-2 text-neutral-400 pl-4 border-l border-neutral-200" style={{ tracking: '0.1em' }}>— Shop Lineup</button>
-                        <button onClick={() => navigateTo("about")} className={`text-left text-xs uppercase font-bold py-2 ${currentPage === "about" ? "text-[#806B5F]" : "text-black"}`} style={{ tracking: '0.1em' }}>Our Story</button>
-                        <button onClick={() => navigateTo("contact")} className={`text-left text-xs uppercase font-bold py-2 ${currentPage === "contact" ? "text-[#806B5F]" : "text-black"}`} style={{ tracking: '0.1em' }}>Find Our Store</button>
+                        <button onClick={() => navigateTo("home")} className={`text-left text-xs uppercase font-bold py-2 ${currentPage === "home" && !selectedProduct ? "text-[#806B5F]" : "text-black"}`} style={{ letterSpacing: '0.1em' }}>Home</button>
+                        <button onClick={() => navigateTo("home")} className="text-left text-xs uppercase font-bold py-2 text-neutral-400 pl-4 border-l border-neutral-200" style={{ letterSpacing: '0.1em' }}>— Shop Lineup</button>
+                        <button onClick={() => navigateTo("about")} className={`text-left text-xs uppercase font-bold py-2 ${currentPage === "about" ? "text-[#806B5F]" : "text-black"}`} style={{ letterSpacing: '0.1em' }}>Our Story</button>
+                        <button onClick={() => navigateTo("contact")} className={`text-left text-xs uppercase font-bold py-2 ${currentPage === "contact" ? "text-[#806B5F]" : "text-black"}`} style={{ letterSpacing: '0.1em' }}>Find Our Store</button>
                       </div>
                     </div>
-                    <div className="text-[9px] text-neutral-400 uppercase" style={{ tracking: '0.2em' }}>JAYDRIZ APP V2.0</div>
+                    <div className="text-[9px] text-neutral-400 uppercase" style={{ letterSpacing: '0.2em' }}>JAYDRIZ APP V2.1</div>
                   </div>
                 </div>
               )}
@@ -696,17 +697,16 @@
                     <div>
                       <div className="flex justify-between items-center mb-6 pb-4 border-b border-neutral-200">
                         <div className="flex items-center space-x-2">
-                          <i data-lucide="shopping-cart" className="w-4 h-4 text-[#806B5F]"></i>
-                          <span className="font-bold text-xs uppercase" style={{ tracking: '0.1em' }}>Your Shopping Cart ({totalItemsCount})</span>
+                          <span className="font-bold text-xs uppercase" style={{ letterSpacing: '0.1em' }}>Your Shopping Cart ({totalItemsCount})</span>
                         </div>
-                        <button onClick={() => setIsCartOpen(false)}><i data-lucide="x" className="w-5 h-5"></i></button>
+                        <button onClick={() => setIsCartOpen(false)}><Icons.X /></button>
                       </div>
 
                       {cart.length === 0 ? (
                         <div className="text-center py-20 text-neutral-400 space-y-4">
-                          <i data-lucide="package-open" className="w-12 h-12 mx-auto stroke-1"></i>
-                          <p className="text-xs uppercase font-semibold" style={{ tracking: '0.1em' }}>Your cart is empty</p>
-                          <button onClick={() => { setIsCartOpen(false); navigateTo("home"); }} className="text-[10px] uppercase bg-black text-white px-4 py-2 font-bold" style={{ tracking: '0.2em' }}>Shop Now</button>
+                          <Icons.PackageOpen />
+                          <p className="text-xs uppercase font-semibold" style={{ letterSpacing: '0.1em' }}>Your cart is empty</p>
+                          <button onClick={() => { setIsCartOpen(false); navigateTo("home"); }} className="text-[10px] uppercase bg-black text-white px-4 py-2 font-bold" style={{ letterSpacing: '0.2em' }}>Shop Now</button>
                         </div>
                       ) : (
                         <div className="space-y-4 overflow-y-auto max-h-[60vh] pr-1 no-scrollbar">
@@ -721,7 +721,7 @@
                                 <span className="text-xs font-bold text-[#806B5F] block mt-1">₦{(item.product.price * item.quantity).toLocaleString()}</span>
                               </div>
                               <button onClick={() => handleRemoveFromCart(idx)} className="text-neutral-400 hover:text-red-500 p-1">
-                                <i data-lucide="trash-2" className="w-4 h-4"></i>
+                                <Icons.Trash2 />
                               </button>
                             </div>
                           ))}
@@ -732,12 +732,12 @@
                     {cart.length > 0 && (
                       <div className="border-t border-neutral-200 pt-4 space-y-4 bg-white">
                         <div className="flex justify-between items-center">
-                          <span className="text-xs font-bold uppercase text-neutral-500" style={{ tracking: '0.1em' }}>Cart Total Price:</span>
+                          <span className="text-xs font-bold uppercase text-neutral-500" style={{ letterSpacing: '0.1em' }}>Cart Total Price:</span>
                           <span className="text-lg font-black text-black">₦{totalCartPrice.toLocaleString()}</span>
                         </div>
-                        <button onClick={handleCheckout} className="w-full bg-black text-white text-[10px] font-bold uppercase py-4 hover:bg-neutral-800 flex items-center justify-center space-x-2 shadow-lg" style={{ tracking: '0.2em' }}>
+                        <button onClick={handleCheckout} className="w-full bg-black text-white text-[10px] font-bold uppercase py-4 hover:bg-neutral-800 flex items-center justify-center space-x-2 shadow-lg" style={{ letterSpacing: '0.2em' }}>
                           <span>Proceed to WhatsApp Checkout</span>
-                          <i data-lucide="arrow-right" className="w-3.5 h-3.5"></i>
+                          <Icons.ArrowRight />
                         </button>
                       </div>
                     )}
@@ -761,7 +761,7 @@
                         if (el) el.scrollIntoView({ behavior: 'smooth' });
                       }} />
                       <div id="shop-layout-target">
-                        <Shop onSelectProduct={setSelectedProduct} searchQuery={searchQuery} onClearSearch={() => setSearchQuery("")} />
+                        <Shop onSelectProduct={setSelectedProduct} searchQuery={searchQuery} />
                       </div>
                       <InstagramSection />
                     </>
@@ -772,7 +772,7 @@
               )}
             </div>
 
-            <footer className="bg-black text-white py-12 px-6 mt-16 text-center text-[10px] uppercase border-t border-neutral-900" style={{ tracking: '0.1em' }}>
+            <footer className="bg-black text-white py-12 px-6 mt-16 text-center text-[10px] uppercase border-t border-neutral-900" style={{ letterSpacing: '0.1em' }}>
               <div className="max-w-4xl mx-auto mb-4">
                 <p className="text-yellow-400 font-bold mb-2">WhatsApp Support: +234 803 539 9521</p>
                 <p className="text-neutral-400 normal-case tracking-normal">Shop B012, Rivers Plaza II, Lagos Trade Fair Plaza, Off Lagos - Badagry Expressway, Lagos, Nigeria.</p>
@@ -783,8 +783,8 @@
         );
       }
 
-      const root = ReactDOM.createRoot(document.getElementById('root'));
-      root.render(<App />);
+      // Safe initialization mount for React 17
+      ReactDOM.render(<App />, document.getElementById('root'));
     </script>
   </body>
 </html>
