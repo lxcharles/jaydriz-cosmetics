@@ -1,729 +1,596 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="theme-color" content="#FAF7F5" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JAYDRIZ COSMETICS | Luxury Artistry</title>
     
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght=0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght=0,400;0,700;1,400&display=swap" rel="stylesheet">
     
-    <!-- Stable Native CSS Framework -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
-    
-    <style>
-      .no-scrollbar::-webkit-scrollbar { display: none; }
-      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-      body { font-family: 'Montserrat', sans-serif; }
-      .font-serif { font-family: 'Playfair Display', serif; }
-      .shade-dot.active { ring: 2px solid black; transform: scale(1.05); }
-    </style>
-  </head>
-  <body class="bg-[#FAF7F5] text-black antialiased">
+    <!-- STABLE PRODUCTION CDNS (Prevents the blank page issue) -->
+    <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone@7.22.20/babel.min.js" crossorigin></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Splash Screen Intro -->
-    <div id="splash-screen" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center">
-      <img src="https://res.cloudinary.com/dehvk3bre/image/upload/v1780414377/20260409_010010_u4nssj.png" class="w-24 h-24 object-contain mb-4" alt="Logo" />
-      <p class="text-[9px] text-neutral-600 font-bold uppercase tracking-[0.4em]">Luxury Artistry Loading...</p>
-      <button onclick="closeSplash()" class="mt-6 text-[10px] border border-neutral-300 px-4 py-1.5 uppercase font-bold text-neutral-500 hover:text-black">Skip Intro</button>
-    </div>
-
-    <div class="min-h-screen bg-[#FAF7F5] flex flex-col justify-between relative overflow-x-hidden">
-      <div>
-        <!-- Top Sticky Header -->
-        <header class="sticky top-0 bg-[#FAF7F5] bg-opacity-90 border-b border-neutral-200 z-40 px-6 py-4 flex justify-between items-center" style="backdrop-filter: blur(8px);">
-          <div class="flex items-center space-x-2">
-            <button onclick="toggleMenu(true)" class="p-1 rounded-sm text-black hover:bg-neutral-200">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-            </button>
-            <span onclick="navigateTo('home')" class="font-serif text-lg font-extrabold cursor-pointer ml-1 text-black tracking-[0.2em]">JAYDRIZ</span>
-          </div>
-
-          <div class="flex items-center space-x-4">
-            <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Search product..." class="border border-neutral-300 text-black rounded-sm text-xs px-3 py-1.5 bg-white focus:outline-none max-w-[120px] sm:max-w-[160px]" />
-            
-            <button onclick="toggleCart(true)" class="relative p-1 text-black flex items-center">
-              <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-              <span id="cart-badge" class="hidden absolute -top-1 -right-1 bg-black text-white font-bold text-[8px] w-4 h-4 rounded-full flex items-center justify-center shadow-sm">0</span>
-            </button>
-          </div>
-        </header>
-
-        <!-- Sidebar Mobile Navigation -->
-        <div id="side-menu" class="hidden fixed inset-0 bg-black bg-opacity-40 z-50 transition-opacity">
-          <div class="w-64 bg-[#FAF7F5] h-full p-6 flex flex-col justify-between shadow-2xl text-black">
-            <div>
-              <div class="flex justify-between items-center mb-8 pb-4 border-b border-neutral-200">
-                <span class="font-serif font-bold tracking-[0.2em]">NAVIGATION</span>
-                <button onclick="toggleMenu(false)">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-              </div>
-              <div class="flex flex-col space-y-4">
-                <button onclick="navigateTo('home')" class="text-left text-xs uppercase font-bold py-2 text-black tracking-[0.1em]">Home</button>
-                <button onclick="navigateTo('home', true)" class="text-left text-xs uppercase font-bold py-2 text-neutral-400 pl-4 border-l border-neutral-200 tracking-[0.1em]">— Shop Lineup</button>
-                <button onclick="navigateTo('about')" class="text-left text-xs uppercase font-bold py-2 text-black tracking-[0.1em]">Our Story</button>
-                <button onclick="navigateTo('contact')" class="text-left text-xs uppercase font-bold py-2 text-black tracking-[0.1em]">Find Our Store</button>
-              </div>
-            </div>
-            <div class="text-[9px] text-neutral-400 uppercase tracking-[0.2em]">JAYDRIZ APP V3.0</div>
-          </div>
-        </div>
-
-        <!-- Sliding Shopping Cart Drawer -->
-        <div id="cart-drawer" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-end">
-          <div class="w-full max-w-md bg-white h-full p-6 flex flex-col justify-between shadow-2xl text-black">
-            <div>
-              <div class="flex justify-between items-center mb-6 pb-4 border-b border-neutral-200">
-                <span id="cart-title" class="font-bold text-xs uppercase tracking-[0.1em]">Your Shopping Cart (0)</span>
-                <button onclick="toggleCart(false)">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-              </div>
-
-              <div id="cart-items-container" class="space-y-4 overflow-y-auto max-h-[60vh] pr-1 no-scrollbar">
-                <!-- Cart items inject dynamically -->
-              </div>
-            </div>
-
-            <div id="cart-footer" class="border-t border-neutral-200 pt-4 space-y-4 bg-white hidden">
-              <div class="flex justify-between items-center">
-                <span class="text-xs font-bold uppercase text-neutral-500" style="letter-spacing: 0.1em;">Cart Total Price:</span>
-                <span id="cart-total-price" class="text-lg font-black text-black">₦0</span>
-              </div>
-              <button onclick="submitCartCheckout()" class="w-full bg-black text-white text-[10px] font-bold uppercase py-4 hover:bg-neutral-800 flex items-center justify-center space-x-2 shadow-lg" style="letter-spacing: 0.2em;">
-                <span>Proceed to WhatsApp Checkout</span>
-                <svg class="w-3.5 h-3.5 inline-block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Main Workspace Application Views -->
-        <main id="main-content">
-          <!-- Views inject dynamically here safely -->
-        </main>
-      </div>
-
-      <!-- Footer Platform Layout -->
-      <footer class="bg-black text-white py-12 px-6 mt-16 text-center text-[10px] uppercase border-t border-neutral-900" style="letter-spacing: 0.1em;">
-        <div class="max-w-4xl mx-auto mb-4">
-          <p class="text-yellow-400 font-bold mb-2">WhatsApp Support: +234 803 539 9521</p>
-          <p class="text-neutral-400 normal-case tracking-normal">Shop B012, Rivers Plaza II, Lagos Trade Fair Plaza, Off Lagos - Badagry Expressway, Lagos, Nigeria.</p>
-        </div>
-        <p class="text-neutral-500">© 2026 JAYDRIZ COSMETICS. All Luxury Rights Reserved.</p>
-      </footer>
-    </div>
-
-    <!-- NATIVE DATA & APPLICATION CONTROLLER ARCHITECTURE -->
     <script>
-      const PRODUCTS = [
-        {
-          id: "f1",
-          name: "Foundation",
-          category: "Face",
-          price: 7500,
-          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414858/Foundation_1_jefqeq.png",
-          description: "Unlock a flawless, second-skin finish with a formula designed for high-performance wear. Offers custom buildable coverage that seamlessly erases imperfections while maintaining a natural, breathable glow.",
-          shades: ["#FEE1C3", "#FEBD85", "#FFC291", "#EC9759", "#C57D57", "#B1705C", "#C07756", "#77473B", "#5F3E37", "#3E2E2E"]
-        },
-        {
-          id: "f2",
-          name: "Concealer",
-          category: "Face",
-          price: 4500,
-          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414852/Concealer_1_h7ftxw.png",
-          description: "Expertly hide what you want and highlight what you love. This creamy, high-coverage formula melts into the skin to brighten dark circles and vanish blemishes with a crease-resistant, natural finish.",
-          shades: ["#FEE1C3", "#FEBD85", "#FFC291", "#EC9759", "#C57D57", "#B1705C", "#C07756", "#77473B", "#5F3E37", "#3E2E2E"]
-        },
-        {
-          id: "f3",
-          name: "Compact Powder",
-          category: "Face",
-          price: 7500,
-          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414855/Compact_1_kbrllw.png",
-          description: "The ultimate secret to a shine-free, velvet-smooth complexion. Sets your base perfectly, blurring pores and controlling oil without looking heavy.",
-          shades: ["#FEE1C3", "#FEBD85", "#FFC291", "#EC9759", "#C57D57", "#B1705C", "#C07756", "#77473B", "#5F3E37", "#3E2E2E"]
-        },
-        {
-          id: "f4",
-          name: "Powder Palette 12-in-1",
-          category: "Face",
-          price: 14000,
-          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414858/Powder_A1_dxvgp3.png",
-          description: "The definitive professional toolkit. Featuring 12 expertly curated powder shades, this palette provides versatility for highlighting, contouring, and setting across a vast spectrum."
-        },
-        {
-          id: "f5",
-          name: "Powder Palette 9-in-1",
-          category: "Face",
-          price: 11500,
-          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414855/Powder_B_aaubvp.png",
-          description: "A sophisticated, streamlined collection of essential shades. Formulated for precision and blendability to create a sculpted finish."
-        },
-        {
-          id: "a1",
-          name: "Pigment",
-          category: "Eyes",
-          price: 2500,
-          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780422839/file_000000000d8471f5a60a806d29b341fc_pql4ml.png",
-          description: "Turn up the intensity with ultra-concentrated loose pigment. Delivers high-impact, multidimensional shimmer that commands attention."
-        },
-        {
-          id: "a2",
-          name: "Chrome Pigment",
-          category: "Eyes",
-          price: 3500,
-          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414851/Glitter_1_txkblx.png",
-          description: "Experience liquid-metal luxury. Formulated for a dynamic, futuristic mirror-like shine that shifts with every angle of light."
-        },
-        {
-          id: "a3",
-          name: "Glitters",
-          category: "Eyes",
-          price: 1500,
-          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780424057/file_0000000016b471f583376336d93de28f_jbxqol.png",
-          description: "Add a touch of pure magic to your application. Multi-reflective premium flakes providing dazzling, stellar dimension."
-        },
-        {
-          id: "a4",
-          name: "Glitters Glue",
-          category: "Eyes",
-          price: 2000,
-          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780422835/file_00000000df2c71f58ef98fa2e27dc0c4_eviumc.png",
-          description: "The lightweight, invisible bond ensuring fine particles stay exactly where you apply them. Waterproof formula without stiff residue."
-        },
-        {
-          id: "a5",
-          name: "Pigment/Glitter Primer",
-          category: "Eyes",
-          price: 4500,
-          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414854/Primer_1_inyqaw.png",
-          description: "The ideal tacky, smoothing canvas that grips makeup tightly, ensuring extreme structural longevity and shade vibrance."
-        },
-        {
-          id: "e1",
-          name: "Beauty Blender 2in1",
-          category: "Artistry",
-          price: 1500,
-          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780424058/file_0000000060e871f5bc36060818abe5dc_wryxgo.png",
-          description: "Achieve an airbrushed, custom editorial finish. High-density latex-free sponge optimized for both broad strokes and focused contours."
-        },
-        {
-          id: "e2",
-          name: "Single Blender+Puff",
-          category: "Artistry",
-          price: 2500,
-          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414854/Sponge_1_vjh19n.png",
-          description: "The perfect pro combo. The plush blender offers fluid, dewy applications, while the soft puff presses powder seamlessly."
-        },
-        {
-          id: "e3",
-          name: "Skin Prep Brush",
-          category: "Artistry",
-          price: 3000,
-          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414856/Brush_1_s8qoql.png",
-          description: "Engineered with ultra-soft synthetic bristles to feather skincare, primer, and creams into a silky pristine canvas."
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
         }
-      ];
-
-      const SHADE_NAMES = {
-        "#FEE1C3": "Blonde", "#FEBD85": "Snowy", "#FFC291": "Sunshine",
-        "#EC9759": "Clove", "#C57D57": "Spice", "#B1705C": "Amber",
-        "#C07756": "Chocolate", "#77473B": "Java", "#5F3E37": "Expresso", "#3E2E2E": "Mahogany"
-      };
-
-      // App Global State Engine
-      let state = {
-        currentPage: "home",
-        selectedProductId: null,
-        activeCategory: "All",
-        searchQuery: "",
-        cart: [],
-        currentHeroSlide: 0,
-        detailBaseQty: 1,
-        detailSelectedShades: {} // format: { shadeHex: quantity }
-      };
-
-      const HERO_SLIDES = [
-        {
-          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780415231/20260331_085939_0000_npvhz9.png",
-          title: "JAYDRIZ\nCOSMETICS",
-          subtitle: "Affordable Luxury"
-        },
-        {
-          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414851/Face_octrtg.png",
-          title: "FLAWLESS FACE",
-          subtitle: "All-day coverage, seamless foundations, and breathable powders engineered for ultimate perfection."
-        }
-      ];
-
-      // Auto Slider setup
-      setInterval(() => {
-        if (state.currentPage === 'home' && !state.selectedProductId) {
-          state.currentHeroSlide = (state.currentHeroSlide + 1) % HERO_SLIDES.length;
-          renderHero();
-        }
-      }, 6000);
-
-      function closeSplash() {
-        document.getElementById('splash-screen').style.display = 'none';
-      }
-      setTimeout(closeSplash, 2500); // Fast load transition fallback
-
-      function toggleMenu(open) {
-        const el = document.getElementById('side-menu');
-        if (open) el.classList.remove('hidden');
-        else el.classList.add('hidden');
-      }
-
-      function toggleCart(open) {
-        const el = document.getElementById('cart-drawer');
-        if (open) {
-          renderCart();
-          el.classList.remove('hidden');
-        } else {
-          el.classList.add('hidden');
-        }
-      }
-
-      function handleSearch(val) {
-        state.searchQuery = val;
-        if (state.currentPage !== 'home' || state.selectedProductId) {
-          state.currentPage = 'home';
-          state.selectedProductId = null;
-        }
-        renderView();
-      }
-
-      function navigateTo(page, scrollShop = false) {
-        state.currentPage = page;
-        state.selectedProductId = null;
-        toggleMenu(false);
-        renderView();
-        window.scrollTo({ top: 0 });
-        
-        if (scrollShop) {
-          setTimeout(() => {
-            const target = document.getElementById('shop-layout-target');
-            if (target) target.scrollIntoView({ behavior: 'smooth' });
-          }, 100);
-        }
-      }
-
-      function selectProduct(id) {
-        state.selectedProductId = id;
-        state.detailBaseQty = 1;
-        state.detailSelectedShades = {};
-        renderView();
-        window.scrollTo({ top: 0 });
-      }
-
-      // DOM RENDERING ENGINE
-      function renderView() {
-        const container = document.getElementById('main-content');
-        
-        if (state.selectedProductId) {
-          container.innerHTML = getProductDetailHTML();
-          return;
-        }
-
-        switch(state.currentPage) {
-          case "home":
-            container.innerHTML = `
-              <div id="hero-mount"></div>
-              <div id="shop-layout-target"></div>
-              <div id="instagram-mount"></div>
-            `;
-            renderHero();
-            renderShop();
-            renderInstagram();
-            break;
-          case "about":
-            container.innerHTML = getAboutPageHTML();
-            break;
-          case "contact":
-            container.innerHTML = getContactPageHTML();
-            break;
-        }
-      }
-
-      function renderHero() {
-        const mount = document.getElementById('hero-mount');
-        if (!mount) return;
-        const slide = HERO_SLIDES[state.currentHeroSlide];
-        mount.innerHTML = `
-          <section class="relative h-[70vh] flex items-center justify-center overflow-hidden bg-black text-white">
-            <div class="absolute inset-0 z-0 opacity-70">
-              <img src="${slide.image}" class="w-full h-full object-cover object-center" alt="Hero" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/20"></div>
-            </div>
-            <div class="relative z-10 text-center max-w-4xl px-6 flex flex-col items-center">
-              <span class="text-[10px] uppercase tracking-widest text-yellow-500 font-bold mb-3 block">Premium Artistry</span>
-              <h1 class="font-serif text-4xl sm:text-5xl uppercase mb-4 text-white font-bold leading-tight tracking-[0.15em] whitespace-pre-line">${slide.title}</h1>
-              <p class="text-xs sm:text-sm text-neutral-200 max-w-xl tracking-wide mb-8">${slide.subtitle}</p>
-              <button onclick="document.getElementById('shop-layout-target').scrollIntoView({ behavior: 'smooth' })" class="bg-white text-black text-[10px] font-bold py-4 px-10 hover:bg-neutral-100 transition-all uppercase shadow-md tracking-[0.3em]">
-                Shop The Lineup →
-              </button>
-            </div>
-          </section>
-        `;
-      }
-
-      function renderShop() {
-        const mount = document.getElementById('shop-layout-target');
-        if (!mount) return;
-
-        const filtered = PRODUCTS.filter(p => {
-          const matchesCat = state.activeCategory === "All" || p.category === state.activeCategory;
-          const matchesSearch = !state.searchQuery || p.name.toLowerCase().includes(state.searchQuery.toLowerCase());
-          return matchesCat && matchesSearch;
-        });
-
-        const categories = ["All", "Face", "Eyes", "Artistry"];
-        let catButtons = categories.map(cat => `
-          <button onclick="state.activeCategory='${cat}'; renderShop();" class="px-5 py-2 text-[10px] font-bold uppercase transition-all ${state.activeCategory === cat ? 'bg-black text-white' : 'bg-white text-neutral-500 border border-neutral-200'}" style="letter-spacing: 0.1em;">
-            ${cat}
-          </button>
-        `).join('');
-
-        let productGrid = filtered.map(prod => `
-          <div onclick="selectProduct('${prod.id}')" class="group cursor-pointer bg-white overflow-hidden flex flex-col justify-between border border-neutral-100 rounded-sm shadow-sm hover:shadow-md transition-all">
-            <div class="relative aspect-[4/5] bg-neutral-50 overflow-hidden">
-              <img src="${prod.image}" alt="${prod.name}" class="w-full h-full object-cover object-center transition-transform duration-500 transform group-hover:scale-105" />
-            </div>
-            <div class="p-4 flex flex-col flex-grow justify-between border-t border-neutral-50">
-              <div>
-                <span class="text-[9px] uppercase font-bold text-[#806B5F] tracking-[0.1em]">${prod.category}</span>
-                <h3 class="text-xs sm:text-sm text-black font-semibold uppercase mt-0.5 truncate" style="letter-spacing: 0.05em;">${prod.name}</h3>
-              </div>
-              <div class="flex items-center justify-between mt-3 pt-2">
-                <span class="text-xs sm:text-sm font-bold text-[#806B5F]">₦${prod.price.toLocaleString()}</span>
-                <span class="text-[9px] text-neutral-400 bg-neutral-50 border px-2 py-0.5 uppercase tracking-wider">View</span>
-              </div>
-            </div>
-          </div>
-        `).join('');
-
-        mount.innerHTML = `
-          <section class="py-12 px-6 max-w-7xl mx-auto">
-            <div class="text-center mb-10">
-              <span class="text-xs uppercase font-bold text-[#806B5F] tracking-[0.3em]">EXPLORE</span>
-              <h2 class="text-2xl font-bold uppercase mt-1 text-black" style="letter-spacing: 0.1em;">OUR LINEUP</h2>
-            </div>
-            <div class="flex justify-center space-x-2 mb-8 overflow-x-auto no-scrollbar py-2">${catButtons}</div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">${productGrid}</div>
-          </section>
-        `;
-      }
-
-      function renderInstagram() {
-        const mount = document.getElementById('instagram-mount');
-        if (!mount) return;
-        mount.innerHTML = `
-          <section class="py-16 bg-white border-t border-b border-neutral-100">
-            <div class="max-w-7xl mx-auto px-6 text-center">
-              <span class="text-xs uppercase text-[#806B5F] font-bold block mb-1" style="letter-spacing: 0.3em;">Join The Glamour</span>
-              <h2 class="text-xl sm:text-2xl font-serif uppercase text-black font-bold mb-2" style="letter-spacing: 0.1em;">Connect On Instagram</h2>
-              <a href="https://www.instagram.com/jaydrizcosmetics?igsh=eXJheHh0dGJmYnhr" target="_blank" rel="noopener noreferrer" class="text-xs tracking-wider text-neutral-500 hover:text-black font-semibold uppercase inline-flex items-center space-x-1.5 transition-colors">
-                <span>@jaydrizcosmetics</span>
-                <svg class="w-3.5 h-3.5 inline-block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-              </a>
-            </div>
-          </section>
-        `;
-      }
-
-      function getProductDetailHTML() {
-        const product = PRODUCTS.find(p => p.id === state.selectedProductId);
-        if (!product) return '';
-
-        let totalCount = product.shades 
-          ? Object.values(state.detailSelectedShades).reduce((a, b) => a + b, 0)
-          : state.detailBaseQty;
-        let totalPrice = product.price * totalCount;
-
-        let shadesContent = '';
-        if (product.shades) {
-          let circles = product.shades.map(s => {
-            const hasQty = !!state.detailSelectedShades[s];
-            return `
-              <button onclick="handleDetailShadeToggle('${s}')" class="w-8 h-8 rounded-full border relative transition-all border-neutral-300 opacity-80 hover:opacity-100" style="background-color: ${s}; ${hasQty ? 'ring-2 ring-black transform scale-105 opacity-100' : ''}" title="${SHADE_NAMES[s]}">
-                ${hasQty ? '<span class="absolute inset-0 flex items-center justify-center bg-black/20 text-white font-bold text-[10px] rounded-full">✓</span>' : ''}
-              </button>
-            `;
-          }).join('');
-
-          let quantityRows = Object.entries(state.detailSelectedShades).map(([s, qty]) => `
-            <div class="flex items-center justify-between bg-neutral-50 p-2 rounded-sm border border-neutral-100">
-              <div class="flex items-center space-x-2">
-                <span class="w-3 h-3 rounded-full border border-neutral-300" style="background-color: ${s}"></span>
-                <span class="text-xs font-medium text-black">${SHADE_NAMES[s] || s}</span>
-              </div>
-              <div class="flex items-center border border-neutral-300 bg-white">
-                <button onclick="handleDetailShadeQty('${s}', -1)" class="px-2 py-0.5 font-bold text-neutral-500 hover:text-black text-xs">-</button>
-                <span class="w-8 text-center text-xs font-bold text-black">${qty}</span>
-                <button onclick="handleDetailShadeQty('${s}', 1)" class="px-2 py-0.5 font-bold text-neutral-500 hover:text-black text-xs">+</button>
-              </div>
-            </div>
-          `).join('');
-
-          shadesContent = `
-            <div class="space-y-4">
-              <h3 class="text-[10px] uppercase font-bold text-neutral-400 tracking-[0.2em]">Select Shades <span class="text-neutral-500 normal-case">(Tap multiple to select)</span></h3>
-              <div class="flex flex-wrap gap-2">${circles}</div>
-              ${quantityRows.length > 0 ? `<div class="border-t border-neutral-100 pt-3 mt-2 space-y-2"><h4 class="text-[9px] uppercase font-bold text-neutral-400 tracking-[0.1em]">Selected Quantities:</h4>${quantityRows}</div>` : ''}
-            </div>
-          `;
-        } else {
-          shadesContent = `
-            <div class="space-y-2">
-              <h3 class="text-[10px] uppercase font-bold text-neutral-400 tracking-[0.2em]">Quantity</h3>
-              <div class="flex items-center w-28 border border-neutral-300 bg-white">
-                <button onclick="if(state.detailBaseQty > 1) { state.detailBaseQty--; renderView(); }" class="px-3 py-1 font-bold text-neutral-500 hover:text-black">-</button>
-                <span class="flex-1 text-center text-xs font-bold text-black">${state.detailBaseQty}</span>
-                <button onclick="state.detailBaseQty++; renderView();" class="px-3 py-1 font-bold text-neutral-500 hover:text-black">+</button>
-              </div>
-            </div>
-          `;
-        }
-
-        return `
-          <section class="py-8 px-6 max-w-5xl mx-auto bg-white border border-neutral-200 my-6 rounded-sm">
-            <button onclick="state.selectedProductId=null; renderView();" class="text-[10px] font-bold uppercase text-neutral-400 hover:text-black mb-6 block tracking-[0.2em]">← Back to Shop</button>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-              <div class="aspect-[4/5] bg-neutral-50 border border-neutral-100 rounded-sm overflow-hidden">
-                <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover" />
-              </div>
-              <div class="flex flex-col space-y-6">
-                <div>
-                  <span class="text-[10px] uppercase font-bold text-[#806B5F] tracking-[0.2em]">${product.category}</span>
-                  <h1 class="text-2xl font-bold uppercase text-black mt-1 mb-2" style="letter-spacing: 0.1em;">${product.name}</h1>
-                  <span class="text-xl font-bold text-[#806B5F]">₦${product.price.toLocaleString()}</span>
-                </div>
-                <div class="border-t border-neutral-100 pt-4">
-                  <h3 class="text-[10px] uppercase font-bold text-neutral-400 mb-2" tracking-[0.2em]">Description</h3>
-                  <p class="text-xs text-neutral-600 leading-relaxed">${product.description}</p>
-                </div>
-                ${shadesContent}
-                <div class="space-y-2 border-t border-neutral-100 pt-4">
-                  <button onclick="addCurrentToCart()" class="w-full bg-black text-white text-[10px] font-bold uppercase py-4 hover:bg-neutral-800 transition-colors shadow-md flex items-center justify-center space-x-2 tracking-[0.2em]">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                    <span>Add To Shopping Cart • ₦${totalPrice.toLocaleString()}</span>
-                  </button>
-                  <button onclick="submitDirectCheckout()" class="w-full bg-green-500 text-white text-[10px] font-bold uppercase py-4 hover:bg-green-600 transition-colors flex items-center justify-center space-x-2 shadow-sm tracking-[0.2em]">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-                    <span>Order via WhatsApp Now</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </section>
-        `;
-      }
-
-      function handleDetailShadeToggle(shade) {
-        if (state.detailSelectedShades[shade]) {
-          delete state.detailSelectedShades[shade];
-        } else {
-          state.detailSelectedShades[shade] = 1;
-        }
-        renderView();
-      }
-
-      function handleDetailShadeQty(shade, delta) {
-        if (!state.detailSelectedShades[shade]) return;
-        state.detailSelectedShades[shade] += delta;
-        if (state.detailSelectedShades[shade] <= 0) {
-          delete state.detailSelectedShades[shade];
-        }
-        renderView();
-      }
-
-      function addCurrentToCart() {
-        const product = PRODUCTS.find(p => p.id === state.selectedProductId);
-        if (!product) return;
-
-        if (product.shades) {
-          const entries = Object.entries(state.detailSelectedShades);
-          if (entries.length === 0) {
-            alert("Please select at least one shade variant first.");
-            return;
-          }
-          entries.forEach(([shade, qty]) => {
-            const matchIdx = state.cart.findIndex(item => item.product.id === product.id && item.shade === shade);
-            if (matchIdx > -1) state.cart[matchIdx].quantity += qty;
-            else state.cart.push({ product, quantity: qty, shade });
-          });
-        } else {
-          const matchIdx = state.cart.findIndex(item => item.product.id === product.id && !item.shade);
-          if (matchIdx > -1) state.cart[matchIdx].quantity += state.detailBaseQty;
-          else state.cart.push({ product, quantity: state.detailBaseQty, shade: null });
-        }
-        
-        state.detailSelectedShades = {};
-        state.detailBaseQty = 1;
-        updateBadge();
-        toggleCart(true);
-      }
-
-      function updateBadge() {
-        const badge = document.getElementById('cart-badge');
-        const count = state.cart.reduce((a, b) => a + b.quantity, 0);
-        if (count > 0) {
-          badge.innerText = count;
-          badge.classList.remove('hidden');
-        } else {
-          badge.classList.add('hidden');
-        }
-      }
-
-      function renderCart() {
-        const container = document.getElementById('cart-items-container');
-        const title = document.getElementById('cart-title');
-        const footer = document.getElementById('cart-footer');
-        const totalText = document.getElementById('cart-total-price');
-        
-        const count = state.cart.reduce((a, b) => a + b.quantity, 0);
-        title.innerText = `Your Shopping Cart (${count})`;
-
-        if (state.cart.length === 0) {
-          footer.classList.add('hidden');
-          container.innerHTML = `
-            <div class="text-center py-20 text-neutral-400 space-y-4">
-              <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-              <p class="text-xs uppercase font-semibold" style="letter-spacing: 0.1em;">Your cart is empty</p>
-              <button onclick="toggleCart(false); navigateTo('home');" class="text-[10px] uppercase bg-black text-white px-4 py-2 font-bold" style="letter-spacing: 0.2em;">Shop Now</button>
-            </div>
-          `;
-          return;
-        }
-
-        footer.classList.remove('hidden');
-        let total = state.cart.reduce((a, b) => a + (b.product.price * b.quantity), 0);
-        totalText.innerText = `₦${total.toLocaleString()}`;
-
-        container.innerHTML = state.cart.map((item, idx) => `
-          <div class="flex items-center space-x-4 p-3 bg-neutral-50 rounded-sm border border-neutral-100">
-            <img src="${item.product.image}" class="w-12 h-12 object-cover bg-white border" />
-            <div class="flex-1 min-w-0">
-              <h4 class="text-xs font-bold truncate uppercase text-black">${item.product.name}</h4>
-              <p class="text-[10px] text-neutral-500 mt-0.5">
-                Qty: ${item.quantity} • ${item.shade ? `Shade: ${SHADE_NAMES[item.shade] || item.shade}` : 'Standard'}
-              </p>
-              <span class="text-xs font-bold text-[#806B5F] block mt-1">₦${(item.product.price * item.quantity).toLocaleString()}</span>
-            </div>
-            <button onclick="state.cart.splice(${idx}, 1); updateBadge(); renderCart();" class="text-neutral-400 hover:text-red-500 p-1">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-16v1M4 7h16"></path></svg>
-            </button>
-          </div>
-        `).join('');
-      }
-
-      function submitCartCheckout() {
-        let message = `🛍️ JAYDRIZ COSMETICS - MULTI-ITEM ORDER%0A%0A`;
-        let total = state.cart.reduce((a, b) => a + (b.product.price * b.quantity), 0);
-        state.cart.forEach((item, index) => {
-          const shadeString = item.shade ? ` (${SHADE_NAMES[item.shade] || item.shade})` : "";
-          message += `${index + 1}. *${item.product.name}*${shadeString}%0A   Qty: ${item.quantity} x ₦${item.product.price.toLocaleString()} = ₦${(item.product.price * item.quantity).toLocaleString()}%0A%0A`;
-        });
-        message += `*Grand Total Price:* ₦${total.toLocaleString()}%0A%0AKindly process my order summary above and send details.`;
-        window.open(`https://wa.me/2348035399521?text=${message}`, "_blank");
-      }
-
-      function submitDirectCheckout() {
-        const product = PRODUCTS.find(p => p.id === state.selectedProductId);
-        if (!product) return;
-
-        let message = `🛍️ JAYDRIZ COSMETICS - DIRECT PRODUCT ORDER%0A%0A`;
-        let totalPrice = 0;
-
-        if (product.shades) {
-          const entries = Object.entries(state.detailSelectedShades);
-          if (entries.length === 0) {
-            alert("Please select at least one shade variant first.");
-            return;
-          }
-          entries.forEach(([shade, qty], index) => {
-            const itemTotal = product.price * qty;
-            totalPrice += itemTotal;
-            message += `${index + 1}. *${product.name}* (${SHADE_NAMES[shade] || shade})%0A   Qty: ${qty} x ₦${product.price.toLocaleString()} = ₦${itemTotal.toLocaleString()}%0A%0A`;
-          });
-        } else {
-          totalPrice = product.price * state.detailBaseQty;
-          message += `1. *${product.name}*%0A   Qty: ${state.detailBaseQty} x ₦${product.price.toLocaleString()} = ₦${totalPrice.toLocaleString()}%0A%0A`;
-        }
-
-        message += `*Total Price:* ₦${totalPrice.toLocaleString()}%0A%0AKindly check availability and process this order layout.`;
-        window.open(`https://wa.me/2348035399521?text=${message}`, "_blank");
-      }
-
-      function getAboutPageHTML() {
-        return `
-          <section>
-            <div class="relative h-[45vh] sm:h-[55vh] flex items-center justify-center overflow-hidden bg-black text-white">
-              <div class="absolute inset-0 z-0 opacity-60">
-                <img src="https://res.cloudinary.com/dehvk3bre/image/upload/v1780415231/20260331_085939_0000_npvhz9.png" class="w-full h-full object-cover object-center" alt="Story Background" />
-                <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-[#FAF7F5]"></div>
-              </div>
-              <div class="relative z-10 text-center max-w-3xl px-6">
-                <span class="text-[10px] uppercase text-yellow-500 font-bold mb-3 block" style="letter-spacing: 0.4em;">The Legacy</span>
-                <h1 class="font-serif text-3xl sm:text-5xl font-extrabold uppercase mb-4" style="letter-spacing: 0.2em;">Our Story</h1>
-                <div class="w-12 h-[1px] bg-white/50 mx-auto"></div>
-              </div>
-            </div>
-            <div class="max-w-5xl mx-auto px-6 py-16 space-y-20 text-left">
-              <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center">
-                <div class="md:col-span-7 space-y-4">
-                  <span class="text-[10px] uppercase text-[#806B5F] font-bold block" style="letter-spacing: 0.25em;">About The Brand</span>
-                  <h2 class="font-serif text-2xl sm:text-3xl text-black font-bold tracking-wide">Jaydriz Cosmetics: Where Luxury Meets Affordability</h2>
-                  <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed font-light">
-                    Jaydriz Cosmetics is a trailblazing beauty brand designed for the modern makeup enthusiast who refuses to compromise on quality or cost. Merging high-performance formulas with trend-driven innovation, the brand delivers an inclusive, pro-level beauty experience that empowers self-expression for every skin tone and type.
-                  </p>
-                </div>
-                <div class="md:col-span-5 aspect-[4/5] bg-neutral-200 shadow-sm border border-neutral-100 overflow-hidden rounded-sm">
-                  <img src="https://res.cloudinary.com/dehvk3bre/image/upload/v1780414851/Face_octrtg.png" class="w-full h-full object-cover" alt="Complexion" />
-                </div>
-              </div>
-              <div class="bg-white border border-neutral-200 p-8 sm:p-12 rounded-sm space-y-4 shadow-sm">
-                <span class="text-[10px] uppercase text-[#806B5F] font-bold block text-center lg:text-left" style="letter-spacing: 0.25em;">Our Mission Statement</span>
-                <h2 class="font-serif text-2xl text-black font-bold tracking-wide text-center lg:text-left">The Core Philosophy</h2>
-                <p class="text-xs sm:text-sm text-neutral-700 leading-relaxed font-light">At the heart of Jaydriz Cosmetics is a disruptive promise: <strong class="text-black font-bold">luxury meets affordability.</strong></p>
-                <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed font-light">
-                  Historically, consumers had to choose between prestige department store prices or sacrificing quality for drugstore budget-friendliness. Jaydriz Cosmetics obliterates that divide by sourcing premium, skin-loving ingredients to match classic high-end texturing.
-                </p>
-              </div>
-            </div>
-          </section>
-        `;
-      }
-
-      function getContactPageHTML() {
-        return `
-          <section class="py-16 px-6 max-w-5xl mx-auto text-center">
-            <h1 class="font-serif text-3xl font-bold uppercase tracking-wider mb-8 text-black">Visit Our Store</h1>
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch text-left">
-              <div class="lg:col-span-5 bg-white p-8 border border-neutral-200 rounded-sm shadow-sm flex flex-col justify-between">
-                <div>
-                  <h3 class="text-xs uppercase font-bold text-[#806B5F] mb-2" style="letter-spacing: 0.2em;">Main Headquarters</h3>
-                  <p class="text-xs text-neutral-800 leading-relaxed mb-6">Shop B012, Rivers Plaza II,<br />Lagos Trade Fair Plaza,<br />Off Lagos - Badagry Expressway,<br />Lagos, Nigeria.</p>
-                  <h3 class="text-xs uppercase font-bold text-[#806B5F] mb-1" style="letter-spacing: 0.2em;">Direct Support</h3>
-                  <p class="text-xs text-neutral-800 mb-6">WhatsApp: <span class="font-bold text-black">+234 803 539 9521</span></p>
-                </div>
-                <a href="https://wa.me/2348035399521" target="_blank" class="block text-center w-full bg-black text-white font-bold text-[10px] py-3.5 uppercase hover:bg-neutral-800 transition-colors" style="letter-spacing: 0.2em;">Chat Directly</a>
-              </div>
-              <div class="lg:col-span-7 bg-white p-2 border border-neutral-200 rounded-sm shadow-sm min-h-[350px] relative overflow-hidden">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3964.3854190870983!2d3.2255531!3d6.4727771!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103b879ec3116819%3A0xe7f98722a2757a2e!2sLagos%20Trade%20Fair%20Complex!5e0!3m2!1sen!2sng!4v1717900000000!5m2!1sen!2sng" class="w-full h-full min-h-[350px] border-0 rounded-sm" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-              </div>
-            </div>
-          </section>
-        `;
-      }
-
-      // Initial system bootstrap
-      renderView();
     </script>
-  </body>
+
+    <style>
+        body {
+            background-color: #FAF7F5;
+            color: #000000;
+            -webkit-font-smoothing: antialiased;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const PRODUCTS = [
+            {
+                id: "f1",
+                name: "Foundation",
+                category: "Face",
+                price: 7500,
+                image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414858/Foundation_1_jefqeq.png",
+                description: "Unlock a flawless, second-skin finish with a formula designed for high-performance wear. Offers custom buildable coverage that seamlessly erases imperfections while maintaining a natural, breathable glow.",
+                shades: ["#FEE1C3", "#FEBD85", "#FFC291", "#EC9759", "#C57D57", "#B1705C", "#C07756", "#77473B", "#5F3E37", "#3E2E2E"]
+            },
+            {
+                id: "f2",
+                name: "Concealer",
+                category: "Face",
+                price: 4500,
+                image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414852/Concealer_1_h7ftxw.png",
+                description: "Expertly hide what you want and highlight what you love. This creamy, high-coverage formula melts into the skin to brighten dark circles and vanish blemishes with a crease-resistant, natural finish.",
+                shades: ["#FEE1C3", "#FEBD85", "#FFC291", "#EC9759", "#C57D57", "#B1705C", "#C07756", "#77473B", "#5F3E37", "#3E2E2E"]
+            },
+            {
+                id: "f3",
+                name: "Compact Powder",
+                category: "Face",
+                price: 7500,
+                image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414855/Compact_1_kbrllw.png",
+                description: "The ultimate secret to a shine-free, velvet-smooth complexion. Sets your base perfectly, blurring pores and controlling oil without looking heavy.",
+                shades: ["#FEE1C3", "#FEBD85", "#FFC291", "#EC9759", "#C57D57", "#B1705C", "#C07756", "#77473B", "#5F3E37", "#3E2E2E"]
+            },
+            {
+                id: "f4",
+                name: "Powder Palette 12-in-1",
+                category: "Face",
+                price: 14000,
+                image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414858/Powder_A1_dxvgp3.png",
+                description: "The definitive professional toolkit. Featuring 12 expertly curated powder shades, this palette provides versatility for highlighting, contouring, and setting across a vast spectrum."
+            },
+            {
+                id: "f5",
+                name: "Powder Palette 9-in-1",
+                category: "Face",
+                price: 11500,
+                image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414855/Powder_B_aaubvp.png",
+                description: "A sophisticated, streamlined collection of essential shades. Formulated for precision and blendability to create a sculpted finish."
+            },
+            {
+                id: "a1",
+                name: "Pigment",
+                category: "Eyes",
+                price: 2500,
+                image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780422839/file_000000000d8471f5a60a806d29b341fc_pql4ml.png",
+                description: "Turn up the intensity with ultra-concentrated loose pigment. Delivers high-impact, multidimensional shimmer that commands attention."
+            },
+            {
+                id: "a2",
+                name: "Chrome Pigment",
+                category: "Eyes",
+                price: 3500,
+                image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414851/Glitter_1_txkblx.png",
+                description: "Experience liquid-metal luxury. Formulated for a dynamic, futuristic mirror-like shine that shifts with every angle of light."
+            },
+            {
+                id: "a3",
+                name: "Glitters",
+                category: "Eyes",
+                price: 1500,
+                image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780424057/file_0000000016b471f583376336d93de28f_jbxqol.png",
+                description: "Add a touch of pure magic to your application. Multi-reflective premium flakes providing dazzling, stellar dimension."
+            },
+            {
+                id: "a4",
+                name: "Glitters Glue",
+                category: "Eyes",
+                price: 2000,
+                image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780422835/file_00000000df2c71f58ef98fa2e27dc0c4_eviumc.png",
+                description: "The lightweight, invisible bond ensuring fine particles stay exactly where you apply them. Waterproof formula without stiff residue."
+            },
+            {
+                id: "a5",
+                name: "Pigment/Glitter Primer",
+                category: "Eyes",
+                price: 4500,
+                image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414854/Primer_1_inyqaw.png",
+                description: "The ideal tacky, smoothing canvas that grips makeup tightly, ensuring extreme structural longevity and shade vibrance."
+            },
+            {
+                id: "e1",
+                name: "Beauty Blender 2in1",
+                category: "Artistry",
+                price: 1500,
+                image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780424058/file_0000000060e871f5bc36060818abe5dc_wryxgo.png",
+                description: "Achieve an airbrushed, custom editorial finish. High-density latex-free sponge optimized for both broad strokes and focused contours."
+            },
+            {
+                id: "e2",
+                name: "Single Blender+Puff",
+                category: "Artistry",
+                price: 2500,
+                image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414854/Sponge_1_vjh19n.png",
+                description: "The perfect pro combo. The plush blender offers fluid, dewy applications, while the soft puff presses powder seamlessly."
+            },
+            {
+                id: "e3",
+                name: "Skin Prep Brush",
+                category: "Artistry",
+                price: 3000,
+                image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414856/Brush_1_s8qoql.png",
+                description: "Engineered with ultra-soft synthetic bristles to feather skincare, primer, and creams into a silky pristine canvas."
+            }
+        ];
+
+        const SHADE_NAMES = {
+            "#FEE1C3": "Blonde", "#FEBD85": "Snowy", "#FFC291": "Sunshine",
+            "#EC9759": "Clove", "#C57D57": "Spice", "#B1705C": "Amber",
+            "#C07756": "Chocolate", "#77473B": "Java", "#5F3E37": "Expresso", "#3E2E2E": "Mahogany"
+        };
+
+        const HERO_SLIDES = [
+            {
+                image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780415231/20260331_085939_0000_npvhz9.png",
+                title: "JAYDRIZ\nCOSMETICS",
+                subtitle: "Affordable Luxury"
+            },
+            {
+                image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414851/Face_octrtg.png",
+                title: "FLAWLESS FACE",
+                subtitle: "All-day coverage, seamless foundations, and breathable powders engineered for ultimate perfection."
+            }
+        ];
+
+        function App() {
+            const [showSplash, setShowSplash] = useState(true);
+            const [view, setView] = useState("home"); // home, about, contact, detail
+            const [selectedProductId, setSelectedProductId] = useState(null);
+            const [activeCategory, setActiveCategory] = useState("All");
+            const [searchQuery, setSearchQuery] = useState("");
+            const [cart, setCart] = useState([]);
+            const [isCartOpen, setIsCartOpen] = useState(false);
+            const [isMenuOpen, setIsMenuOpen] = useState(false);
+            const [heroIndex, setHeroIndex] = useState(0);
+
+            // Detail Page States
+            const [detailBaseQty, setDetailBaseQty] = useState(1);
+            const [detailSelectedShades, setDetailSelectedShades] = useState({});
+
+            useEffect(() => {
+                const timer = setTimeout(() => setShowSplash(false), 2000);
+                return () => clearTimeout(timer);
+            }, []);
+
+            useEffect(() => {
+                if (view === "home" && !selectedProductId) {
+                    const slideTimer = setInterval(() => {
+                        setHeroIndex((prev) => (prev + 1) % HERO_SLIDES.length);
+                    }, 5000);
+                    return () => clearInterval(slideTimer);
+                }
+            }, [view, selectedProductId]);
+
+            const selectedProduct = PRODUCTS.find(p => p.id === selectedProductId);
+
+            const handleProductClick = (id) => {
+                setSelectedProductId(id);
+                setDetailBaseQty(1);
+                setDetailSelectedShades({});
+                setView("detail");
+                window.scrollTo(0, 0);
+            };
+
+            const toggleShadeSelection = (shade) => {
+                setDetailSelectedShades(prev => {
+                    const updated = { ...prev };
+                    if (updated[shade]) {
+                        delete updated[shade];
+                    } else {
+                        updated[shade] = 1;
+                    }
+                    return updated;
+                });
+            };
+
+            const updateShadeQty = (shade, delta) => {
+                setDetailSelectedShades(prev => {
+                    const updated = { ...prev };
+                    if (!updated[shade]) return prev;
+                    updated[shade] += delta;
+                    if (updated[shade] <= 0) delete updated[shade];
+                    return updated;
+                });
+            };
+
+            const addToCart = () => {
+                if (!selectedProduct) return;
+
+                if (selectedProduct.shades) {
+                    const entries = Object.entries(detailSelectedShades);
+                    if (entries.length === 0) {
+                        alert("Please select at least one shade variant.");
+                        return;
+                    }
+                    setCart(prev => {
+                        let updated = [...prev];
+                        entries.forEach(([shade, qty]) => {
+                            const matchIdx = updated.findIndex(item => item.product.id === selectedProduct.id && item.shade === shade);
+                            if (matchIdx > -1) {
+                                updated[matchIdx].quantity += qty;
+                            } else {
+                                updated.push({ product: selectedProduct, quantity: qty, shade });
+                            }
+                        });
+                        return updated;
+                    });
+                } else {
+                    setCart(prev => {
+                        let updated = [...prev];
+                        const matchIdx = updated.findIndex(item => item.product.id === selectedProduct.id && !item.shade);
+                        if (matchIdx > -1) {
+                            updated[matchIdx].quantity += detailBaseQty;
+                        } else {
+                            updated.push({ product: selectedProduct, quantity: detailBaseQty, shade: null });
+                        }
+                        return updated;
+                    });
+                }
+
+                setDetailSelectedShades({});
+                setDetailBaseQty(1);
+                setIsCartOpen(true);
+            };
+
+            const removeFromCart = (idx) => {
+                setCart(prev => prev.filter((_, i) => i !== idx));
+            };
+
+            const cartTotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+            const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+            const checkoutCart = () => {
+                let message = `🛍️ JAYDRIZ COSMETICS - ORDER SUMMARY%0A%0A`;
+                cart.forEach((item, index) => {
+                    const shadeStr = item.shade ? ` (${SHADE_NAMES[item.shade] || item.shade})` : "";
+                    message += `${index + 1}. *${item.product.name}*${shadeStr}%0A   Qty: ${item.quantity} x ₦${item.product.price.toLocaleString()} = ₦${(item.product.price * item.quantity).toLocaleString()}%0A%0A`;
+                });
+                message += `*Grand Total:* ₦${cartTotal.toLocaleString()}%0A%0APlease confirm availability for delivery.`;
+                window.open(`https://wa.me/2348035399521?text=${message}`, "_blank");
+            };
+
+            const directCheckout = () => {
+                if (!selectedProduct) return;
+                let message = `🛍️ JAYDRIZ COSMETICS - DIRECT ORDER%0A%0A`;
+                let total = 0;
+
+                if (selectedProduct.shades) {
+                    const entries = Object.entries(detailSelectedShades);
+                    if (entries.length === 0) {
+                        alert("Please select at least one shade variant.");
+                        return;
+                    }
+                    entries.forEach(([shade, qty], index) => {
+                        const cost = selectedProduct.price * qty;
+                        total += cost;
+                        message += `${index + 1}. *${selectedProduct.name}* (${SHADE_NAMES[shade] || shade})%0A   Qty: ${qty} x ₦${selectedProduct.price.toLocaleString()} = ₦${cost.toLocaleString()}%0A%0A`;
+                    });
+                } else {
+                    total = selectedProduct.price * detailBaseQty;
+                    message += `1. *${selectedProduct.name}*%0A   Qty: ${detailBaseQty} x ₦${selectedProduct.price.toLocaleString()} = ₦${total.toLocaleString()}%0A%0A`;
+                }
+
+                message += `*Total Price:* ₦${total.toLocaleString()}%0A%0AIs this available?`;
+                window.open(`https://wa.me/2348035399521?text=${message}`, "_blank");
+            };
+
+            const filteredProducts = PRODUCTS.filter(p => {
+                const matchesCat = activeCategory === "All" || p.category === activeCategory;
+                const matchesSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesCat && matchesSearch;
+            });
+
+            if (showSplash) {
+                return (
+                    <div class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center">
+                        <img src="https://res.cloudinary.com/dehvk3bre/image/upload/v1780414377/20260409_010010_u4nssj.png" class="w-24 h-24 object-contain mb-4" alt="Logo" />
+                        <p class="text-[9px] text-neutral-500 font-bold uppercase tracking-[0.4em]">Luxury Artistry...</p>
+                    </div>
+                );
+            }
+
+            return (
+                <div class="min-h-screen bg-[#FAF7F5] flex flex-col justify-between relative overflow-x-hidden">
+                    
+                    {/* Header Layout */}
+                    <header class="sticky top-0 bg-[#FAF7F5]/90 backdrop-blur-md border-b border-neutral-200 z-40 px-6 py-4 flex justify-between items-center">
+                        <div class="flex items-center space-x-2">
+                            <button onClick={() => setIsMenuOpen(true)} class="p-1 text-black">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                            </button>
+                            <span onClick={() => { setView("home"); setSelectedProductId(null); }} class="font-serif text-lg font-extrabold cursor-pointer tracking-[0.2em]">JAYDRIZ</span>
+                        </div>
+
+                        <div class="flex items-center space-x-4">
+                            <input 
+                                type="text" 
+                                value={searchQuery}
+                                onChange={(e) => {
+                                    setSearchQuery(e.target.value);
+                                    if(view !== "home") { setView("home"); setSelectedProductId(null); }
+                                }}
+                                placeholder="Search..." 
+                                class="border border-neutral-300 rounded-sm text-xs px-3 py-1.5 bg-white focus:outline-none max-w-[120px] sm:max-w-[160px]" 
+                            />
+                            <button onClick={() => setIsCartOpen(true)} class="relative p-1 text-black">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                {cartCount > 0 && (
+                                    <span class="absolute -top-1 -right-1 bg-black text-white font-bold text-[8px] w-4 h-4 rounded-full flex items-center justify-center shadow-sm">{cartCount}</span>
+                                )}
+                            </button>
+                        </div>
+                    </header>
+
+                    {/* Sidebar Nav */}
+                    {isMenuOpen && (
+                        <div class="fixed inset-0 bg-black/40 z-50 flex">
+                            <div class="w-64 bg-[#FAF7F5] h-full p-6 flex flex-col justify-between shadow-2xl animate-slide-in">
+                                <div>
+                                    <div class="flex justify-between items-center mb-8 pb-4 border-b border-neutral-200">
+                                        <span class="font-bold text-xs tracking-[0.2em]">NAVIGATION</span>
+                                        <button onClick={() => setIsMenuOpen(false)}>
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                        </button>
+                                    </div>
+                                    <div class="flex flex-col space-y-4">
+                                        <button onClick={() => { setView("home"); setSelectedProductId(null); setIsMenuOpen(false); }} class="text-left text-xs uppercase font-bold py-2 tracking-[0.1em]">Home</button>
+                                        <button onClick={() => { setView("about"); setIsMenuOpen(false); }} class="text-left text-xs uppercase font-bold py-2 tracking-[0.1em]">Our Story</button>
+                                        <button onClick={() => { setView("contact"); setIsMenuOpen(false); }} class="text-left text-xs uppercase font-bold py-2 tracking-[0.1em]">Find Our Store</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-1" onClick={() => setIsMenuOpen(false)}></div>
+                        </div>
+                    )}
+
+                    {/* Cart Drawer */}
+                    {isCartOpen && (
+                        <div class="fixed inset-0 bg-black/50 z-50 flex justify-end">
+                            <div class="w-full max-w-md bg-white h-full p-6 flex flex-col justify-between shadow-2xl">
+                                <div>
+                                    <div class="flex justify-between items-center mb-6 pb-4 border-b border-neutral-200">
+                                        <span class="font-bold text-xs uppercase tracking-[0.1em]">Your Cart ({cartCount})</span>
+                                        <button onClick={() => setIsCartOpen(false)}>
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                        </button>
+                                    </div>
+                                    <div class="space-y-4 overflow-y-auto max-h-[65vh] pr-1 no-scrollbar">
+                                        {cart.length === 0 ? (
+                                            <div class="text-center py-16 text-neutral-400 space-y-2">
+                                                <p class="text-xs uppercase font-medium">Your cart is empty</p>
+                                            </div>
+                                        ) : (
+                                            cart.map((item, idx) => (
+                                                <div key={idx} class="flex items-center space-x-4 p-3 bg-neutral-50 rounded-sm border border-neutral-100">
+                                                    <img src={item.product.image} class="w-12 h-12 object-cover bg-white border" />
+                                                    <div class="flex-1 min-w-0">
+                                                        <h4 class="text-xs font-bold truncate uppercase">{item.product.name}</h4>
+                                                        <p class="text-[10px] text-neutral-500">Qty: {item.quantity} {item.shade ? `• ${SHADE_NAMES[item.shade] || item.shade}` : ''}</p>
+                                                        <span class="text-xs font-bold text-[#806B5F]">₦{(item.product.price * item.quantity).toLocaleString()}</span>
+                                                    </div>
+                                                    <button onClick={() => removeFromCart(idx)} class="text-neutral-400 hover:text-red-500">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-16v1M4 7h16"></path></svg>
+                                                    </button>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                </div>
+                                {cart.length > 0 && (
+                                    <div class="border-t border-neutral-200 pt-4 space-y-4">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-xs font-bold uppercase text-neutral-500 tracking-wider">Total:</span>
+                                            <span class="text-lg font-black">₦{cartTotal.toLocaleString()}</span>
+                                        </div>
+                                        <button onClick={checkoutCart} class="w-full bg-black text-white text-[10px] font-bold uppercase py-4 tracking-[0.2em] flex items-center justify-center space-x-2">
+                                            <span>Proceed to WhatsApp Checkout</span>
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Dynamic View Engine */}
+                    <main>
+                        {view === "home" && (
+                            <div>
+                                {/* Hero Slider */}
+                                <section class="relative h-[65vh] flex items-center justify-center overflow-hidden bg-black text-white">
+                                    <div class="absolute inset-0 z-0 opacity-70">
+                                        <img src={HERO_SLIDES[heroIndex].image} class="w-full h-full object-cover object-center transition-all duration-1000" alt="Hero" />
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/20"></div>
+                                    </div>
+                                    <div class="relative z-10 text-center max-w-4xl px-6 flex flex-col items-center">
+                                        <span class="text-[10px] uppercase tracking-widest text-yellow-500 font-bold mb-2">Premium Artistry</span>
+                                        <h1 class="font-serif text-4xl sm:text-5xl uppercase mb-4 font-bold tracking-[0.15em] whitespace-pre-line leading-tight">{HERO_SLIDES[heroIndex].title}</h1>
+                                        <p class="text-xs max-w-md text-neutral-200 tracking-wide mb-6">{HERO_SLIDES[heroIndex].subtitle}</p>
+                                    </div>
+                                </section>
+
+                                {/* Product Grid Showcase */}
+                                <section class="py-12 px-6 max-w-7xl mx-auto">
+                                    <div class="text-center mb-10">
+                                        <span class="text-xs uppercase font-bold text-[#806B5F] tracking-[0.3em]">EXPLORE</span>
+                                        <h2 class="text-2xl font-bold uppercase tracking-wider mt-1">OUR LINEUP</h2>
+                                    </div>
+                                    <div class="flex justify-center space-x-2 mb-8 overflow-x-auto no-scrollbar py-2">
+                                        {["All", "Face", "Eyes", "Artistry"].map(cat => (
+                                            <button key={cat} onClick={() => setActiveCategory(cat)} class={`px-5 py-2 text-[10px] font-bold uppercase tracking-wider ${activeCategory === cat ? 'bg-black text-white' : 'bg-white text-neutral-500 border border-neutral-200'}`}>
+                                                {cat}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                        {filteredProducts.map(prod => (
+                                            <div key={prod.id} onClick={() => handleProductClick(prod.id)} class="group cursor-pointer bg-white overflow-hidden flex flex-col justify-between border border-neutral-100 rounded-sm shadow-sm hover:shadow-md transition-all">
+                                                <div class="relative aspect-[4/5] bg-neutral-50 overflow-hidden">
+                                                    <img src={prod.image} alt={prod.name} class="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105" />
+                                                </div>
+                                                <div class="p-4 flex flex-col flex-grow justify-between border-t border-neutral-50">
+                                                    <div>
+                                                        <span class="text-[9px] uppercase font-bold text-[#806B5F] tracking-[0.1em]">{prod.category}</span>
+                                                        <h3 class="text-xs sm:text-sm font-semibold uppercase mt-0.5 truncate">{prod.name}</h3>
+                                                    </div>
+                                                    <div class="flex items-center justify-between mt-3 pt-2">
+                                                        <span class="text-xs font-bold text-[#806B5F]">₦{prod.price.toLocaleString()}</span>
+                                                        <span class="text-[9px] text-neutral-400 bg-neutral-50 border px-2 py-0.5 uppercase tracking-wider">View</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+                            </div>
+                        )}
+
+                        {view === "detail" && selectedProduct && (
+                            <section class="py-8 px-6 max-w-5xl mx-auto bg-white border border-neutral-200 my-6 rounded-sm">
+                                <button onClick={() => setView("home")} class="text-[10px] font-bold uppercase text-neutral-400 hover:text-black mb-6 block tracking-[0.2em]">← Back to Shop</button>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                    <div class="aspect-[4/5] bg-neutral-50 border border-neutral-100 rounded-sm overflow-hidden">
+                                        <img src={selectedProduct.image} alt={selectedProduct.name} class="w-full h-full object-cover" />
+                                    </div>
+                                    <div class="flex flex-col space-y-6">
+                                        <div>
+                                            <span class="text-[10px] uppercase font-bold text-[#806B5F] tracking-[0.2em]">{selectedProduct.category}</span>
+                                            <h1 class="text-2xl font-bold uppercase tracking-wider mt-1 mb-2">{selectedProduct.name}</h1>
+                                            <span class="text-xl font-bold text-[#806B5F]">₦{selectedProduct.price.toLocaleString()}</span>
+                                        </div>
+                                        <div class="border-t border-neutral-100 pt-4">
+                                            <p class="text-xs text-neutral-600 leading-relaxed font-light">{selectedProduct.description}</p>
+                                        </div>
+                                        
+                                        {selectedProduct.shades ? (
+                                            <div class="space-y-4">
+                                                <h3 class="text-[10px] uppercase font-bold text-neutral-400 tracking-[0.2em]">Select Shades <span class="text-neutral-400 normal-case">(Tap multiple)</span></h3>
+                                                <div class="flex flex-wrap gap-2">
+                                                    {selectedProduct.shades.map(s => {
+                                                        const isSelected = !!detailSelectedShades[s];
+                                                        return (
+                                                            <button key={s} onClick={() => toggleShadeSelection(s)} class="w-8 h-8 rounded-full border border-neutral-300 relative transition-all" style={{ backgroundColor: s, ring: isSelected ? '2px solid black' : 'none', transform: isSelected ? 'scale(1.05)' : 'none' }}>
+                                                                {isSelected && <span class="absolute inset-0 flex items-center justify-center bg-black/20 text-white font-bold text-[10px] rounded-full">✓</span>}
+                                                            </button>
+                                                        )
+                                                    })}
+                                                </div>
+                                                {Object.keys(detailSelectedShades).length > 0 && (
+                                                    <div class="border-t border-neutral-100 pt-3 space-y-2">
+                                                        {Object.entries(detailSelectedShades).map(([s, qty]) => (
+                                                            <div key={s} class="flex items-center justify-between bg-neutral-50 p-2 border border-neutral-100">
+                                                                <div class="flex items-center space-x-2">
+                                                                    <span class="w-3 h-3 rounded-full" style={{ backgroundColor: s }}></span>
+                                                                    <span class="text-xs font-medium">{SHADE_NAMES[s] || s}</span>
+                                                                </div>
+                                                                <div class="flex items-center border border-neutral-300 bg-white">
+                                                                    <button onClick={() => updateShadeQty(s, -1)} class="px-2 py-0.5 text-xs">-</button>
+                                                                    <span class="w-8 text-center text-xs font-bold">{qty}</span>
+                                                                    <button onClick={() => updateShadeQty(s, 1)} class="px-2 py-0.5 text-xs">+</button>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <div class="space-y-2">
+                                                <h3 class="text-[10px] uppercase font-bold text-neutral-400 tracking-[0.2em]">Quantity</h3>
+                                                <div class="flex items-center w-28 border border-neutral-300 bg-white">
+                                                    <button onClick={() => setDetailBaseQty(q => Math.max(1, q - 1))} class="px-3 py-1 text-xs">-</button>
+                                                    <span class="flex-1 text-center text-xs font-bold">{detailBaseQty}</span>
+                                                    <button onClick={() => setDetailBaseQty(q => q + 1)} class="px-3 py-1 text-xs">+</button>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        <div class="space-y-2 border-t border-neutral-100 pt-4">
+                                            <button onClick={addToCart} class="w-full bg-black text-white text-[10px] font-bold uppercase py-4 tracking-[0.2em] flex items-center justify-center space-x-2 shadow-md">
+                                                <span>Add To Shopping Cart</span>
+                                            </button>
+                                            <button onClick={directCheckout} class="w-full bg-green-500 text-white text-[10px] font-bold uppercase py-4 tracking-[0.2em] flex items-center justify-center space-x-2">
+                                                <span>Order via WhatsApp Now</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        )}
+
+                        {view === "about" && (
+                            <section class="max-w-4xl mx-auto px-6 py-16 text-center space-y-8">
+                                <h1 class="font-serif text-3xl font-bold uppercase tracking-wider">Our Story</h1>
+                                <p class="text-sm text-neutral-600 leading-relaxed font-light max-w-2xl mx-auto">
+                                    Jaydriz Cosmetics is a trailblazing beauty brand designed for the modern makeup enthusiast who refuses to compromise on quality or cost. Merging high-performance formulas with trend-driven innovation, the brand delivers an inclusive, pro-level beauty experience that empowers self-expression for every skin tone and type.
+                                </p>
+                            </section>
+                        )}
+
+                        {view === "contact" && (
+                            <section class="max-w-4xl mx-auto px-6 py-16 text-center space-y-6">
+                                <h1 class="font-serif text-3xl font-bold uppercase tracking-wider">Visit Our Store</h1>
+                                <p class="text-sm text-neutral-700">Shop B012, Rivers Plaza II, Lagos Trade Fair Plaza, Off Lagos - Badagry Expressway, Lagos, Nigeria.</p>
+                                <p class="text-xs font-bold uppercase">WhatsApp Support: +234 803 539 9521</p>
+                            </section>
+                        )}
+                    </main>
+
+                    {/* Footer Layout */}
+                    <footer class="bg-black text-white py-12 px-6 mt-16 text-center text-[10px] uppercase border-t border-neutral-900 tracking-wider">
+                        <div class="max-w-4xl mx-auto mb-4 space-y-2">
+                            <p class="text-yellow-400 font-bold">WhatsApp Support: +234 803 539 9521</p>
+                            <p class="text-neutral-400 normal-case tracking-normal">Shop B012, Rivers Plaza II, Lagos Trade Fair Plaza, Off Lagos - Badagry Expressway, Lagos, Nigeria.</p>
+                        </div>
+                        <p class="text-neutral-500">© 2026 JAYDRIZ COSMETICS. All Luxury Rights Reserved.</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
 </html>
