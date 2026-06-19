@@ -29,7 +29,7 @@
       }
     </script>
     
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     
     <style>
       .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -202,7 +202,7 @@
                 {slide.subtitle}
               </p>
               <button onClick={onShopNowClick} className="bg-white text-black text-[10px] tracking-[0.3em] font-bold py-4 px-10 hover:bg-neutral-100 transition-all uppercase shadow-md">
-                Shop The Lineup &rarr;
+                Shop The Lineup →
               </button>
             </div>
           </section>
@@ -277,12 +277,9 @@
       }
 
       function ProductDetail({ product, onBack, onAddToCart, onDirectWhatsAppCheckout }) {
-        // Track allocations per selected shade: { [shadeHex]: quantity }
         const [shadeQuantities, setShadeQuantities] = useState({});
-        // Base quantity variable for items that don't carry shade variants
         const [baseQuantity, setBaseQuantity] = useState(1);
 
-        // Compute localized structural quantities
         const totalItemsCount = product.shades 
           ? Object.values(shadeQuantities).reduce((acc, qty) => acc + qty, 0)
           : baseQuantity;
@@ -325,7 +322,6 @@
             activeSelections.forEach(([shade, qty]) => {
               onAddToCart(product, qty, shade);
             });
-            // Reset configurations following transaction insertion
             setShadeQuantities({});
           } else {
             onAddToCart(product, baseQuantity, null);
@@ -343,7 +339,7 @@
 
         return (
           <section className="py-8 px-6 max-w-5xl mx-auto bg-white border border-neutral-200 my-6 rounded-sm">
-            <button onClick={onBack} className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 hover:text-black mb-6 block">&larr; Back to Shop</button>
+            <button onClick={onBack} className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 hover:text-black mb-6 block">← Back to Shop</button>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
               <div className="aspect-[4/5] bg-neutral-50 border border-neutral-100 rounded-sm overflow-hidden">
                 <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
@@ -385,7 +381,6 @@
                       })}
                     </div>
 
-                    {/* Dynamic Allocation Controllers per Selected Variant Row */}
                     {Object.keys(shadeQuantities).length > 0 && (
                       <div className="border-t border-neutral-100 pt-3 mt-2 space-y-2">
                         <h4 className="text-[9px] uppercase tracking-wider font-bold text-neutral-400">Selected Quantities:</h4>
@@ -421,7 +416,7 @@
                 <div className="space-y-2 border-t border-neutral-100 pt-4">
                   <button onClick={executeAddToCart} className="w-full bg-black text-white text-[10px] font-bold uppercase tracking-widest py-4 hover:bg-neutral-800 transition-colors shadow-md flex items-center justify-center space-x-2">
                     <i data-lucide="shopping-bag" className="w-3.5 h-3.5"></i>
-                    <span>Add To Shopping Cart &bull; ₦{totalProductPrice.toLocaleString()}</span>
+                    <span>Add To Shopping Cart • ₦{totalProductPrice.toLocaleString()}</span>
                   </button>
                   
                   <button onClick={executeDirectWhatsApp} className="w-full bg-[#25D366] text-white text-[10px] font-bold uppercase tracking-widest py-4 hover:bg-[#20ba56] transition-colors flex items-center justify-center space-x-2 shadow-sm">
@@ -438,7 +433,6 @@
       function AboutPage() {
         return (
           <section className="animate-fade-in">
-            {/* Header / Intro Hero Feature */}
             <div className="relative h-[45vh] sm:h-[55vh] flex items-center justify-center overflow-hidden bg-black text-white">
               <div className="absolute inset-0 z-0 opacity-60">
                 <img src="https://res.cloudinary.com/dehvk3bre/image/upload/v1780415231/20260331_085939_0000_npvhz9.png" className="w-full h-full object-cover object-center" alt="Jaydriz Story Backdrop" />
@@ -451,10 +445,7 @@
               </div>
             </div>
 
-            {/* Editorial Content Grid */}
             <div className="max-w-5xl mx-auto px-6 py-16 space-y-20 text-left">
-              
-              {/* Brand Overview */}
               <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center">
                 <div className="md:col-span-7 space-y-4">
                   <span className="text-[10px] uppercase tracking-[0.25em] text-[#806B5F] font-bold block">About The Brand</span>
@@ -468,7 +459,6 @@
                 </div>
               </div>
 
-              {/* The Core Philosophy Split Block */}
               <div className="bg-white border border-neutral-200/60 p-8 sm:p-12 rounded-sm grid grid-cols-1 lg:grid-cols-12 gap-8 items-center shadow-2xs">
                 <div className="lg:col-span-12 space-y-4">
                   <span className="text-[10px] uppercase tracking-[0.25em] text-[#806B5F] font-bold block text-center lg:text-left">Our Mission Statement</span>
@@ -482,7 +472,6 @@
                 </div>
               </div>
 
-              {/* Product Portfolio Highlights */}
               <div className="space-y-8">
                 <div className="text-center md:text-left">
                   <span className="text-[10px] uppercase tracking-[0.25em] text-[#806B5F] font-bold block">Curated Creations</span>
@@ -490,7 +479,6 @@
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* Highlight 1 */}
                   <div className="bg-white border border-neutral-100 p-6 flex flex-col justify-between space-y-4 rounded-sm shadow-3xs">
                     <div className="space-y-2">
                       <div className="w-6 h-6 rounded-full bg-[#FAF7F5] flex items-center justify-center text-[10px] font-bold font-serif text-[#806B5F]">1</div>
@@ -501,7 +489,6 @@
                     </div>
                   </div>
 
-                  {/* Highlight 2 */}
                   <div className="bg-white border border-neutral-100 p-6 flex flex-col justify-between space-y-4 rounded-sm shadow-3xs">
                     <div className="space-y-2">
                       <div className="w-6 h-6 rounded-full bg-[#FAF7F5] flex items-center justify-center text-[10px] font-bold font-serif text-[#806B5F]">2</div>
@@ -512,7 +499,6 @@
                     </div>
                   </div>
 
-                  {/* Highlight 3 */}
                   <div className="bg-white border border-neutral-100 p-6 flex flex-col justify-between space-y-4 rounded-sm shadow-3xs">
                     <div className="space-y-2">
                       <div className="w-6 h-6 rounded-full bg-[#FAF7F5] flex items-center justify-center text-[10px] font-bold font-serif text-[#806B5F]">3</div>
@@ -525,7 +511,6 @@
                 </div>
               </div>
 
-              {/* The Jaydriz Manifesto Statement Callout */}
               <div className="relative bg-black text-white p-8 sm:p-12 text-center rounded-sm overflow-hidden shadow-xl">
                 <div className="absolute inset-0 z-0 opacity-20">
                   <img src="https://res.cloudinary.com/dehvk3bre/image/upload/v1780415231/20260331_085939_0000_npvhz9.png" className="w-full h-full object-cover" alt="Manifesto Base" />
@@ -538,7 +523,6 @@
                   <div className="w-8 h-[1px] bg-amber-500/50 mx-auto mt-4"></div>
                 </div>
               </div>
-
             </div>
           </section>
         );
@@ -550,7 +534,6 @@
             <h1 className="font-serif text-3xl font-bold uppercase tracking-wider mb-8 text-black">Visit Our Store</h1>
             
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch text-left">
-              {/* Info Details Panel */}
               <div className="lg:col-span-5 bg-white p-8 border border-neutral-200 rounded-sm shadow-xs flex flex-col justify-between">
                 <div>
                   <h3 className="text-xs uppercase tracking-widest font-bold text-[#806B5F] mb-2">Main Headquarters</h3>
@@ -566,7 +549,6 @@
                 <a href="https://wa.me/2348035399521" target="_blank" className="block text-center w-full bg-black text-white font-bold text-[10px] tracking-widest py-3.5 uppercase hover:bg-neutral-800 transition-colors">Chat Directly</a>
               </div>
 
-              {/* Embedded Interactive Map System widget */}
               <div className="lg:col-span-7 bg-white p-2 border border-neutral-200 rounded-sm shadow-xs min-h-[350px] relative overflow-hidden">
                 <iframe 
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3964.3854190870983!2d3.2255531!3d6.4727771!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103b879ec3116819%3A0xe7f98722a2757a2e!2sLagos%20Trade%20Fair%20Complex!5e0!3m2!1sen!2sng!4v1717900000000!5m2!1sen!2sng" 
@@ -584,7 +566,7 @@
       // 3. MASTER RUNTIME APP CONTROLLER WITH ACTIVE ROUTING & CART CHANNELS
       function App() {
         const [loading, setLoading] = useState(true);
-        const [currentPage, setCurrentPage] = useState("home"); // home | about | contact
+        const [currentPage, setCurrentPage] = useState("home");
         const [selectedProduct, setSelectedProduct] = useState(null);
         const [searchQuery, setSearchQuery] = useState("");
         const [cart, setCart] = useState([]);
@@ -594,13 +576,14 @@
         useEffect(() => {
           const timer = setTimeout(() => {
             setLoading(false);
-            setTimeout(() => { if (window.lucide) lucide.createIcons(); }, 50);
+            // Updated to safely reference global lucide instance
+            setTimeout(() => { if (window.lucide) window.lucide.createIcons(); }, 50);
           }, 800);
-          return () => clearInterval(timer);
+          return () => clearTimeout(timer);
         }, []);
 
         useEffect(() => {
-          if (window.lucide) lucide.createIcons();
+          if (window.lucide) window.lucide.createIcons();
         }, [currentPage, selectedProduct, isCartOpen, isMenuOpen, cart]);
 
         const handleAddToCart = (product, qty, shade) => {
@@ -672,7 +655,6 @@
         return (
           <div className="min-h-screen bg-[#FAF7F5] flex flex-col justify-between relative overflow-x-hidden">
             <div>
-              {/* PRIMARY NAVIGATION CONTROL HEADER */}
               <header className="sticky top-0 bg-[#FAF7F5]/90 backdrop-blur-md border-b border-neutral-200/50 z-40 px-6 py-4 flex justify-between items-center">
                 <div className="flex items-center space-x-2">
                   <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-1 hover:bg-neutral-200/50 rounded-sm text-black">
@@ -684,7 +666,6 @@
                 <div className="flex items-center space-x-4">
                   <input type="text" placeholder="Search product..." value={searchQuery} onChange={(e) => { setSearchQuery(e.target.value); if(currentPage !== 'home') setCurrentPage('home'); }} className="border border-neutral-300 text-black rounded-sm text-xs px-3 py-1.5 bg-white focus:outline-none max-w-[120px] sm:max-w-[160px]" />
                   
-                  {/* CART BUTTON INTERACTION TRIGGER */}
                   <button onClick={() => setIsCartOpen(true)} className="relative p-1 text-black flex items-center">
                     <i data-lucide="shopping-bag" className="w-5 h-5"></i>
                     {totalItemsCount > 0 && (
@@ -696,7 +677,6 @@
                 </div>
               </header>
 
-              {/* MOBILE DROPDOWN MENU PANEL LAYOUT */}
               {isMenuOpen && (
                 <div className="fixed inset-0 bg-black/40 z-50 transition-opacity" onClick={() => setIsMenuOpen(false)}>
                   <div className="w-64 bg-[#FAF7F5] h-full p-6 flex flex-col justify-between shadow-2xl animate-slide-in text-black" onClick={(e) => e.stopPropagation()}>
@@ -707,7 +687,7 @@
                       </div>
                       <div className="flex flex-col space-y-4">
                         <button onClick={() => navigateTo("home")} className={`text-left text-xs uppercase font-bold tracking-wider py-2 ${currentPage === "home" && !selectedProduct ? "text-[#806B5F]" : "text-black"}`}>Home</button>
-                        <button onClick={() => navigateTo("home")} className="text-left text-xs uppercase font-bold tracking-wider py-2 text-neutral-400 pl-4 border-l border-neutral-200">&mdash; Shop Lineup</button>
+                        <button onClick={() => navigateTo("home")} className="text-left text-xs uppercase font-bold tracking-wider py-2 text-neutral-400 pl-4 border-l border-neutral-200">— Shop Lineup</button>
                         <button onClick={() => navigateTo("about")} className={`text-left text-xs uppercase font-bold tracking-wider py-2 ${currentPage === "about" ? "text-[#806B5F]" : "text-black"}`}>Our Story</button>
                         <button onClick={() => navigateTo("contact")} className={`text-left text-xs uppercase font-bold tracking-wider py-2 ${currentPage === "contact" ? "text-[#806B5F]" : "text-black"}`}>Find Our Store</button>
                       </div>
@@ -717,7 +697,6 @@
                 </div>
               )}
 
-              {/* SLIDE-OUT SHOPPING CART DRAWER COMPONENT PANEL */}
               {isCartOpen && (
                 <div className="fixed inset-0 bg-black/50 z-50 flex justify-end" onClick={() => setIsCartOpen(false)}>
                   <div className="w-full max-w-md bg-white h-full p-6 flex flex-col justify-between shadow-2xl text-black" onClick={(e) => e.stopPropagation()}>
@@ -744,7 +723,7 @@
                               <div className="flex-1 min-w-0">
                                 <h4 className="text-xs font-bold truncate uppercase text-black">{item.product.name}</h4>
                                 <p className="text-[10px] text-neutral-500 mt-0.5">
-                                  Qty: {item.quantity} &bull; {item.shade ? `Shade: ${SHADE_NAMES[item.shade] || item.shade}` : 'Standard'}
+                                  Qty: {item.quantity} • {item.shade ? `Shade: ${SHADE_NAMES[item.shade] || item.shade}` : 'Standard'}
                                 </p>
                                 <span className="text-xs font-bold text-[#806B5F] block mt-1">₦{(item.product.price * item.quantity).toLocaleString()}</span>
                               </div>
@@ -773,7 +752,6 @@
                 </div>
               )}
 
-              {/* CORE APP ROUTING WORKFLOW */}
               {selectedProduct ? (
                 <ProductDetail 
                   product={selectedProduct} 
@@ -801,13 +779,12 @@
               )}
             </div>
 
-            {/* MASTER FOOTER SYSTEM */}
             <footer className="bg-black text-white py-12 px-6 mt-16 text-center text-[10px] tracking-widest uppercase border-t border-neutral-900">
               <div className="max-w-4xl mx-auto mb-4">
                 <p className="text-amber-400 font-bold mb-2">WhatsApp Support: +234 803 539 9521</p>
                 <p className="text-neutral-400 normal-case tracking-normal">Shop B012, Rivers Plaza II, Lagos Trade Fair Plaza, Off Lagos - Badagry Expressway, Lagos, Nigeria.</p>
               </div>
-              <p className="text-neutral-500">&copy; 2026 JAYDRIZ COSMETICS. All Luxury Rights Reserved.</p>
+              <p className="text-neutral-500">© 2026 JAYDRIZ COSMETICS. All Luxury Rights Reserved.</p>
             </footer>
           </div>
         );
