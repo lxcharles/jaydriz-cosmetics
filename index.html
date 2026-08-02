@@ -1,0 +1,1851 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JAYDRIZ COSMETICS | Luxury Artistry</title>
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dehvk3bre/image/upload/v1780414377/20260409_010010_u4nssj.png" />
+    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dehvk3bre/image/upload/v1780414377/20260409_010010_u4nssj.png" />
+    <!-- Import Premium Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & ReactDOM UMD -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <!-- Babel Standalone -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body class="bg-[#FAF7F5]">
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState, useEffect, useRef } = React;
+
+      // ==========================================
+      // INLINE SVG ICON COMPONENTS
+      // ==========================================
+      const createIcon = (svgPaths) => ({ size = 24, className = "", ...props }) => (
+        <svg
+          width={size}
+          height={size}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={className}
+          {...props}
+        >
+          {svgPaths}
+        </svg>
+      );
+
+      const ShoppingBag = createIcon(<><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></>);
+      const X = createIcon(<><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>);
+      const MessageSquare = createIcon(<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>);
+      const ArrowUp = createIcon(<><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></>);
+      const ArrowLeft = createIcon(<><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></>);
+      const Star = createIcon(<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>);
+      const Sparkles = createIcon(<path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>);
+      const Instagram = createIcon(<><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></>);
+      const ChevronLeft = createIcon(<polyline points="15 18 9 12 15 6"/>);
+      const ChevronRight = createIcon(<polyline points="9 18 15 12 9 6"/>);
+      const Menu = createIcon(<><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="18" x2="20" y2="18"/></>);
+      const MapPin = createIcon(<><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></>);
+      const Mail = createIcon(<><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></>);
+      const Phone = createIcon(<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>);
+      const Clock = createIcon(<><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></>);
+      const Search = createIcon(<><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></>);
+      const CheckCircle2 = createIcon(<><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></>);
+      const ExternalLink = createIcon(<><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></>);
+      const Copy = createIcon(<><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></>);
+      const Share2 = createIcon(<><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></>);
+      const Check = createIcon(<polyline points="20 6 9 17 4 12"/>);
+      const Heart = createIcon(<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>);
+      const Send = createIcon(<><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></>);
+      const Plus = createIcon(<><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></>);
+      const Minus = createIcon(<line x1="5" y1="12" x2="19" y2="12"/>);
+      const Facebook = createIcon(<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>);
+      const HelpCircle = createIcon(<><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></>);
+      const Truck = createIcon(<><rect width="13" height="13" x="1" y="3" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></>);
+      const RotateCcw = createIcon(<><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></>);
+      const PackageCheck = createIcon(<><path d="m16 16 2 2 4-4"/><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" y1="22" x2="12" y2="12"/></>);
+      const MessageCircle = createIcon(<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>);
+
+      // Animation stub helpers for standard DOM rendering
+      const motion = {
+        div: ({ initial, animate, exit, transition, whileInView, viewport, key, ...props }) => <div {...props} />,
+        button: ({ initial, animate, exit, transition, whileInView, viewport, key, ...props }) => <button {...props} />
+      };
+      const AnimatePresence = ({ children }) => <>{children}</>;
+
+      // ==========================================
+      // PRODUCT DATA
+      // ==========================================
+      const productsList = [
+        {
+          id: "f1",
+          name: "Foundation",
+          category: "Face",
+          price: 7500,
+          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414858/Foundation_1_jefqeq.png",
+          description: "Unlock a flawless, second-skin finish with a formula designed for high-performance wear. Offers custom buildable coverage that seamlessly erases imperfections while maintaining a natural, breathable glow.",
+          shades: ["#FEE1C3", "#FEBD85", "#FFC291", "#EC9759", "#C57D57", "#B1705C", "#C07756", "#77473B", "#5F3E37", "#3E2E2E"]
+        },
+        {
+          id: "f2",
+          name: "Concealer",
+          category: "Face",
+          price: 4500,
+          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414852/Concealer_1_h7ftxw.png",
+          description: "Expertly hide what you want and highlight what you love. This creamy, high-coverage formula melts into the skin to brighten dark circles and vanish blemishes with a crease-resistant, natural finish.",
+          shades: ["#FEE1C3", "#FEBD85", "#FFC291", "#EC9759", "#C57D57", "#B1705C", "#C07756", "#77473B", "#5F3E37", "#3E2E2E"]
+        },
+        {
+          id: "f3",
+          name: "Compact Powder",
+          category: "Face",
+          price: 7500,
+          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414855/Compact_1_kbrllw.png",
+          description: "The ultimate secret to a shine-free, velvet-smooth complexion. Sets your base perfectly, blurring pores and controlling oil without looking heavy.",
+          shades: ["#FEE1C3", "#FEBD85", "#FFC291", "#EC9759", "#C57D57", "#B1705C", "#C07756", "#77473B", "#5F3E37", "#3E2E2E"]
+        },
+        {
+          id: "f4",
+          name: "Powder Palette 12-in-1",
+          category: "Face",
+          price: 14000,
+          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414858/Powder_A1_dxvgp3.png",
+          description: "The definitive professional toolkit. Featuring 12 expertly curated powder shades, this palette provides versatility for highlighting, contouring, and setting across a vast spectrum."
+        },
+        {
+          id: "f5",
+          name: "Powder Palette 9-in-1",
+          category: "Face",
+          price: 11500,
+          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414855/Powder_B_aaubvp.png",
+          description: "A sophisticated, streamlined collection of essential shades. Formulated for precision and blendability to create a sculpted finish."
+        },
+        {
+          id: "a1",
+          name: "Pigment",
+          category: "Eyes",
+          price: 2500,
+          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780422839/file_000000000d8471f5a60a806d29b341fc_pql4ml.png",
+          description: "Turn up the intensity with ultra-concentrated loose pigment. Delivers high-impact, multidimensional shimmer that commands attention."
+        },
+        {
+          id: "a2",
+          name: "Chrome Pigment",
+          category: "Eyes",
+          price: 3000,
+          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414851/Glitter_1_txkblx.png",
+          description: "Experience liquid-metal luxury. Formulated for a dynamic, futuristic mirror-like shine that shifts with every angle of light."
+        },
+        {
+          id: "a3",
+          name: "Glitters",
+          category: "Eyes",
+          price: 1500,
+          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780424057/file_0000000016b471f583376336d93de28f_jbxqol.png",
+          description: "Add a touch of pure magic to your application. Multi-reflective premium flakes providing dazzling, stellar dimension."
+        },
+        {
+          id: "a4",
+          name: "Glitters Glue",
+          category: "Eyes",
+          price: 2000,
+          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780422835/file_00000000df2c71f58ef98fa2e27dc0c4_eviumc.png",
+          description: "The lightweight, invisible bond ensuring fine particles stay exactly where you apply them. Waterproof formula without stiff residue."
+        },
+        {
+          id: "a5",
+          name: "Pigment/Glitter Primer",
+          category: "Eyes",
+          price: 4500,
+          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414854/Primer_1_inyqaw.png",
+          description: "The ideal tacky, smoothing canvas that grips makeup tightly, ensuring extreme structural longevity and shade vibrance."
+        },
+        {
+          id: "e2",
+          name: "Single Blender+Puff",
+          category: "Artistry",
+          price: 2000,
+          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414854/Sponge_1_vjh19n.png",
+          description: "The perfect pro combo. The plush blender offers fluid, dewy applications, while the soft puff presses powder seamlessly."
+        },
+        {
+          id: "e3",
+          name: "Skin Prep Brush",
+          category: "Artistry",
+          price: 3000,
+          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414856/Brush_1_s8qoql.png",
+          description: "Engineered with ultra-soft synthetic bristles to feather skincare, primer, and creams into a silky pristine canvas."
+        }
+      ];
+
+      const SHADE_NAMES = {
+        "#FEE1C3": "Blonde",
+        "#FEBD85": "Snowy",
+        "#FFC291": "Sunshine",
+        "#EC9759": "Clove",
+        "#C57D57": "Spice",
+        "#B1705C": "Amber",
+        "#C07756": "Chocolate",
+        "#77473B": "Java",
+        "#5F3E37": "Expresso",
+        "#3E2E2E": "Mahogany",
+      };
+
+      const HERO_SLIDES = [
+        {
+          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780415231/20260331_085939_0000_npvhz9.png",
+          title: "JAYDRIZ\nCOSMETICS",
+          subtitle: "Affordable Luxury",
+          isMain: true
+        },
+        {
+          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414851/Face_octrtg.png",
+          title: "FLAWLESS FACE",
+          subtitle: "All-day coverage, seamless foundations, and breathable powders engineered for ultimate perfection.",
+          isMain: false
+        },
+        {
+          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414852/Acce_qsf8tn.png",
+          title: "PRO ARTISTRY",
+          subtitle: "High-performance formulas and precise cosmetic tools designed for pure artistic expression.",
+          isMain: false
+        },
+        {
+          image: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414852/Eyes_iizg4c.png",
+          title: "CAPTIVATING EYES",
+          subtitle: "High-shimmer glitters, ultra-concentrated loose pigments, and lock-in primers designed for long-wear brilliance.",
+          isMain: false
+        }
+      ];
+
+      const FAQ_ITEMS = [
+        {
+          id: "whatsapp-ordering",
+          category: "Ordering Process",
+          question: "How do I place an order directly via WhatsApp?",
+          answer: "Ordering via WhatsApp is simple and instant! Browse our shop, add your desired products and shades to your Shopping Bag, then click 'Order Bag via WhatsApp'. A pre-formatted order summary will open in WhatsApp directed to +234 916 209 3880. Our team will immediately verify stock, share direct bank payment details, and dispatch your order.",
+          icon: <MessageCircle size={18} className="text-emerald-600" />
+        },
+        {
+          id: "shipping",
+          category: "Shipping & Delivery",
+          question: "What are your shipping rates, delivery timelines, and dispatch locations?",
+          answer: "We ship nationwide across Nigeria and offer global express delivery. Orders in Lagos deliver within 1-2 business days, while interstate shipments arrive in 2-4 business days. Orders are dispatched from our main warehouse at SHOP B012 RIVERS PLAZA II, Trade Fair Complex, Lagos. You will receive real-time courier tracking details upon dispatch.",
+          icon: <Truck size={18} className="text-amber-600" />
+        },
+        {
+          id: "returns",
+          category: "Returns & Exchanges",
+          question: "What is your return, exchange, and damaged item policy?",
+          answer: "Due to strict health and hygiene standards for cosmetics, we accept returns or exchanges only for sealed, unopened products or items damaged during transit. Please report any issues within 48 hours of receipt by messaging our WhatsApp support (+234 916 209 3880) with your order invoice and photos of the unboxing.",
+          icon: <RotateCcw size={18} className="text-rose-600" />
+        },
+        {
+          id: "wholesale",
+          category: "Wholesale & Bulk Orders",
+          question: "How do wholesale pricing and distributor partnerships work?",
+          answer: "JAYDRIZ COSMETICS provides tier-based wholesale pricing for makeup artists, beauty studios, and cosmetic retailers purchasing 12 or more units. Select 'Wholesale & Distributor partnership' in the inquiry form above or chat directly with our B2B team on WhatsApp (+234 916 209 3880) to receive our wholesale catalog and bulk discount rates.",
+          icon: <PackageCheck size={18} className="text-purple-600" />
+        }
+      ];
+
+      // ==========================================
+      // UI COMPONENTS
+      // ==========================================
+      function GlobalLoader() {
+        return (
+          <div className="fixed inset-0 bg-white/98 backdrop-blur-md z-[9999] flex flex-col items-center justify-center">
+            <div className="relative flex flex-col items-center justify-center">
+              <div className="relative w-32 h-32 flex items-center justify-center mb-6 animate-pulse duration-1000">
+                <img
+                  src="https://res.cloudinary.com/dehvk3bre/image/upload/v1780414377/20260409_010010_u4nssj.png"
+                  alt="JAYDRIZ Logo"
+                  className="w-28 h-28 object-contain"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+              <p className="font-display text-[10px] text-neutral-800 font-bold tracking-[0.4em] uppercase animate-pulse">
+                Luxury Artistry Loading...
+              </p>
+            </div>
+          </div>
+        );
+      }
+
+      function HeroSection({ onShopNowClick }) {
+        const [currentSlide, setCurrentSlide] = useState(0);
+
+        useEffect(() => {
+          const interval = setInterval(() => {
+            setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+          }, 6000);
+          return () => clearInterval(interval);
+        }, [currentSlide]);
+
+        const slide = HERO_SLIDES[currentSlide];
+
+        return (
+          <section className="relative h-[90vh] flex items-center justify-center overflow-hidden bg-black text-white">
+            <div className="absolute inset-0 z-0">
+              <div className="absolute inset-0 w-full h-full transition-opacity duration-1000">
+                <img
+                  src={slide.image}
+                  className="w-full h-full object-cover object-center opacity-70"
+                  alt={`Jaydriz Cosmetics Slider - ${slide.title}`}
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/30 z-[1]"></div>
+            </div>
+
+            <button
+              onClick={() => setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
+              className="absolute left-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full border border-white/20 bg-black/20 hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center cursor-pointer opacity-40 hover:opacity-100 hidden md:flex backdrop-blur-xs"
+              aria-label="Previous Slide"
+            >
+              <ChevronLeft size={24} />
+            </button>
+
+            <button
+              onClick={() => setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length)}
+              className="absolute right-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full border border-white/20 bg-black/20 hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center cursor-pointer opacity-40 hover:opacity-100 hidden md:flex backdrop-blur-xs"
+              aria-label="Next Slide"
+            >
+              <ChevronRight size={24} />
+            </button>
+
+            <div className="relative z-10 text-center max-w-4xl px-6 flex flex-col items-center">
+              <div className="flex flex-col items-center">
+                <span className="text-xs uppercase tracking-[0.4em] text-amber-500 font-bold mb-4 block">
+                  {slide.isMain ? "Welcome to Jaydriz" : "Discover Categories"}
+                </span>
+                
+                <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-bold tracking-[0.2em] uppercase leading-tight mb-6 text-white drop-shadow-md whitespace-pre-line">
+                  {slide.title}
+                </h1>
+
+                <p className="font-serif italic text-base sm:text-xl text-amber-100/90 max-w-xl sm:max-w-2xl tracking-wide mb-10 font-light leading-relaxed">
+                  {slide.subtitle}
+                </p>
+
+                <button
+                  onClick={onShopNowClick}
+                  className="inline-block bg-white text-black font-display text-[10px] tracking-[0.3em] font-bold py-5 px-12 border border-white hover:bg-transparent hover:text-white transition-all duration-300 shadow-xl rounded-sm group uppercase cursor-pointer"
+                >
+                  Shop Now
+                  <span className="inline-block transform translate-x-1 group-hover:translate-x-2 transition-transform duration-300 ml-2">→</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="absolute bottom-10 left-12 hidden lg:flex flex-col items-start space-y-2 opacity-50 z-10">
+              <span className="text-[9px] tracking-widest uppercase">Lagos, NG</span>
+              <span className="w-12 h-[1px] bg-white"></span>
+            </div>
+
+            <div className="absolute bottom-10 right-12 flex items-center gap-3 z-20">
+              {HERO_SLIDES.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentSlide(idx)}
+                  className="group py-3 focus:outline-none cursor-pointer"
+                  aria-label={`Go to slide ${idx + 1}`}
+                >
+                  <div className="relative h-[2px] overflow-hidden bg-white/20 transition-all duration-500 rounded-full">
+                    <div 
+                      className={`h-full bg-white transition-all duration-500 ${
+                        currentSlide === idx ? "w-10 sm:w-14" : "w-4 group-hover:bg-white/60"
+                      }`} 
+                    />
+                  </div>
+                </button>
+              ))}
+            </div>
+          </section>
+        );
+      }
+
+      function Shop({ products, onSelectProduct, searchQuery, onClearSearch }) {
+        const [activeCategory, setActiveCategory] = useState("All");
+        const categories = ["All", "Face", "Eyes", "Artistry"];
+
+        const filtered = products.filter((p) => {
+          const matchesCategory = activeCategory === "All" || p.category === activeCategory;
+          const matchesQuery = !searchQuery || 
+            p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+            p.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            p.description.toLowerCase().includes(searchQuery.toLowerCase());
+          return matchesCategory && matchesQuery;
+        });
+
+        return (
+          <section className="bg-[#FAF7F5] py-24 px-6 md:px-12 lg:px-24">
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <span className="text-xs uppercase tracking-[0.3em] text-[#806B5F] font-bold">The Collection</span>
+              <h2 className="font-display text-3xl sm:text-4xl text-black font-bold tracking-[0.15em] uppercase mt-2 mb-4">
+                SHOP PRODUCTS
+              </h2>
+              <div className="w-16 h-[2px] bg-[#806B5F]/30 mx-auto"></div>
+            </div>
+
+            {searchQuery && (
+              <div className="text-center mb-12 bg-white rounded-sm p-4 max-w-md mx-auto flex items-center justify-between border border-neutral-200/50 shadow-xs">
+                <span className="text-xs text-neutral-600 font-medium">
+                  Results for <strong className="text-black italic">"{searchQuery}"</strong> ({filtered.length} found)
+                </span>
+                <button
+                  onClick={onClearSearch}
+                  className="text-[10px] tracking-wider uppercase font-extrabold text-[#806B5F] hover:text-black focus:outline-none bg-neutral-50 hover:bg-neutral-100 px-3 py-1.5 rounded-xs transition-colors cursor-pointer"
+                >
+                  Clear Search
+                </button>
+              </div>
+            )}
+
+            <div className="flex justify-center space-x-2 sm:space-x-4 mb-16 overflow-x-auto no-scrollbar py-2">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`px-8 py-3.5 text-[9px] sm:text-[10px] tracking-[0.25em] font-bold uppercase transition-all duration-300 rounded-xs cursor-pointer ${
+                    activeCategory === cat
+                      ? "bg-black text-white shadow-md"
+                      : "bg-white text-gray-500 hover:text-black border border-gray-100"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              {filtered.length === 0 && (
+                <div className="col-span-full py-16 text-center space-y-4">
+                  <p className="text-sm text-neutral-500 font-light">No matching JAYDRIZ creations found.</p>
+                  <button 
+                    onClick={onClearSearch}
+                    className="inline-block bg-black text-white text-[10px] tracking-widest font-bold uppercase py-3.5 px-8 rounded-sm hover:bg-[#806B5F] transition-colors shadow-sm cursor-pointer"
+                  >
+                    Show All Products
+                  </button>
+                </div>
+              )}
+              {filtered.map((prod) => (
+                <div
+                  key={prod.id}
+                  onClick={() => onSelectProduct(prod)}
+                  className="group cursor-pointer bg-white overflow-hidden flex flex-col justify-between border border-neutral-100 rounded-sm hover:shadow-xl transition-shadow duration-300"
+                >
+                  <div className="relative aspect-[4/5] bg-neutral-200 overflow-hidden">
+                    <img
+                      src={prod.image}
+                      alt={prod.name}
+                      loading="lazy"
+                      className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                    <div className="absolute inset-x-4 bottom-4 flex justify-center opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 z-10">
+                      <button className="w-full bg-black text-white text-[9px] font-bold uppercase tracking-widest py-3 hover:bg-neutral-800 transition-colors shadow-lg">
+                        Quick View
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="p-5 flex flex-col flex-grow justify-between">
+                    <div>
+                      <span className="text-[9px] uppercase tracking-widest text-[#806B5F] font-bold font-display">
+                        {prod.category}
+                      </span>
+                      <h3 className="text-xs sm:text-sm text-black font-semibold uppercase tracking-wider mt-1 truncate">
+                        {prod.name}
+                      </h3>
+                    </div>
+                    <div className="flex items-center justify-between mt-4 border-t border-gray-50 pt-3">
+                      <span className="text-xs sm:text-sm font-semibold tracking-wide text-[#806B5F]">
+                        ₦{prod.price.toLocaleString("en-NG")}
+                      </span>
+                      {prod.shades && prod.shades.length > 0 && (
+                        <span className="text-[9px] uppercase tracking-widest text-gray-400 font-bold bg-neutral-50 px-2 py-0.5 border border-neutral-100 rounded-xs">
+                          {prod.shades.length} Shades
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Social Instagram Card */}
+            <div className="mt-28 border-t border-[#806B5F]/10 pt-20">
+              <div className="text-center max-w-3xl mx-auto mb-12">
+                <span className="text-xs uppercase tracking-[0.3em] text-[#806B5F] font-bold">Follow Our Socials</span>
+                <h2 className="font-display text-2xl sm:text-3xl text-black font-bold tracking-[0.15em] uppercase mt-2 mb-4">
+                  CONNECT WITH US ON INSTAGRAM
+                </h2>
+                <div className="w-16 h-[2px] bg-[#806B5F]/30 mx-auto mb-5"></div>
+                <p className="text-xs text-neutral-500 max-w-md mx-auto leading-relaxed">
+                  Join the JAYDRIZ beauty community on Instagram for daily artistry inspiration, product launches, shade swatches, and behind-the-scenes reveals.
+                </p>
+              </div>
+
+              <div className="max-w-3xl mx-auto px-4">
+                <div className="bg-white border border-neutral-200/90 rounded-2xl shadow-xl overflow-hidden font-sans">
+                  <div className="bg-neutral-50 border-b border-neutral-100 px-6 py-3.5 flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Instagram size={18} className="text-pink-600" />
+                      <span className="text-xs font-bold tracking-tight text-neutral-900 font-mono">
+                        instagram.com/jaydrizcosmetics
+                      </span>
+                    </div>
+                    <span className="text-[9px] uppercase tracking-widest font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      Official Page
+                    </span>
+                  </div>
+
+                  <div className="p-6 sm:p-10 space-y-8">
+                    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 sm:gap-10">
+                      <div className="relative shrink-0">
+                        <div className="p-[3px] bg-gradient-to-tr from-amber-400 via-rose-500 to-purple-600 rounded-full shadow-md">
+                          <div className="p-0.5 bg-white rounded-full">
+                            <img
+                              src="https://res.cloudinary.com/dehvk3bre/image/upload/v1780414377/20260409_010010_u4nssj.png"
+                              alt="JAYDRIZ COSMETICS Profile"
+                              className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover bg-neutral-100"
+                              referrerPolicy="no-referrer"
+                            />
+                          </div>
+                        </div>
+                        <span className="absolute bottom-1 right-1 bg-blue-500 text-white rounded-full p-1 shadow-md border-2 border-white" title="Verified Account">
+                          <CheckCircle2 size={14} className="fill-blue-500 text-white" />
+                        </span>
+                      </div>
+
+                      <div className="flex-1 text-center sm:text-left space-y-4 w-full">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                          <div className="flex items-center justify-center sm:justify-start space-x-2">
+                            <h3 className="font-display font-bold text-lg sm:text-xl text-neutral-900 tracking-tight">
+                              jaydrizcosmetics
+                            </h3>
+                            <CheckCircle2 size={18} className="text-blue-500 fill-blue-500" />
+                          </div>
+
+                          <a
+                            href="https://www.instagram.com/jaydrizcosmetics"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-rose-500 via-pink-600 to-purple-600 hover:from-rose-600 hover:to-purple-700 text-white text-xs font-bold py-2.5 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 font-display uppercase tracking-wider group"
+                          >
+                            <Instagram size={14} className="group-hover:scale-110 transition-transform duration-200" />
+                            <span>Check us out</span>
+                            <ExternalLink size={12} className="opacity-80" />
+                          </a>
+                        </div>
+
+                        <div className="flex items-center justify-around sm:justify-start sm:space-x-8 py-2.5 border-y border-neutral-100 text-center sm:text-left">
+                          <div>
+                            <span className="block text-sm sm:text-base font-extrabold text-neutral-900 font-mono">1,420</span>
+                            <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-semibold">Posts</span>
+                          </div>
+                          <div className="h-6 w-[1px] bg-neutral-100"></div>
+                          <div>
+                            <span className="block text-sm sm:text-base font-extrabold text-neutral-900 font-mono">85.4K</span>
+                            <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-semibold">Followers</span>
+                          </div>
+                          <div className="h-6 w-[1px] bg-neutral-100"></div>
+                          <div>
+                            <span className="block text-sm sm:text-base font-extrabold text-neutral-900 font-mono">120</span>
+                            <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-semibold">Following</span>
+                          </div>
+                        </div>
+
+                        <div className="space-y-1.5 text-xs text-neutral-700 leading-relaxed pt-1">
+                          <p className="font-bold text-neutral-900 font-display tracking-wide uppercase text-sm">
+                            JAYDRIZ COSMETICS
+                          </p>
+                          <p className="text-neutral-500 font-medium text-[11px]">
+                            Beauty, Cosmetic & Personal Care
+                          </p>
+                          <p className="text-neutral-800">💄 Luxury Meets Affordability</p>
+                          <p className="text-neutral-800">✦ Pro-Level Formulas, Pigments & Artistry Cosmetics</p>
+                          <p className="text-neutral-800">📍 Lagos, Nigeria | Global Express Shipping ✈️</p>
+                          <a
+                            href="https://www.instagram.com/jaydrizcosmetics"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-block text-[#806B5F] font-bold hover:underline font-mono text-[11px] pt-1"
+                          >
+                            🔗 instagram.com/jaydrizcosmetics
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="border-t border-neutral-100 pt-6">
+                      <span className="text-[9px] uppercase tracking-widest text-neutral-400 font-bold block mb-4 text-center sm:text-left">
+                        Featured Highlights
+                      </span>
+                      <div className="flex items-center justify-between sm:justify-start sm:space-x-6 overflow-x-auto no-scrollbar pb-2">
+                        {[
+                          { title: "Shades", img: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414858/Foundation_1_jefqeq.png" },
+                          { title: "Glitters", img: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414851/Glitter_1_txkblx.png" },
+                          { title: "Reviews", img: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414851/Face_octrtg.png" },
+                          { title: "Tools", img: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414856/Brush_1_s8qoql.png" },
+                          { title: "Artistry", img: "https://res.cloudinary.com/dehvk3bre/image/upload/v1780414852/Eyes_iizg4c.png" }
+                        ].map((hl, i) => (
+                          <a
+                            key={i}
+                            href="https://www.instagram.com/jaydrizcosmetics"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex flex-col items-center space-y-1.5 group shrink-0"
+                          >
+                            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full p-[2px] bg-neutral-200 group-hover:bg-gradient-to-tr group-hover:from-amber-400 group-hover:to-pink-600 transition-all duration-300">
+                              <div className="w-full h-full rounded-full p-0.5 bg-white overflow-hidden">
+                                <img
+                                  src={hl.img}
+                                  alt={hl.title}
+                                  className="w-full h-full object-cover rounded-full group-hover:scale-110 transition-transform duration-300"
+                                  referrerPolicy="no-referrer"
+                                />
+                              </div>
+                            </div>
+                            <span className="text-[10px] text-neutral-600 font-medium tracking-tight group-hover:text-black">
+                              {hl.title}
+                            </span>
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="bg-[#FAF7F5] border border-neutral-150 rounded-xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+                      <div>
+                        <h4 className="font-display text-xs font-extrabold uppercase tracking-wider text-black">
+                          Stay Connected with JAYDRIZ
+                        </h4>
+                        <p className="text-[11px] text-neutral-500 font-light mt-0.5">
+                          Follow @jaydrizcosmetics on Instagram for exclusive drops and beauty tips.
+                        </p>
+                      </div>
+
+                      <a
+                        href="https://www.instagram.com/jaydrizcosmetics"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full sm:w-auto bg-black hover:bg-[#806B5F] text-white text-[10px] font-display font-bold uppercase tracking-[0.2em] py-3.5 px-8 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2 shrink-0 group cursor-pointer"
+                      >
+                        <Instagram size={14} className="group-hover:scale-110 transition-transform duration-200" />
+                        <span>Check us out</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      }
+
+      function ProductDetail({ product, onBack, onAddToCart }) {
+        const [selectedShades, setSelectedShades] = useState(
+          product.shades && product.shades.length > 0 ? [product.shades[0]] : []
+        );
+        const [quantity, setQuantity] = useState(1);
+        const [copied, setCopied] = useState(false);
+        const businessNumber = "2349162093880";
+
+        const [reviews, setReviews] = useState(() => {
+          const saved = localStorage.getItem(`reviews_prod_${product.id}`);
+          if (saved) {
+            try { return JSON.parse(saved); } catch (e) {}
+          }
+          return [
+            { id: "r1", name: "Chiamaka O.", rating: 4, comment: "Absolutely in love with this! The quality is premium and matches my undertone flawlessly.", date: "2 days ago" },
+            { id: "r2", name: "Temitope A.", rating: 4, comment: "This is a game changer. Super lightweight, long-lasting, and remarkably affordable.", date: "1 week ago" },
+            { id: "r3", name: "Fatima Y.", rating: 4, comment: "Smooth application and excellent pigment payoff. Pure luxury.", date: "2 weeks ago" }
+          ];
+        });
+
+        const [ratingInput, setRatingInput] = useState(4);
+        const [hoveredRating, setHoveredRating] = useState(null);
+        const [nameInput, setNameInput] = useState("");
+        const [commentInput, setCommentInput] = useState("");
+        const [formSubmitted, setFormSubmitted] = useState(false);
+
+        useEffect(() => {
+          const saved = localStorage.getItem(`reviews_prod_${product.id}`);
+          if (saved) {
+            try { setReviews(JSON.parse(saved)); return; } catch (e) {}
+          }
+        }, [product.id]);
+
+        const handleToggleShade = (shade) => {
+          setSelectedShades((prev) => {
+            if (prev.includes(shade)) {
+              if (prev.length <= 1) return prev;
+              return prev.filter((s) => s !== shade);
+            } else {
+              return [...prev, shade];
+            }
+          });
+        };
+
+        const handleOrderViaWhatsApp = () => {
+          const formattedPrice = `₦${(product.price * quantity).toLocaleString("en-NG")}`;
+          const shadesText = selectedShades.length > 0
+            ? `\n*Selected Shades:* ${selectedShades.map((s) => SHADE_NAMES[s] || s).join(", ")}`
+            : "";
+          
+          const message = `🛍️ JAYDRIZ COSMETICS ORDER%0A%0A*Product:* ${product.name}${shadesText}%0A*Quantity:* ${quantity}%0A*Total Order Price:* ${formattedPrice}%0A%0AKindly process my order, provide bank details, and share payment confirmation. Thank you!`;
+          window.open(`https://wa.me/${businessNumber}?text=${message}`, "_blank");
+        };
+
+        const handleCopyLink = () => {
+          const url = window.location.href;
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url).then(() => {
+              setCopied(true);
+              setTimeout(() => setCopied(false), 2500);
+            }).catch(() => fallbackCopyText(url));
+          } else {
+            fallbackCopyText(url);
+          }
+        };
+
+        const fallbackCopyText = (text) => {
+          try {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textArea);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2500);
+          } catch (err) {}
+        };
+
+        const handleShare = async () => {
+          const shareData = {
+            title: `Jaydriz Cosmetics - ${product.name}`,
+            text: `Check out ${product.name} on Jaydriz Cosmetics!`,
+            url: window.location.href,
+          };
+          if (navigator.share) {
+            try { await navigator.share(shareData); } catch (err) {}
+          } else {
+            handleCopyLink();
+          }
+        };
+
+        const handleAddReview = (e) => {
+          e.preventDefault();
+          if (!nameInput.trim() || !commentInput.trim()) return;
+
+          const newReview = {
+            id: `r_user_${Date.now()}`,
+            name: nameInput.trim(),
+            rating: ratingInput,
+            comment: commentInput.trim(),
+            date: "Just now"
+          };
+
+          const updatedReviews = [newReview, ...reviews];
+          setReviews(updatedReviews);
+          localStorage.setItem(`reviews_prod_${product.id}`, JSON.stringify(updatedReviews));
+
+          setNameInput("");
+          setCommentInput("");
+          setRatingInput(4);
+          setFormSubmitted(true);
+          setTimeout(() => setFormSubmitted(false), 4500);
+        };
+
+        const totalReviews = reviews.length;
+        const averageRating = totalReviews > 0
+          ? parseFloat((reviews.reduce((acc, r) => acc + r.rating, 0) / totalReviews).toFixed(1))
+          : 4.0;
+
+        const starCounts = [0, 0, 0, 0, 0, 0];
+        reviews.forEach((r) => {
+          if (r.rating >= 1 && r.rating <= 5) starCounts[r.rating]++;
+        });
+
+        const renderStars = (ratingNum, interactive = false, onSelect) => (
+          <div className="flex items-center space-x-1">
+            {[1, 2, 3, 4, 5].map((star) => {
+              const fill = star <= (hoveredRating ?? ratingNum);
+              return (
+                <button
+                  type="button"
+                  key={star}
+                  disabled={!interactive}
+                  onClick={() => onSelect && onSelect(star)}
+                  onMouseEnter={() => interactive && setHoveredRating(star)}
+                  onMouseLeave={() => interactive && setHoveredRating(null)}
+                  className={`transition-transform duration-150 focus:outline-none ${
+                    interactive ? "hover:scale-125 cursor-pointer p-0.5" : ""
+                  }`}
+                >
+                  <Star
+                    size={interactive ? 24 : 14}
+                    className={`${fill ? "fill-amber-400 text-amber-400" : "text-neutral-200 fill-neutral-50"}`}
+                  />
+                </button>
+              );
+            })}
+          </div>
+        );
+
+        return (
+          <section className="bg-white py-16 px-6 md:px-12 lg:px-24">
+            <button
+              onClick={onBack}
+              className="inline-flex items-center space-x-2 text-[10px] font-bold uppercase tracking-[0.25em] text-gray-400 hover:text-black transition-colors mb-12 cursor-pointer"
+            >
+              <ArrowLeft size={12} />
+              <span>← Back to Shop</span>
+            </button>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start max-w-6xl mx-auto">
+              <div className="aspect-[4/5] bg-neutral-100 border border-neutral-100 overflow-hidden relative rounded-sm">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-full object-cover object-center"
+                />
+                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-xs text-black border border-neutral-100 text-[8px] tracking-widest uppercase py-1 px-3 shadow-xs">
+                  Authentic Brand
+                </div>
+              </div>
+
+              <div className="flex flex-col space-y-8">
+                <div>
+                  <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#806B5F]">
+                    {product.category}
+                  </span>
+                  <h1 className="font-display text-2xl sm:text-3xl text-black font-extrabold tracking-widest uppercase mt-2 mb-4">
+                    {product.name}
+                  </h1>
+                  <div className="flex items-center gap-2 mb-3">
+                    {renderStars(Math.round(averageRating))}
+                    <span className="text-xs font-semibold text-neutral-600">({reviews.length} reviews)</span>
+                  </div>
+                  <span className="text-xl font-bold tracking-wide text-[#806B5F]">
+                    ₦{product.price.toLocaleString("en-NG")}
+                  </span>
+                </div>
+
+                <div className="h-[1px] bg-neutral-100 w-full"></div>
+
+                <div className="space-y-4">
+                  <h3 className="text-[10px] uppercase tracking-widest font-bold text-gray-400">
+                    Product Overview
+                  </h3>
+                  <p className="text-xs sm:text-sm text-gray-500 leading-relaxed max-w-lg">
+                    {product.description}
+                  </p>
+                </div>
+
+                {product.shades && product.shades.length > 0 && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-[10px] uppercase tracking-widest font-bold text-gray-400">
+                        Select Accent Shades
+                      </h3>
+                      <span className="text-[9px] uppercase tracking-widest bg-amber-50 text-[#806B5F] font-bold px-2.5 py-1 rounded-sm">
+                        {selectedShades.length} Selected
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-3 py-1">
+                      {product.shades.map((shade) => {
+                        const isSelected = selectedShades.includes(shade);
+                        return (
+                          <button
+                            key={shade}
+                            onClick={() => handleToggleShade(shade)}
+                            className={`w-10 h-10 rounded-full border transition-all duration-300 relative focus:outline-none flex items-center justify-center cursor-pointer ${
+                              isSelected
+                                ? "border-[#806B5F] scale-110 shadow-lg ring-2 ring-[#806B5F]"
+                                : "border-gray-250 hover:scale-105 hover:border-black"
+                            }`}
+                            style={{ backgroundColor: shade }}
+                            title={SHADE_NAMES[shade] || shade}
+                          >
+                            {isSelected && (
+                              <div className="absolute inset-0 flex items-center justify-center bg-black/15 rounded-full">
+                                <span className="w-2.5 h-2.5 bg-white rounded-full shadow-md"></span>
+                              </div>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <div className="bg-neutral-50 p-3.5 rounded-sm border border-neutral-100 flex flex-wrap gap-2 items-center">
+                      <span className="text-[9px] text-gray-400 uppercase tracking-wider font-semibold">Chosen Shades:</span>
+                      {selectedShades.map((shade) => (
+                        <span
+                          key={shade}
+                          className="inline-flex items-center space-x-1.5 bg-white border border-neutral-200/80 px-2.5 py-1 text-[9px] font-bold tracking-wide rounded-full text-gray-800 shadow-3xs"
+                        >
+                          <span className="w-2.5 h-2.5 rounded-full border border-gray-100 shrink-0" style={{ backgroundColor: shade }}></span>
+                          <span>{SHADE_NAMES[shade] || shade}</span>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-4">
+                  <h3 className="text-[10px] uppercase tracking-widest font-bold text-gray-400">
+                    Configure Quantity
+                  </h3>
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center border border-neutral-200">
+                      <button
+                        onClick={() => quantity > 1 && setQuantity(quantity - 1)}
+                        className="px-4 py-2 hover:bg-neutral-50 transition-colors text-xs font-bold cursor-pointer"
+                      >
+                        -
+                      </button>
+                      <span className="px-6 py-2 text-xs font-bold font-mono">
+                        {quantity}
+                      </span>
+                      <button
+                        onClick={() => setQuantity(quantity + 1)}
+                        className="px-4 py-2 hover:bg-neutral-50 transition-colors text-xs font-bold cursor-pointer"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-3 pt-4">
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <button
+                      onClick={handleOrderViaWhatsApp}
+                      className="flex-1 bg-emerald-800 hover:bg-emerald-950 text-white font-display text-[10px] tracking-[0.25em] font-bold py-5 px-10 flex items-center justify-center space-x-3 transition-colors duration-300 rounded-sm shadow-md cursor-pointer"
+                    >
+                      <ShoppingBag size={14} className="animate-bounce" />
+                      <span>Order via WhatsApp</span>
+                    </button>
+
+                    <button
+                      onClick={() => onAddToCart(product, selectedShades, quantity)}
+                      className="py-5 px-8 text-black border border-black hover:bg-black hover:text-white transition-all duration-300 text-[10px] tracking-[0.25em] font-bold uppercase rounded-sm cursor-pointer"
+                    >
+                      Add to Bag
+                    </button>
+                  </div>
+
+                  <div className="flex items-center gap-3 pt-1">
+                    <button
+                      onClick={handleCopyLink}
+                      className="flex-1 border border-neutral-200 hover:border-black bg-neutral-50 hover:bg-white text-neutral-800 py-3 px-4 text-[9px] tracking-[0.2em] font-bold uppercase transition-all duration-200 rounded-sm flex items-center justify-center space-x-2 cursor-pointer shadow-3xs"
+                      title="Copy product link to clipboard"
+                    >
+                      {copied ? (
+                        <>
+                          <Check size={13} className="text-emerald-600" />
+                          <span className="text-emerald-700 font-extrabold">Link Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy size={13} className="text-neutral-500" />
+                          <span>Copy Link</span>
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      onClick={handleShare}
+                      className="flex-1 border border-neutral-200 hover:border-black bg-neutral-50 hover:bg-white text-neutral-800 py-3 px-4 text-[9px] tracking-[0.2em] font-bold uppercase transition-all duration-200 rounded-sm flex items-center justify-center space-x-2 cursor-pointer shadow-3xs"
+                      title="Share product with friends"
+                    >
+                      <Share2 size={13} className="text-neutral-500" />
+                      <span>Share</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="w-full h-[1px] bg-neutral-150 max-w-6xl mx-auto my-20"></div>
+
+            <div className="max-w-6xl mx-auto space-y-16">
+              <div className="text-center md:text-left space-y-2">
+                <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#806B5F]">
+                  Authentic Voices
+                </span>
+                <h2 className="font-display text-2xl text-black font-extrabold tracking-widest uppercase">
+                  Customer Reviews & Social Proof
+                </h2>
+                <div className="w-16 h-[2px] bg-[#806B5F]/40 mx-auto md:mx-0"></div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                <div className="lg:col-span-4 bg-[#FAF7F5] border border-neutral-200/50 p-6 sm:p-8 rounded-sm space-y-6">
+                  <div className="text-center py-2 space-y-3">
+                    <p className="text-6xl font-extrabold font-sans text-neutral-900 leading-none tracking-tight">
+                      {averageRating}
+                    </p>
+                    <div className="flex justify-center py-1">
+                      {renderStars(Math.round(averageRating))}
+                    </div>
+                    <p className="text-[10px] uppercase tracking-widest text-[#806B5F] font-extrabold">
+                      Based on {totalReviews} {totalReviews === 1 ? 'Review' : 'Reviews'}
+                    </p>
+                  </div>
+
+                  <div className="h-[1px] bg-neutral-200"></div>
+
+                  <div className="space-y-3">
+                    {[5, 4, 3, 2, 1].map((starsIndex) => {
+                      const count = starCounts[starsIndex];
+                      const percentage = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
+                      return (
+                        <div key={starsIndex} className="flex items-center text-xs text-neutral-600 gap-3">
+                          <span className="font-semibold text-[11px] text-gray-500 w-12 shrink-0">
+                            {starsIndex} Star
+                          </span>
+                          <div className="flex-grow h-2 bg-neutral-200/60 rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-amber-400 transition-all duration-500 rounded-full" 
+                              style={{ width: `${percentage}%` }}
+                            ></div>
+                          </div>
+                          <span className="w-12 text-right font-mono text-[10px] text-gray-400 font-semibold shrink-0">
+                            {count} ({Math.round(percentage)}%)
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="lg:col-span-8 space-y-12">
+                  <form onSubmit={handleAddReview} className="bg-white border border-neutral-200/60 p-6 md:p-8 rounded-sm space-y-6">
+                    <h3 className="font-display text-xs font-extrabold tracking-[0.2em] uppercase text-black">
+                      Share Your JAYDRIZ Experience
+                    </h3>
+                    
+                    <div className="space-y-2">
+                      <label className="block text-[9px] uppercase tracking-widest font-extrabold text-gray-400">
+                        Select Rating *
+                      </label>
+                      <div className="flex items-center gap-2 py-1">
+                        {renderStars(ratingInput, true, (r) => setRatingInput(r))}
+                        <span className="text-[10px] font-bold text-[#806B5F] uppercase tracking-widest pl-2">
+                          {ratingInput} out of 5 stars
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="block text-[9px] uppercase tracking-widest font-extrabold text-gray-400">
+                          Your Name *
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. Chiamaka, Temi, Fatima"
+                          value={nameInput}
+                          onChange={(e) => setNameInput(e.target.value)}
+                          className="w-full bg-[#FAF7F5] border border-neutral-200/70 p-3 text-xs rounded-sm focus:outline-none focus:border-[#806B5F] transition-colors"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="block text-[9px] uppercase tracking-widest font-extrabold text-gray-400">
+                          Verified Purchase Status
+                        </label>
+                        <div className="flex items-center h-11 px-3 bg-[#FAF7F5] border border-neutral-200/50 rounded-sm">
+                          <span className="text-[9px] uppercase tracking-widest font-extrabold text-emerald-800 bg-emerald-50 border border-emerald-150 px-2.5 py-1 rounded-sm">
+                            ✓ Verified Buyer Account
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="block text-[9px] uppercase tracking-widest font-extrabold text-gray-400">
+                        Detailed Review Comment *
+                      </label>
+                      <textarea
+                        required
+                        rows={4}
+                        placeholder="Share details about texture, blendability, custom shade matches..."
+                        value={commentInput}
+                        onChange={(e) => setCommentInput(e.target.value)}
+                        className="w-full bg-[#FAF7F5] border border-neutral-200/70 p-3 text-xs rounded-sm focus:outline-none focus:border-[#806B5F] transition-colors resize-none"
+                      ></textarea>
+                    </div>
+
+                    {formSubmitted && (
+                      <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs p-4 rounded-sm animate-fade-in flex items-center gap-2">
+                        <span>✓</span>
+                        <span>Thank you! Your verified user review feedback was successfully published.</span>
+                      </div>
+                    )}
+
+                    <button
+                      type="submit"
+                      className="w-full sm:w-auto bg-black hover:bg-[#806B5F] text-white py-4 px-10 text-[9px] tracking-[0.25em] font-display font-bold uppercase transition-colors duration-300 rounded-sm shadow-md cursor-pointer"
+                    >
+                      Submit Feedback
+                    </button>
+                  </form>
+
+                  <div className="space-y-6">
+                    <h3 className="font-display text-xs font-extrabold tracking-[0.2em] uppercase text-black border-b border-neutral-100 pb-3">
+                      Verified Client Reviews ({reviews.length})
+                    </h3>
+
+                    <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 no-scrollbar">
+                      {reviews.map((rev) => (
+                        <div key={rev.id} className="bg-white border border-neutral-100 p-5 rounded-sm space-y-3.5 shadow-2xs hover:shadow-xs transition-shadow duration-300 text-left">
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-neutral-50 pb-2">
+                            <div className="flex items-center gap-2.5">
+                              <span className="font-display text-xs font-extrabold text-neutral-800 uppercase tracking-wider">{rev.name}</span>
+                              <span className="text-[8px] uppercase tracking-widest text-emerald-800 font-extrabold bg-emerald-50 px-2 py-0.5 rounded-sm border border-emerald-150">
+                                Certified Buyer
+                              </span>
+                            </div>
+                            <span className="text-[10px] text-gray-400 font-semibold font-sans">{rev.date}</span>
+                          </div>
+
+                          <div className="flex items-center gap-1.5">
+                            {renderStars(rev.rating)}
+                            <span className="text-[10px] font-bold text-gray-400 font-mono pt-0.5">{rev.rating}.0 / 5.0</span>
+                          </div>
+
+                          <p className="text-neutral-500 text-xs leading-relaxed font-light font-sans whitespace-pre-line">
+                            {rev.comment}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      }
+
+      function AboutJaydriz() {
+        return (
+          <div className="bg-[#FAF7F5] py-16 sm:py-24 font-sans text-black">
+            <div className="max-w-6xl mx-auto px-6">
+              <div className="text-center max-w-3xl mx-auto mb-16">
+                <span className="text-xs uppercase tracking-[0.3em] text-[#806B5F] font-bold">About Our House</span>
+                <h1 className="font-display text-3xl sm:text-4xl md:text-5xl text-black font-extrabold tracking-[0.1em] uppercase mt-4 mb-6 leading-tight">
+                  JAYDRIZ COSMETICS:<br />WHERE LUXURY MEETS AFFORDABILITY
+                </h1>
+                <div className="w-24 h-[1px] bg-[#806B5F]/40 mx-auto"></div>
+              </div>
+
+              <div className="relative aspect-[21/9] w-full bg-neutral-900 overflow-hidden mb-20 rounded-sm shadow-xl">
+                <img
+                  src="https://res.cloudinary.com/dehvk3bre/image/upload/v1780415231/20260331_085939_0000_npvhz9.png"
+                  alt="Jaydriz Elite Cosmetics Campaign"
+                  className="w-full h-full object-cover object-center opacity-80"
+                  referrerPolicy="no-referrer"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/60"></div>
+                <div className="absolute inset-0 flex items-center justify-center text-center p-6">
+                  <p className="font-display text-xs sm:text-sm tracking-[0.4em] text-white uppercase font-bold drop-shadow-lg bg-black/35 backdrop-blur-xs px-6 py-3 border border-white/10">
+                    Pro-Level Beauty Experience
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mb-24">
+                <div className="lg:col-span-5 space-y-4">
+                  <span className="text-xs uppercase tracking-[0.25em] text-[#806B5F] font-bold block">01 / The Vision</span>
+                  <h2 className="font-display text-2xl text-black font-bold tracking-wider uppercase">
+                    Brand Overview
+                  </h2>
+                  <div className="w-12 h-[2px] bg-[#806B5F]/30"></div>
+                </div>
+                <div className="lg:col-span-7">
+                  <p className="text-sm sm:text-base text-neutral-600 leading-relaxed font-light">
+                    Jaydriz Cosmetics is a trailblazing beauty brand designed for the modern makeup enthusiast who refuses to compromise on quality or cost. Merging high-performance formulas with trend-driven innovation, the brand delivers an inclusive, pro-level beauty experience that empowers self-expression for every skin tone and type.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 items-center mb-28 bg-white border border-neutral-100 rounded-sm p-6 sm:p-12 shadow-sm">
+                <div className="space-y-6">
+                  <span className="text-xs uppercase tracking-[0.25em] text-[#806B5F] font-bold block">02 / Disruptive Craft</span>
+                  <h2 className="font-display text-2xl sm:text-3xl text-black font-bold tracking-wider uppercase">
+                    The Core Philosophy
+                  </h2>
+                  <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed font-light">
+                    At the heart of Jaydriz Cosmetics is a disruptive promise: luxury meets affordability.
+                  </p>
+                  <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed font-light">
+                    Jaydriz Cosmetics obliterates the divide between high-end prestige prices and budget-friendly alternatives. By sourcing premium ingredients and utilizing cutting-edge manufacturing, the brand delivers weightless textures and all-day staying power—all at an accessible price.
+                  </p>
+                </div>
+                <div className="aspect-[4/5] bg-neutral-100 overflow-hidden rounded-sm relative shadow-md">
+                  <img
+                    src="https://res.cloudinary.com/dehvk3bre/image/upload/v1780414851/Face_octrtg.png"
+                    alt="Flawless Artistry Model"
+                    className="w-full h-full object-cover object-center"
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      function FAQSection() {
+        const [openFaqIndex, setOpenFaqIndex] = useState(0);
+
+        return (
+          <div id="faq-section" className="pt-16 border-t border-gray-100 space-y-8">
+            <div className="text-center max-w-2xl mx-auto space-y-2">
+              <span className="text-[10px] uppercase tracking-[0.25em] font-bold text-[#806B5F] font-mono flex items-center justify-center gap-1.5">
+                <HelpCircle size={14} className="text-[#806B5F]" />
+                <span>Customer Assistance</span>
+              </span>
+              <h2 className="text-2xl md:text-3xl font-bold font-display tracking-tight text-black uppercase">
+                Frequently Asked Questions
+              </h2>
+              <p className="text-xs text-gray-500 leading-relaxed max-w-md mx-auto">
+                Instant answers regarding shipping timelines, return policies, wholesale distributor perks, and WhatsApp ordering.
+              </p>
+            </div>
+
+            <div className="max-w-3xl mx-auto space-y-4">
+              {FAQ_ITEMS.map((item, index) => {
+                const isOpen = openFaqIndex === index;
+                return (
+                  <div
+                    key={item.id}
+                    className="border border-neutral-200/80 rounded-xl overflow-hidden bg-white shadow-2xs hover:border-neutral-300 transition-all duration-200"
+                  >
+                    <button
+                      onClick={() => setOpenFaqIndex(isOpen ? null : index)}
+                      className="w-full text-left p-5 md:p-6 flex items-center justify-between gap-4 font-sans focus:outline-none group bg-white cursor-pointer"
+                    >
+                      <div className="flex items-center space-x-3.5">
+                        <div className="p-2.5 rounded-lg bg-neutral-50 group-hover:bg-neutral-100 shrink-0 transition-colors">
+                          {item.icon}
+                        </div>
+                        <div>
+                          <span className="text-[9px] font-bold font-mono uppercase tracking-widest text-neutral-400 block mb-0.5">
+                            {item.category}
+                          </span>
+                          <span className="font-bold text-sm md:text-base text-neutral-900 font-display tracking-tight group-hover:text-[#806B5F] transition-colors">
+                            {item.question}
+                          </span>
+                        </div>
+                      </div>
+                    </button>
+
+                    {isOpen && (
+                      <div className="px-6 pb-6 pt-2 text-xs md:text-sm text-neutral-600 leading-relaxed border-t border-neutral-100 bg-[#FAF7F5]/50">
+                        {item.answer}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      }
+
+      function Contact({ onBack }) {
+        const [fullName, setFullName] = useState("");
+        const [email, setEmail] = useState("");
+        const [phone, setPhone] = useState("");
+        const [inquiryType, setInquiryType] = useState("general");
+        const [message, setMessage] = useState("");
+        const [isSubmitted, setIsSubmitted] = useState(false);
+
+        const handleSubmit = (e) => {
+          e.preventDefault();
+          if (!fullName || !email || !message) return;
+
+          const typeLabels = {
+            general: "General Inquiry",
+            wholesale: "Wholesale & Distributor Partnership",
+            order: "Order Support & Tracking",
+          };
+
+          const subject = `[${typeLabels[inquiryType]}] Inquiry from ${fullName}`;
+          const bodyStr = `JAYDRIZ COSMETICS INQUIRY\n\nFull Name: ${fullName}\nEmail: ${email}\nPhone: ${phone || "N/A"}\nMessage:\n${message}`;
+          window.location.href = `mailto:jaydrizcosmetics@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyStr)}`;
+          setIsSubmitted(true);
+        };
+
+        return (
+          <div className="min-h-screen bg-white pt-24 pb-24">
+            <div className="max-w-4xl mx-auto px-6">
+              <button
+                onClick={onBack}
+                className="flex items-center space-x-2 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400 hover:text-black transition-colors mb-12 cursor-pointer"
+              >
+                <ArrowLeft size={14} />
+                <span>Back</span>
+              </button>
+
+              <div className="space-y-16">
+                <header>
+                  <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 uppercase font-display">Contact Us</h1>
+                  <p className="text-gray-500 text-sm md:text-base leading-relaxed max-w-2xl">
+                    Have a question about our products or your order? We're here to help you achieve your professional beauty goals.
+                  </p>
+                </header>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                  <div className="space-y-10">
+                    <div className="flex items-start space-x-6">
+                      <div className="bg-gray-50 p-4 rounded-sm">
+                        <Phone size={24} className="text-black" />
+                      </div>
+                      <div>
+                        <h3 className="text-xs font-bold uppercase tracking-widest mb-2 text-gray-400">Phone & WhatsApp</h3>
+                        <p className="text-lg font-bold">+234 916 209 3880</p>
+                        <p className="text-xs text-gray-500 mt-1">Mon - Sat, 9 AM - 6 PM</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start space-x-6">
+                      <div className="bg-gray-50 p-4 rounded-sm">
+                        <Mail size={24} className="text-black" />
+                      </div>
+                      <div>
+                        <h3 className="text-xs font-bold uppercase tracking-widest mb-2 text-gray-400">Email Support</h3>
+                        <p className="text-base font-bold text-black">jaydrizcosmetics@gmail.com</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start space-x-6">
+                      <div className="bg-gray-50 p-4 rounded-sm">
+                        <MapPin size={24} className="text-black" />
+                      </div>
+                      <div>
+                        <h3 className="text-xs font-bold uppercase tracking-widest mb-2 text-gray-400">Main Warehouse</h3>
+                        <p className="text-sm font-bold leading-relaxed">
+                          SHOP B012 RIVERS PLAZA II,<br />
+                          Trade Fair Complex, Lagos, Nigeria
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-8 md:p-12 rounded-sm">
+                    {!isSubmitted ? (
+                      <form className="space-y-6" onSubmit={handleSubmit}>
+                        <h3 className="text-sm font-bold uppercase tracking-widest mb-8">Send us a message</h3>
+                        <div className="space-y-2">
+                          <label className="text-[10px] uppercase tracking-widest font-bold text-gray-400">Full Name *</label>
+                          <input 
+                            type="text" 
+                            required
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
+                            className="w-full bg-white border border-gray-200 px-4 py-3 text-sm outline-none focus:border-black transition-colors" 
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] uppercase tracking-widest font-bold text-gray-400">Email Address *</label>
+                          <input 
+                            type="email" 
+                            required
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full bg-white border border-gray-200 px-4 py-3 text-sm outline-none focus:border-black transition-colors" 
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] uppercase tracking-widest font-bold text-gray-400">Message *</label>
+                          <textarea 
+                            required
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            className="w-full bg-white border border-gray-200 px-4 py-3 text-sm outline-none focus:border-black transition-colors h-32 resize-none" 
+                          />
+                        </div>
+                        <button type="submit" className="w-full bg-black text-white py-4 text-[10px] uppercase tracking-[0.2em] font-bold hover:opacity-90 transition-all cursor-pointer">
+                          Send Message via Email
+                        </button>
+                      </form>
+                    ) : (
+                      <div className="text-center py-12 space-y-4">
+                        <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center text-green-500 mx-auto">
+                          <Check size={32} />
+                        </div>
+                        <h3 className="text-lg font-bold uppercase font-display">Inquiry Sent</h3>
+                        <p className="text-xs text-gray-500">Your email client has been opened with your inquiry.</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <FAQSection />
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // ==========================================
+      // MAIN APP COMPONENT
+      // ==========================================
+      function App() {
+        const [currentView, setCurrentView] = useState("home");
+        const [selectedProduct, setSelectedProduct] = useState(null);
+        const [cart, setCart] = useState([]);
+        const [isCartOpen, setIsCartOpen] = useState(false);
+        const [isLoading, setIsLoading] = useState(true);
+        const [showScrollTop, setShowScrollTop] = useState(false);
+        const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+        const [headerSearchValue, setHeaderSearchValue] = useState("");
+        const [searchQuery, setSearchQuery] = useState("");
+
+        const matchingSearchProducts = productsList.filter((p) => {
+          const val = headerSearchValue.trim().toLowerCase();
+          if (!val) return false;
+          return (
+            p.name.toLowerCase().includes(val) ||
+            p.category.toLowerCase().includes(val) ||
+            p.description.toLowerCase().includes(val)
+          );
+        });
+
+        const handleSearchSubmit = (val) => {
+          const queryToSubmit = val !== undefined ? val : headerSearchValue;
+          setSearchQuery(queryToSubmit.trim());
+          setHeaderSearchValue("");
+          setCurrentView("shop");
+          setSelectedProduct(null);
+          setIsMobileMenuOpen(false);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        };
+
+        useEffect(() => {
+          const timer = setTimeout(() => setIsLoading(false), 1200);
+          const handleScroll = () => setShowScrollTop(window.scrollY > 400);
+          window.addEventListener("scroll", handleScroll);
+          return () => {
+            clearTimeout(timer);
+            window.removeEventListener("scroll", handleScroll);
+          };
+        }, []);
+
+        const handleSelectProduct = (prod) => {
+          setSelectedProduct(prod);
+          setCurrentView("detail");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        };
+
+        const handleAddToCart = (product, selectedShades, quantity) => {
+          setCart((prevCart) => {
+            const existingIdx = prevCart.findIndex(
+              (item) => item.product.id === product.id && item.selectedShades.join(",") === selectedShades.join(",")
+            );
+            if (existingIdx > -1) {
+              const updated = [...prevCart];
+              updated[existingIdx].quantity += quantity;
+              return updated;
+            } else {
+              return [...prevCart, { product, selectedShades, quantity }];
+            }
+          });
+          setIsCartOpen(true);
+        };
+
+        const handleUpdateCartQty = (idx, isPlus) => {
+          setCart((prevCart) => {
+            const updated = [...prevCart];
+            if (isPlus) {
+              updated[idx].quantity += 1;
+            } else {
+              if (updated[idx].quantity > 1) {
+                updated[idx].quantity -= 1;
+              } else {
+                updated.splice(idx, 1);
+              }
+            }
+            return updated;
+          });
+        };
+
+        const calculateSubtotal = () => cart.reduce((acc, curr) => acc + curr.product.price * curr.quantity, 0);
+
+        const handleCheckoutCartViaWhatsApp = () => {
+          if (cart.length === 0) return;
+          let itemsString = "";
+          cart.forEach((item, index) => {
+            const shadesDetail = item.selectedShades && item.selectedShades.length > 0
+              ? ` (Shades: ${item.selectedShades.map((s) => SHADE_NAMES[s] || s).join(", ")})`
+              : "";
+            itemsString += `${index + 1}. *${item.product.name}*${shadesDetail}%0A   _Qty: ${item.quantity}_ x ₦${item.product.price.toLocaleString("en-NG")}%0A%0A`;
+          });
+          const totalStr = `₦${calculateSubtotal().toLocaleString("en-NG")}`;
+          const message = `🛍️ JAYDRIZ COSMETICS - MASTER ORDER%0A%0A*Items Selected:*%0A${itemsString}*Total Bag Value:* ${totalStr}%0A%0AKindly confirm availability, share bank details, and coordinate swift courier dispatch. Thanks!`;
+          window.open(`https://wa.me/2349162093880?text=${message}`, "_blank");
+        };
+
+        return (
+          <div className="min-h-screen bg-[#FAF7F5] text-black font-sans flex flex-col justify-between">
+            {isLoading && <GlobalLoader />}
+
+            {/* Header Navbar */}
+            <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 py-5 px-6 md:px-12 flex items-center justify-between font-sans">
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className="md:hidden text-black hover:text-[#806B5F] focus:outline-none p-1 cursor-pointer"
+                  aria-label="Toggle mobile menu"
+                >
+                  {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                </button>
+
+                <button
+                  onClick={() => {
+                    setCurrentView("home");
+                    setSelectedProduct(null);
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="font-display font-black text-lg tracking-[0.25em] text-black focus:outline-none uppercase cursor-pointer"
+                >
+                  JAYDRIZ
+                </button>
+              </div>
+
+              <nav className="hidden md:flex items-center space-x-12">
+                <button
+                  onClick={() => { setCurrentView("home"); setSelectedProduct(null); }}
+                  className={`font-display text-[10px] tracking-[0.25em] font-bold uppercase cursor-pointer transition-colors hover:text-[#806B5F] ${currentView === "home" ? "text-[#806B5F]" : "text-gray-400"}`}
+                >
+                  Home
+                </button>
+                <button
+                  onClick={() => { setCurrentView("shop"); setSelectedProduct(null); }}
+                  className={`font-display text-[10px] tracking-[0.25em] font-bold uppercase cursor-pointer transition-colors hover:text-[#806B5F] ${currentView === "shop" ? "text-[#806B5F]" : "text-gray-400"}`}
+                >
+                  Shop
+                </button>
+                <button
+                  onClick={() => { setCurrentView("about"); setSelectedProduct(null); }}
+                  className={`font-display text-[10px] tracking-[0.25em] font-bold uppercase cursor-pointer transition-colors hover:text-[#806B5F] ${currentView === "about" ? "text-[#806B5F]" : "text-gray-400"}`}
+                >
+                  About JAYDRIZ
+                </button>
+                <button
+                  onClick={() => { setCurrentView("contact"); setSelectedProduct(null); }}
+                  className={`font-display text-[10px] tracking-[0.25em] font-bold uppercase cursor-pointer transition-colors hover:text-[#806B5F] ${currentView === "contact" ? "text-[#806B5F]" : "text-gray-400"}`}
+                >
+                  Contact us
+                </button>
+              </nav>
+
+              <div className="flex items-center space-x-3 sm:space-x-6 font-sans">
+                <div className="relative">
+                  <div className="flex items-center bg-neutral-100 border border-neutral-200/30 rounded-sm px-2.5 sm:px-3 py-1.5 w-28 xs:w-36 sm:w-48 md:w-56 lg:w-64">
+                    <Search className="w-3.5 h-3.5 text-neutral-450 mr-2 shrink-0" />
+                    <input
+                      type="text"
+                      placeholder="Search..."
+                      value={headerSearchValue}
+                      onChange={(e) => setHeaderSearchValue(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && handleSearchSubmit()}
+                      className="bg-transparent text-[11px] sm:text-xs text-black placeholder-neutral-400 focus:outline-none w-full py-0"
+                    />
+                    {headerSearchValue && (
+                      <button
+                        onClick={() => setHeaderSearchValue("")}
+                        className="text-[10px] text-neutral-450 hover:text-black ml-1.5 shrink-0 focus:outline-none cursor-pointer"
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+
+                  {headerSearchValue.trim() !== "" && (
+                    <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 bg-white border border-neutral-200/70 shadow-2xl rounded-sm p-4 z-50 max-h-[380px] overflow-y-auto">
+                      <p className="text-[9px] uppercase tracking-widest text-[#806B5F] font-bold border-b border-neutral-100 pb-2 mb-2 text-left">
+                        Matching Products ({matchingSearchProducts.length})
+                      </p>
+                      {matchingSearchProducts.length > 0 ? (
+                        <div className="space-y-2">
+                          {matchingSearchProducts.slice(0, 5).map((p) => (
+                            <div
+                              key={p.id}
+                              onClick={() => {
+                                setSelectedProduct(p);
+                                setCurrentView("detail");
+                                setHeaderSearchValue("");
+                              }}
+                              className="flex items-center gap-3 p-1.5 hover:bg-neutral-50 rounded-xs cursor-pointer transition-colors"
+                            >
+                              <img src={p.image} alt={p.name} className="w-10 h-12 object-cover rounded-xs bg-neutral-100 shrink-0" />
+                              <div className="flex-grow text-left">
+                                <p className="text-xs text-neutral-800 font-semibold truncate leading-tight uppercase">{p.name}</p>
+                                <p className="text-[10px] text-neutral-450 uppercase tracking-wider">{p.category}</p>
+                              </div>
+                              <span className="text-xs font-semibold text-[#806B5F] shrink-0">₦{p.price.toLocaleString("en-NG")}</span>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-xs text-neutral-400 italic py-4 text-center">No products match search.</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  onClick={() => setIsCartOpen(true)}
+                  className="relative flex items-center justify-center p-2 text-black hover:text-[#806B5F] transition-colors focus:outline-none cursor-pointer"
+                >
+                  <ShoppingBag size={20} />
+                  {cart.length > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-black text-white font-mono font-bold text-[8px] h-4 w-4 rounded-full flex items-center justify-center animate-pulse">
+                      {cart.reduce((a, b) => a + b.quantity, 0)}
+                    </span>
+                  )}
+                </button>
+              </div>
+            </header>
+
+            {/* Mobile Navigation Menu */}
+            {isMobileMenuOpen && (
+              <div
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs md:hidden"
+              >
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  className="w-4/5 max-w-[300px] h-full bg-white p-6 shadow-2xl flex flex-col justify-between"
+                >
+                  <div className="space-y-8">
+                    <div className="flex items-center justify-between border-b border-neutral-100 pb-4">
+                      <span className="font-display font-black text-xs tracking-widest text-black">JAYDRIZ MENU</span>
+                      <button onClick={() => setIsMobileMenuOpen(false)} className="text-neutral-500 hover:text-black focus:outline-none p-1 cursor-pointer">
+                        <X size={18} />
+                      </button>
+                    </div>
+
+                    <nav className="flex flex-col space-y-6">
+                      <button
+                        onClick={() => { setCurrentView("home"); setSelectedProduct(null); setIsMobileMenuOpen(false); }}
+                        className={`font-display text-[10px] tracking-widest font-bold uppercase text-left transition-colors hover:text-[#806B5F] cursor-pointer ${currentView === "home" ? "text-black pl-2 border-l-2 border-black" : "text-gray-400"}`}
+                      >
+                        Home
+                      </button>
+                      <button
+                        onClick={() => { setCurrentView("shop"); setSelectedProduct(null); setIsMobileMenuOpen(false); }}
+                        className={`font-display text-[10px] tracking-widest font-bold uppercase text-left transition-colors hover:text-[#806B5F] cursor-pointer ${currentView === "shop" ? "text-black pl-2 border-l-2 border-black" : "text-gray-400"}`}
+                      >
+                        Shop
+                      </button>
+                      <button
+                        onClick={() => { setCurrentView("about"); setSelectedProduct(null); setIsMobileMenuOpen(false); }}
+                        className={`font-display text-[10px] tracking-widest font-bold uppercase text-left transition-colors hover:text-[#806B5F] cursor-pointer ${currentView === "about" ? "text-black pl-2 border-l-2 border-black" : "text-gray-400"}`}
+                      >
+                        About JAYDRIZ
+                      </button>
+                      <button
+                        onClick={() => { setCurrentView("contact"); setSelectedProduct(null); setIsMobileMenuOpen(false); }}
+                        className={`font-display text-[10px] tracking-widest font-bold uppercase text-left transition-colors hover:text-[#806B5F] cursor-pointer ${currentView === "contact" ? "text-black pl-2 border-l-2 border-black" : "text-gray-400"}`}
+                      >
+                        Contact us
+                      </button>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Main Content Router */}
+            <main className="flex-grow">
+              {currentView === "home" && (
+                <div>
+                  <HeroSection onShopNowClick={() => { setCurrentView("shop"); window.scrollTo({ top: 0, behavior: "smooth" }); }} />
+                  <Shop
+                    products={productsList}
+                    onSelectProduct={handleSelectProduct}
+                    searchQuery={searchQuery}
+                    onClearSearch={() => setSearchQuery("")}
+                  />
+                  <div className="max-w-7xl mx-auto px-6 mt-16 pb-12">
+                    <FAQSection />
+                  </div>
+                </div>
+              )}
+
+              {currentView === "shop" && (
+                <Shop
+                  products={productsList}
+                  onSelectProduct={handleSelectProduct}
+                  searchQuery={searchQuery}
+                  onClearSearch={() => setSearchQuery("")}
+                />
+              )}
+
+              {currentView === "about" && <AboutJaydriz />}
+              {currentView === "contact" && <Contact onBack={() => setCurrentView("home")} />}
+
+              {currentView === "detail" && selectedProduct && (
+                <ProductDetail
+                  product={selectedProduct}
+                  onBack={() => { setCurrentView("shop"); setSelectedProduct(null); }}
+                  onAddToCart={handleAddToCart}
+                />
+              )}
+            </main>
+
+            {/* Shopping Cart Side Drawer */}
+            {isCartOpen && (
+              <div className="fixed inset-0 z-[100] flex justify-end">
+                <div onClick={() => setIsCartOpen(false)} className="absolute inset-0 bg-black/50 cursor-pointer" />
+                <div className="relative w-full max-w-md h-full bg-white shadow-2xl flex flex-col justify-between z-10">
+                  <div className="p-6 border-b border-neutral-100 flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <ShoppingBag size={18} className="text-[#806B5F]" />
+                      <h2 className="font-display text-xs tracking-[0.2em] font-extrabold uppercase text-black">
+                        My Shopping Bag
+                      </h2>
+                    </div>
+                    <button onClick={() => setIsCartOpen(false)} className="p-1 hover:bg-neutral-100 rounded-full transition-colors text-gray-500 hover:text-black cursor-pointer">
+                      <X size={18} />
+                    </button>
+                  </div>
+
+                  <div className="flex-grow overflow-y-auto p-6 space-y-6">
+                    {cart.length === 0 ? (
+                      <div className="h-full flex flex-col items-center justify-center text-center space-y-4 font-sans">
+                        <ShoppingBag size={24} className="text-gray-300" />
+                        <h3 className="font-display text-[10px] tracking-widest font-bold uppercase text-black">
+                          Your bag is empty
+                        </h3>
+                      </div>
+                    ) : (
+                      cart.map((item, idx) => (
+                        <div key={`${item.product.id}-${item.selectedShades.join(",")}`} className="flex space-x-4 border-b border-neutral-50 pb-6 font-sans">
+                          <img src={item.product.image} alt={item.product.name} className="w-20 h-24 object-cover rounded-xs border border-neutral-100 shrink-0" />
+                          <div className="flex-grow flex flex-col justify-between">
+                            <div>
+                              <h4 className="text-xs uppercase font-extrabold text-black font-display tracking-wider">{item.product.name}</h4>
+                              {item.selectedShades && item.selectedShades.length > 0 && (
+                                <div className="mt-1 flex flex-wrap gap-1">
+                                  {item.selectedShades.map((shade) => (
+                                    <span key={shade} className="inline-flex items-center space-x-1 bg-neutral-50 border border-neutral-150 px-1.5 py-0.5 rounded-sm text-[8px] font-mono">
+                                      <span className="w-2 h-2 rounded-full border border-neutral-200" style={{ backgroundColor: shade }}></span>
+                                      <span>{SHADE_NAMES[shade] || shade}</span>
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex items-center justify-between mt-2">
+                              <div className="flex items-center border border-neutral-200 rounded-xs">
+                                <button onClick={() => handleUpdateCartQty(idx, false)} className="px-2 py-0.5 text-xs hover:bg-neutral-50 cursor-pointer">-</button>
+                                <span className="px-3 py-0.5 text-[9px] font-bold font-mono">{item.quantity}</span>
+                                <button onClick={() => handleUpdateCartQty(idx, true)} className="px-2 py-0.5 text-xs hover:bg-neutral-50 cursor-pointer">+</button>
+                              </div>
+                              <span className="text-xs font-semibold text-neutral-800">
+                                ₦{(item.product.price * item.quantity).toLocaleString("en-NG")}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  {cart.length > 0 && (
+                    <div className="p-6 border-t border-neutral-100 bg-[#FAF7F5] space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="font-display text-[10px] tracking-wider uppercase text-neutral-500">Est. Subtotal</span>
+                        <span className="text-base font-bold text-black font-mono">₦{calculateSubtotal().toLocaleString("en-NG")}</span>
+                      </div>
+                      <button
+                        onClick={handleCheckoutCartViaWhatsApp}
+                        className="w-full bg-[#1b4332]/95 hover:bg-[#1b4332] text-white py-4 text-[10px] tracking-[0.25em] font-display font-bold uppercase transition-colors duration-300 rounded-sm flex items-center justify-center space-x-2 shadow-md cursor-pointer"
+                      >
+                        <ShoppingBag size={12} />
+                        <span>Order Bag via WhatsApp</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Floating Action WhatsApp Panel */}
+            <a
+              href="https://wa.me/2349162093880?text=Hello%20JAYDRIZ%20COSMETICS,%20I'm%20writing%20to%20inquire%20about%20your%20professional%20beauty%20line."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="fixed bottom-6 right-6 z-50 bg-[#25d366] text-white p-4 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center"
+              aria-label="Contact JAYDRIZ on WhatsApp"
+            >
+              <MessageSquare size={24} />
+            </a>
+
+            {/* Footer */}
+            <footer className="bg-black text-white pt-16 pb-12 border-t border-neutral-900 mt-auto font-sans">
+              <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div className="space-y-4">
+                  <h2 className="font-display text-lg font-black tracking-[0.3em] text-white">
+                    JAYDRIZ COSMETICS
+                  </h2>
+                  <p className="text-[11px] text-white leading-relaxed max-w-sm">
+                    Jaydriz Cosmetics is a trailblazing beauty brand designed for the modern makeup enthusiast who refuses to compromise on quality or cost.
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="font-display text-[10px] tracking-[0.3em] font-bold uppercase text-amber-500">
+                    Support & Inquiries
+                  </h3>
+                  <p className="text-[11px] text-white leading-relaxed">
+                    WhatsApp Support:{" "}
+                    <a href="https://wa.me/2349162093880" target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 text-white font-bold underline font-mono">
+                      +234 916 209 3880
+                    </a>
+                    <br />
+                    <span className="text-white font-bold">Address:</span> Shop B012, Rivers Plaza II, Lagos Trade Fair Plaza, Off Lagos - Badagry Expressway, Lagos, Nigeria.
+                  </p>
+                </div>
+              </div>
+
+              <div className="max-w-6xl mx-auto px-6 border-t border-neutral-900 mt-12 pt-6 text-center">
+                <p className="text-[9px] tracking-widest text-white uppercase">
+                  © 2026 JAYDRIZ COSMETICS. All Luxury Rights Reserved.
+                </p>
+              </div>
+            </footer>
+          </div>
+        );
+      }
+
+      // Render App
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<App />);
+    </script>
+  </body>
+</html>
